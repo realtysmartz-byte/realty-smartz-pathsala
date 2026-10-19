@@ -334,7 +334,8 @@ class CandidateController {
             flash('success', 'Document uploaded successfully.');
             redirect('/dashboard/onboarding?step=step_c');
 
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
+            error_log("Upload Error: " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine());
             if ($isAjax) {
                 response_json(['success' => false, 'error' => $e->getMessage()], 422);
             }
@@ -448,6 +449,7 @@ class CandidateController {
     private function isAjax(): bool {
         return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') ||
                (!empty($_SERVER['CONTENT_TYPE']) && str_contains($_SERVER['CONTENT_TYPE'], 'application/json')) ||
+               (!empty($_SERVER['HTTP_ACCEPT']) && str_contains($_SERVER['HTTP_ACCEPT'], 'application/json')) ||
                (isset($_POST['is_ajax']) && $_POST['is_ajax'] === '1');
     }
 }

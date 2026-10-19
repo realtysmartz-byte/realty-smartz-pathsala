@@ -28,5 +28,5 @@ deployment:
     - /bin/cp -f public/.htaccess /home/realtys1/public_html/.htaccess
 
     # 4. Permissions
-    - /bin/chmod -R 755 /home/realtys1/pathshala_app/storage
+    - /bin/chmod -R 777 /home/realtys1/pathshala_app/storage
     - /bin/chmod 644 /home/realtys1/public_html/.htaccess

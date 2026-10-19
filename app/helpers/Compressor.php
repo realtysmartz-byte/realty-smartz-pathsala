@@ -9,13 +9,19 @@ class Compressor {
      * Returns true if successfully compressed under target size, false otherwise
      */
     public static function compressImage(string $sourcePath, string $destinationPath, int $maxDimension = 1600, int $targetMaxBytes = 2097152): bool {
-        if (!extension_loaded('gd')) {
-            // GD not loaded; check if file is already under limit
-            return (filesize($sourcePath) <= $targetMaxBytes);
+        if (!extension_loaded('gd') || !function_exists('imagecreatetruecolor')) {
+            // GD not loaded; copy file directly if under limit
+            if (@filesize($sourcePath) <= $targetMaxBytes) {
+                return (bool) @copy($sourcePath, $destinationPath);
+            }
+            return false;
         }
 
         $imageInfo = @getimagesize($sourcePath);
         if (!$imageInfo) {
+            if (@filesize($sourcePath) <= $targetMaxBytes) {
+                return (bool) @copy($sourcePath, $destinationPath);
+            }
             return false;
         }
 
@@ -106,6 +112,9 @@ class Compressor {
         }
 
         // If compression failed to meet target, fallback to original if under limit
-        return (file_exists($sourcePath) && filesize($sourcePath) <= $targetMaxBytes);
+        if (file_exists($sourcePath) && filesize($sourcePath) <= $targetMaxBytes) {
+            return (bool) @copy($sourcePath, $destinationPath);
+        }
+        return false;
     }
 }

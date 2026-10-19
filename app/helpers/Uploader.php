@@ -11,7 +11,10 @@ class Uploader {
     public const ALLOWED_MIMES = [
         'application/pdf' => 'pdf',
         'image/jpeg'      => 'jpg',
+        'image/jpg'       => 'jpg',
+        'image/pjpeg'     => 'jpg',
         'image/png'       => 'png',
+        'image/x-png'     => 'png',
         'image/webp'      => 'webp',
         'application/msword' => 'doc',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'docx'
@@ -50,24 +53,68 @@ class Uploader {
         $tmpPath = $file['tmp_name'];
         $origName = basename($file['name']);
 
-        // Verify MIME type using finfo
-        $finfo = new finfo(FILEINFO_MIME_TYPE);
-        $realMime = $finfo->file($tmpPath);
-
-        if (!array_key_exists($realMime, self::ALLOWED_MIMES)) {
-            throw new Exception("Invalid file type ({$realMime}). Allowed formats: PDF, JPG, PNG, WEBP, DOC, DOCX.");
+        // Verify MIME type using finfo, mime_content_type, or file extension fallback
+        $realMime = null;
+        if (class_exists(\finfo::class)) {
+            try {
+                $finfo = new \finfo(FILEINFO_MIME_TYPE);
+                $realMime = $finfo->file($tmpPath) ?: null;
+            } catch (\Throwable $fe) {
+                $realMime = null;
+            }
+        }
+        if (empty($realMime) && function_exists('mime_content_type')) {
+            $realMime = @mime_content_type($tmpPath) ?: null;
+        }
+        if (empty($realMime)) {
+            $realMime = $file['type'] ?? null;
         }
 
-        $ext = self::ALLOWED_MIMES[$realMime];
+        if (empty($realMime) || !array_key_exists($realMime, self::ALLOWED_MIMES)) {
+            $extGuess = strtolower(pathinfo($origName, PATHINFO_EXTENSION));
+            $extToMime = [
+                'pdf'  => 'application/pdf',
+                'jpg'  => 'image/jpeg',
+                'jpeg' => 'image/jpeg',
+                'png'  => 'image/png',
+                'webp' => 'image/webp',
+                'doc'  => 'application/msword',
+                'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            ];
+            if (isset($extToMime[$extGuess])) {
+                $realMime = $extToMime[$extGuess];
+            } else {
+                throw new Exception("Invalid file type" . ($realMime ? " ({$realMime})" : "") . ". Allowed formats: PDF, JPG, PNG, WEBP, DOC, DOCX.");
+            }
+        }
+
+        $ext = self::ALLOWED_MIMES[$realMime] ?? 'bin';
         $storedName = sprintf('%d_%s_%s.%s', $userId, $docType, bin2hex(random_bytes(10)), $ext);
+        
         $uploadDir = STORAGE_PATH . '/uploads';
+        if (!is_dir($uploadDir)) {
+            @mkdir($uploadDir, 0777, true);
+        }
+        @chmod($uploadDir, 0777);
+
+        // Fallback to public storage if primary is not writable
+        if (!is_writable($uploadDir)) {
+            $altUploadDir = (defined('PUBLIC_PATH') ? PUBLIC_PATH : (ROOT_PATH . '/public')) . '/storage/uploads';
+            if (!is_dir($altUploadDir)) {
+                @mkdir($altUploadDir, 0777, true);
+            }
+            if (is_writable($altUploadDir)) {
+                $uploadDir = $altUploadDir;
+            }
+        }
+
         $destPath = $uploadDir . '/' . $storedName;
 
         // Perform compression if image
         $isImage = str_starts_with($realMime, 'image/');
         if ($isImage) {
             $compressedOk = Compressor::compressImage($tmpPath, $destPath, 1600, self::MAX_BYTES);
-            if (!$compressedOk || filesize($destPath) > self::MAX_BYTES) {
+            if (!$compressedOk || !file_exists($destPath) || filesize($destPath) > self::MAX_BYTES) {
                 if (file_exists($destPath)) @unlink($destPath);
                 throw new Exception("Image exceeds 2 MB even after compression. Please resize your photo.");
             }
@@ -76,7 +123,7 @@ class Uploader {
             if ((int)$file['size'] > self::MAX_BYTES) {
                 if ($realMime === 'application/pdf') {
                     $compressedPdf = self::compressPdfWithGhostscript($tmpPath, $destPath);
-                    if (!$compressedPdf || filesize($destPath) > self::MAX_BYTES) {
+                    if (!$compressedPdf || !file_exists($destPath) || filesize($destPath) > self::MAX_BYTES) {
                         if (file_exists($destPath)) @unlink($destPath);
                         throw new Exception("PDF exceeds the strict 2 MB limit (" . round($file['size'] / 1048576, 2) . " MB). Please compress your PDF before uploading.");
                     }
@@ -84,16 +131,19 @@ class Uploader {
                     throw new Exception("Document exceeds the 2 MB limit. Please compress it and try again.");
                 }
             } else {
-                if (!move_uploaded_file($tmpPath, $destPath)) {
-                    throw new Exception("Failed to store uploaded file. Please check server permissions.");
+                $saved = is_uploaded_file($tmpPath) 
+                    ? @move_uploaded_file($tmpPath, $destPath) 
+                    : @copy($tmpPath, $destPath);
+                if (!$saved) {
+                    throw new Exception("Failed to store uploaded file. Please check server permissions on {$uploadDir}.");
                 }
             }
         }
 
-        $sizeAfter = (int) filesize($destPath);
-        if ($sizeAfter > self::MAX_BYTES) {
-            @unlink($destPath);
-            throw new Exception("File could not be saved because it exceeds the 2 MB storage limit.");
+        $sizeAfter = file_exists($destPath) ? (int) filesize($destPath) : 0;
+        if ($sizeAfter === 0 || $sizeAfter > self::MAX_BYTES) {
+            if (file_exists($destPath)) @unlink($destPath);
+            throw new Exception("File could not be saved properly or exceeds the 2 MB storage limit.");
         }
 
         // Database versioning & persistence

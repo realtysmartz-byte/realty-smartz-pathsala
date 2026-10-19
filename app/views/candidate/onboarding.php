@@ -1656,7 +1656,7 @@ async function handleFileUpload(fileInputOrFile, docType) {
     formData.append('_csrf_token', '<?= csrf_token() ?>');
 
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', '<?= parse_url(url("/dashboard/document/upload"), PHP_URL_PATH) ?>', true);
+    xhr.open('POST', '<?= url("/dashboard/document/upload") ?>', true);
     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
     xhr.upload.onprogress = function(e) {
@@ -1757,8 +1757,15 @@ async function handleFileUpload(fileInputOrFile, docType) {
                 if (progressContainer) progressContainer.style.display = 'none';
             }
         } else {
-            showToast('Upload error (' + xhr.status + ')', 'warning');
-            showAutoSaveStatus('Upload failed (' + xhr.status + ')', 'var(--danger)');
+            let errorMsg = 'Upload error (' + xhr.status + ')';
+            try {
+                const errRes = JSON.parse(xhr.responseText);
+                if (errRes && errRes.error) {
+                    errorMsg = errRes.error;
+                }
+            } catch (e) {}
+            showToast(errorMsg, 'warning');
+            showAutoSaveStatus(errorMsg, 'var(--danger)');
             if (progressContainer) progressContainer.style.display = 'none';
         }
     };

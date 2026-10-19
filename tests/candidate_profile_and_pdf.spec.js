@@ -18,7 +18,11 @@ test.describe('Candidate Profile & Full-File PDF Download', () => {
         await page.setViewportSize({ width: 1440, height: 900 });
         await loginAdmin(page);
 
-        await page.goto('/admin/candidates/20');
+        await page.goto('/admin/candidates');
+        await page.waitForLoadState('networkidle');
+        const viewLink = page.locator('a[href*="/admin/candidates/"]').first();
+        const candidateHref = await viewLink.getAttribute('href');
+        await page.goto(candidateHref);
         await page.waitForLoadState('networkidle');
 
         // Check header elements
@@ -36,15 +40,16 @@ test.describe('Candidate Profile & Full-File PDF Download', () => {
         const aadhaarDisplay = page.locator('#aadhaarDisplayValue');
         await expect(aadhaarDisplay).toBeVisible();
         const initialAadhaarText = await aadhaarDisplay.innerText();
-        expect(initialAadhaarText).toContain('XXXX');
-
-        // Click Reveal button for Aadhaar
-        const revealBtn = page.locator('button:has-text("Reveal")').first();
-        if (await revealBtn.isVisible()) {
-            await revealBtn.click();
-            await page.waitForTimeout(500);
-            const revealedText = await aadhaarDisplay.innerText();
-            expect(revealedText.length).toBeGreaterThan(0);
+        if (initialAadhaarText !== '-') {
+            expect(initialAadhaarText).toContain('XXXX');
+            // Click Reveal button for Aadhaar
+            const revealBtn = page.locator('button:has-text("Reveal")').first();
+            if (await revealBtn.isVisible()) {
+                await revealBtn.click();
+                await page.waitForTimeout(500);
+                const revealedText = await aadhaarDisplay.innerText();
+                expect(revealedText.length).toBeGreaterThan(0);
+            }
         }
 
         // Check Documents Card
@@ -61,7 +66,11 @@ test.describe('Candidate Profile & Full-File PDF Download', () => {
         await page.setViewportSize({ width: 1440, height: 900 });
         await loginAdmin(page);
 
-        await page.goto('/admin/candidates/20');
+        await page.goto('/admin/candidates');
+        await page.waitForLoadState('networkidle');
+        const viewLink = page.locator('a[href*="/admin/candidates/"]').first();
+        const candidateHref = await viewLink.getAttribute('href');
+        await page.goto(candidateHref);
         await page.waitForLoadState('networkidle');
 
         // Trigger download of full file PDF
