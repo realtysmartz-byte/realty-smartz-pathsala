@@ -18,6 +18,16 @@ spl_autoload_register(function ($class) {
             require_once $file;
             return;
         }
+
+        // Case-flexible fallback for Linux cPanel (Controllers/ -> controllers/, Models/ -> models/, etc.)
+        $parts = explode('\\', $relativeClass);
+        $className = array_pop($parts);
+        $loweredPath = implode('/', array_map('strtolower', $parts));
+        $fallbackFile = $baseDir . ($loweredPath !== '' ? $loweredPath . '/' : '') . $className . '.php';
+        if (file_exists($fallbackFile)) {
+            require_once $fallbackFile;
+            return;
+        }
     }
 
     // PHPMailer namespace

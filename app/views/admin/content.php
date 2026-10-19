@@ -72,7 +72,7 @@ $pageTitle = "Site Content & CMS Manager | Admin Portal";
                     </div>
                     <div>
                         <label style="display:block; color:var(--text); font-size:12.5px; font-weight:600; margin-bottom:4px;">Gurgaon Head Office Address</label>
-                        <textarea name="settings[contact_address]" rows="2" style="width:100%; padding:9px 12px; background:var(--surface); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13.5px;"><?= e($settings['contact_address'] ?? 'Golf Course Extension Road, Sector 65, Gurgaon, Haryana, India') ?></textarea>
+                        <textarea name="settings[contact_address]" rows="2" style="width:100%; padding:9px 12px; background:var(--surface); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13.5px;"><?= e($settings['contact_address'] ?? 'Spaze Plazo, Sector 69, Gurugram, Haryana 122018, India') ?></textarea>
                     </div>
                 </div>
             </div>

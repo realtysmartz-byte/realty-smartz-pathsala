@@ -79,7 +79,7 @@
             <div class="col-lg-3 col-md-6">
                 <div class="footer-col-title">Contact</div>
                 <p class="small text-muted mb-2">
-                    Sector 54, Golf Course Road, Gurgaon, Haryana 122011
+                    Spaze Plazo, Sector 69, Gurugram, Haryana 122018
                 </p>
                 <p class="small text-muted mb-2">
                     info@realtysmartzpathshala.in

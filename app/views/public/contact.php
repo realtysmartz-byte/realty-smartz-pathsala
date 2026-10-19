@@ -72,7 +72,7 @@ ob_start();
                     <div class="mb-4 pb-3 border-bottom" style="border-color: var(--line) !important;">
                         <div class="small fw-bold text-dark mb-1">Campus Address</div>
                         <div class="small text-muted">
-                            Golf Course Extension Road, Sector 65, Gurgaon, Haryana 122001, India
+                            Spaze Plazo, Sector 69, Gurugram, Haryana 122018, India
                         </div>
                     </div>
 
@@ -109,7 +109,7 @@ ob_start();
                         loading="lazy"
                         allowfullscreen
                         referrerpolicy="no-referrer-when-downgrade"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14041.564757134375!2d77.0594!3d28.4069!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d228f092787d7%3A0xb5b79e274a2aa2c!2sGolf%20Course%20Ext%20Rd%2C%20Sector%2065%2C%20Gurugram%2C%20Haryana!5e0!3m2!1sen!2sin!4v1700000000000">
+                        src="https://maps.google.com/maps?q=Spaze+Plazo+Sector+69+Gurugram&t=&z=15&ie=UTF8&iwloc=&output=embed">
                     </iframe>
                 </div>
             </div>

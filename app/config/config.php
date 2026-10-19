@@ -50,6 +50,37 @@ if (file_exists($envFile)) {
 }
 
 // ----------------------------------------------------------------
+// Universal Application Autoloader (supports Linux case-sensitivity)
+// ----------------------------------------------------------------
+spl_autoload_register(function ($class) {
+    $prefix = 'App\\';
+    $len = strlen($prefix);
+    if (strncmp($prefix, $class, $len) !== 0) {
+        return;
+    }
+
+    $relativeClass = substr($class, $len);
+    $baseDir = APP_PATH . '/';
+
+    // 1. Direct path check
+    $file = $baseDir . str_replace('\\', '/', $relativeClass) . '.php';
+    if (file_exists($file)) {
+        require_once $file;
+        return;
+    }
+
+    // 2. Linux case-insensitive directory fallback (e.g., Controllers/ -> controllers/)
+    $parts = explode('\\', $relativeClass);
+    $className = array_pop($parts);
+    $loweredDir = implode('/', array_map('strtolower', $parts));
+    $fallback = $baseDir . ($loweredDir !== '' ? $loweredDir . '/' : '') . $className . '.php';
+    if (file_exists($fallback)) {
+        require_once $fallback;
+        return;
+    }
+});
+
+// ----------------------------------------------------------------
 // Helper: config()
 // ----------------------------------------------------------------
 function config(string $key, $default = null) {

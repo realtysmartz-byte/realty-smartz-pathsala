@@ -19,7 +19,7 @@ INSERT INTO `settings` (`setting_key`, `setting_value`, `setting_group`) VALUES
 ('contact_email', 'info@realtysmartzpathshala.in', 'contact'),
 ('hr_email', 'hr@realtysmartzpathshala.in', 'contact'),
 ('contact_phone', '+91 9999 888 777', 'contact'),
-('contact_address', 'Golf Course Road, Sector 54, Gurgaon, Haryana 122011, India', 'contact'),
+('contact_address', 'Spaze Plazo, Sector 69, Gurugram, Haryana 122018, India', 'contact'),
 ('working_hours', 'Mon - Sat: 9:30 AM - 6:30 PM (Sunday Closed)', 'contact'),
 ('instagram_url', 'https://www.instagram.com/realtysmartz/', 'social'),
 ('linkedin_url', 'https://www.linkedin.com/company/realtysmartz/', 'social'),
