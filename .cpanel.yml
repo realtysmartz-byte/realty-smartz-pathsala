@@ -1,41 +1,32 @@
 ---
 # ==============================================================================
 # Realty Smartz Pathshala - cPanel Git Auto-Deployment Specification
-# ==============================================================================
-# Instructions:
-# 1. Replace "YOUR_CPANEL_USERNAME" with your actual cPanel username (e.g., realtysmartz)
-# 2. If deploying to an addon domain or subdomain instead of main public_html,
-#    change PUBLIC_PATH to: /home/$CPANEL_USER/subdomain.domain.com
+# Note: Every task in cPanel runs in a fresh subshell, so absolute paths are required.
 # ==============================================================================
 
 deployment:
   tasks:
-    # Set deployment target directories
-    - export CPANEL_USER=realtys1
-    - export APP_DIR=/home/$CPANEL_USER/pathshala_app
-    - export PUBLIC_DIR=/home/$CPANEL_USER/public_html
+    # 1. Create target directories with absolute paths
+    - /bin/mkdir -p /home/realtys1/pathshala_app
+    - /bin/mkdir -p /home/realtys1/pathshala_app/app
+    - /bin/mkdir -p /home/realtys1/pathshala_app/vendor
+    - /bin/mkdir -p /home/realtys1/pathshala_app/database
+    - /bin/mkdir -p /home/realtys1/pathshala_app/bin
+    - /bin/mkdir -p /home/realtys1/pathshala_app/storage/uploads
+    - /bin/mkdir -p /home/realtys1/pathshala_app/storage/logs
+    - /bin/mkdir -p /home/realtys1/pathshala_app/storage/backups
+    - /bin/mkdir -p /home/realtys1/public_html
 
-    # Ensure application & storage directories exist above public_html
-    - /bin/mkdir -p $APP_DIR
-    - /bin/mkdir -p $APP_DIR/app
-    - /bin/mkdir -p $APP_DIR/vendor
-    - /bin/mkdir -p $APP_DIR/database
-    - /bin/mkdir -p $APP_DIR/bin
-    - /bin/mkdir -p $APP_DIR/storage/uploads
-    - /bin/mkdir -p $APP_DIR/storage/logs
-    - /bin/mkdir -p $APP_DIR/storage/backups
-    - /bin/mkdir -p $PUBLIC_DIR
+    # 2. Force copy application files directly (prevent interactive prompt freeze)
+    - /bin/cp -rf app/* /home/realtys1/pathshala_app/app/
+    - /bin/cp -rf vendor/* /home/realtys1/pathshala_app/vendor/
+    - /bin/cp -rf database/* /home/realtys1/pathshala_app/database/
+    - /bin/cp -rf bin/* /home/realtys1/pathshala_app/bin/
 
-    # Deploy App Code (excluding .env and persistent storage to prevent overwriting)
-    - /bin/cp -R app/* $APP_DIR/app/
-    - /bin/cp -R vendor/* $APP_DIR/vendor/
-    - /bin/cp -R database/* $APP_DIR/database/
-    - /bin/cp -R bin/* $APP_DIR/bin/ 2>/dev/null || :
+    # 3. Force copy public assets and front controller to web root
+    - /bin/cp -rf public/* /home/realtys1/public_html/
+    - /bin/cp -f public/.htaccess /home/realtys1/public_html/.htaccess
 
-    # Deploy Public Assets and Front Controller to Web Root
-    - /bin/cp -R public/* $PUBLIC_DIR/
-    - /bin/cp public/.htaccess $PUBLIC_DIR/.htaccess 2>/dev/null || :
-
-    # Set secure directory permissions
-    - /bin/chmod -R 755 $APP_DIR/storage
-    - /bin/chmod 644 $PUBLIC_DIR/.htaccess 2>/dev/null || :
+    # 4. Permissions
+    - /bin/chmod -R 755 /home/realtys1/pathshala_app/storage
+    - /bin/chmod 644 /home/realtys1/public_html/.htaccess
