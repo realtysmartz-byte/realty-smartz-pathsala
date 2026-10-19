@@ -196,7 +196,7 @@ $panLast4 = $profile['pan_last4'] ?? '5678';
 <div class="p-4 bg-white border mb-4" style="border-radius: var(--r-lg); border-color: var(--line) !important;">
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <h2 class="h5 mb-0">Your details</h2>
-        <a href="<?= url('/onboarding') ?>" class="btn btn-secondary btn-sm">
+        <a href="<?= url('/dashboard/onboarding') ?>" class="btn btn-secondary btn-sm">
             View Onboarding
         </a>
     </div>
@@ -283,7 +283,7 @@ $panLast4 = $profile['pan_last4'] ?? '5678';
                         <?php endif; ?>
                     </div>
                 <?php else: ?>
-                    <a href="<?= url('/onboarding?step=step_c') ?>" class="small fw-bold" style="color: var(--brand); text-decoration: none;">Upload &rarr;</a>
+                    <a href="<?= url('/dashboard/onboarding?step=step_c') ?>" class="small fw-bold" style="color: var(--brand); text-decoration: none;">Upload &rarr;</a>
                 <?php endif; ?>
             </div>
         <?php endforeach; ?>

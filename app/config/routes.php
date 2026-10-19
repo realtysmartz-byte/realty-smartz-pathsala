@@ -138,7 +138,9 @@ Router::get('/dashboard/onboarding', [CandidateController::class, 'onboarding'],
 Router::post('/dashboard/onboarding/save-step', [CandidateController::class, 'saveOnboardingStep'], ['auth', 'csrf']);
 Router::post('/dashboard/onboarding/submit', [CandidateController::class, 'submitOnboarding'], ['auth', 'csrf']);
 
-// Backward compatibility profile routes
+// Backward compatibility & convenience profile routes
+Router::get('/onboarding', [CandidateController::class, 'onboarding'], ['auth']);
+Router::get('/profile', [CandidateController::class, 'onboarding'], ['auth']);
 Router::get('/dashboard/profile', [CandidateController::class, 'onboarding'], ['auth']);
 Router::post('/dashboard/profile/save', [CandidateController::class, 'saveSection'], ['auth', 'csrf']);
 Router::post('/dashboard/document/upload', [CandidateController::class, 'uploadDocument'], ['auth', 'csrf']);

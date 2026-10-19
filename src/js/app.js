@@ -70,9 +70,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 3. Dropdowns, Offcanvas and Tabs auto-initialization
   document.querySelectorAll('[data-bs-toggle="dropdown"]').forEach(el => new Dropdown(el));
-  document.querySelectorAll('[data-bs-toggle="offcanvas"]').forEach(el => new Offcanvas(el));
+  document.querySelectorAll('.offcanvas').forEach(el => new Offcanvas(el));
   document.querySelectorAll('[data-bs-toggle="tab"]').forEach(el => new Tab(el));
-  document.querySelectorAll('[data-bs-toggle="modal"]').forEach(el => new Modal(el));
+  document.querySelectorAll('.modal').forEach(el => new Modal(el));
 
   // 4. Testimonials Slider Controls (Native scroll-by)
   const slider = document.getElementById('testimonialsSlider');

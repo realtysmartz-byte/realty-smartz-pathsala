@@ -118,7 +118,7 @@ $candidateStatus = $currentUser['status'] ?? 'registered';
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item py-2" href="<?= url('/onboarding') ?>" style="font-size: 14px;">
+                        <a class="dropdown-item py-2" href="<?= url('/dashboard/onboarding') ?>" style="font-size: 14px;">
                             Onboarding Form
                         </a>
                     </li>
