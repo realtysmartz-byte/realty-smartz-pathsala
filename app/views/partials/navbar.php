@@ -52,16 +52,16 @@ $currentUser = auth();
         <div class="nav-actions">
             <?php if (!empty($currentUser)): ?>
                 <?php if ($currentUser['role'] === 'candidate'): ?>
-                    <a href="<?= url('/dashboard') ?>" class="btn btn-primary btn-sm">Portal</a>
+                    <a href="<?= url('/dashboard') ?>" class="btn btn-primary btn-sm d-none d-sm-inline-flex">Portal</a>
                 <?php else: ?>
-                    <a href="<?= url('/admin/dashboard') ?>" class="btn btn-primary btn-sm">Admin</a>
+                    <a href="<?= url('/admin/dashboard') ?>" class="btn btn-primary btn-sm d-none d-sm-inline-flex">Admin</a>
                 <?php endif; ?>
-                <a href="<?= url('/logout') ?>" class="btn btn-secondary btn-sm" title="Sign Out">Sign Out</a>
+                <a href="<?= url('/logout') ?>" class="btn btn-secondary btn-sm d-none d-sm-inline-flex" title="Sign Out">Sign Out</a>
             <?php else: ?>
                 <a href="<?= url('/login') ?>" class="nav-login-link d-none d-sm-inline">
                     Log In
                 </a>
-                <a href="<?= url('/register') ?>" class="btn btn-primary btn-sm">
+                <a href="<?= url('/register') ?>" class="btn btn-primary btn-sm d-none d-md-inline-flex">
                     Start Onboarding
                 </a>
             <?php endif; ?>

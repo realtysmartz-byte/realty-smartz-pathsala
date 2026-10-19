@@ -73,9 +73,18 @@ spl_autoload_register(function ($class) {
     $parts = explode('\\', $relativeClass);
     $className = array_pop($parts);
     $loweredDir = implode('/', array_map('strtolower', $parts));
-    $fallback = $baseDir . ($loweredDir !== '' ? $loweredDir . '/' : '') . $className . '.php';
+    $dirPrefix = ($loweredDir !== '' ? $loweredDir . '/' : '');
+
+    $fallback = $baseDir . $dirPrefix . $className . '.php';
     if (file_exists($fallback)) {
         require_once $fallback;
+        return;
+    }
+
+    // 3. Lowercase filename fallback (e.g. database.php)
+    $lowerFile = $baseDir . $dirPrefix . strtolower($className) . '.php';
+    if (file_exists($lowerFile)) {
+        require_once $lowerFile;
         return;
     }
 });

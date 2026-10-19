@@ -724,6 +724,47 @@ p.lead {
   background: var(--bg);
 } /* same surface as the page, no seam */
 
+.hero-image-wrap {
+  .hero-img {
+    max-height: 440px;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 12px 28px rgba(38, 51, 45, 0.08));
+  }
+}
+
+.hero-cta-group {
+  .btn {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding-top: calc(var(--nav-h) + 20px);
+  }
+  .hero-image-wrap {
+    margin-top: 1.5rem;
+    .hero-img {
+      max-height: 280px;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-cta-group {
+    flex-direction: column;
+    width: 100%;
+    .btn {
+      width: 100%;
+      text-align: center;
+      justify-content: center;
+      white-space: normal;
+    }
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .site-nav {
     transition: none;

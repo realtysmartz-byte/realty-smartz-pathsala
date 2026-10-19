@@ -16,7 +16,7 @@ ob_start();
                 <p class="lead mb-4">
                     Empowering businesses with skilled professionals — we build high-performing sales teams that drive smarter strategies and stronger results.
                 </p>
-                <div class="d-flex flex-wrap gap-3">
+                <div class="d-flex flex-wrap gap-3 hero-cta-group">
                     <a href="<?= url('/register') ?>" class="btn btn-primary btn-lg">
                         Start Candidate Onboarding
                     </a>
@@ -29,7 +29,7 @@ ob_start();
             <!-- Right Column: Organic Hero Graphic with Transparent Background (No Border) -->
             <div class="col-lg-6 d-flex align-items-center justify-content-center">
                 <div class="hero-image-wrap text-center w-100">
-                    <img src="<?= asset('/assets/img/gallery/about3.png') ?>" alt="Realty Smartz Pathshala Training Session" class="img-fluid" style="max-height: 440px; width: auto; object-fit: contain; filter: drop-shadow(0 12px 28px rgba(38, 51, 45, 0.08));" width="600" height="450" loading="eager" fetchpriority="high">
+                    <img src="<?= asset('/assets/img/gallery/about3.png') ?>" alt="Realty Smartz Pathshala Training Session" class="img-fluid hero-img" width="600" height="450" loading="eager" fetchpriority="high">
                 </div>
             </div>
         </div>
