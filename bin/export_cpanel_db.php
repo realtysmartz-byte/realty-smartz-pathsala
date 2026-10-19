@@ -2,8 +2,8 @@
 /**
  * Export complete clean database dump for cPanel phpMyAdmin import
  */
-require __DIR__ . '/../app/config/config.php';
-require __DIR__ . '/../app/config/Database.php';
+require_once __DIR__ . '/../app/config/config.php';
+require_once __DIR__ . '/../app/config/Database.php';
 
 $pdo = App\Config\Database::getConnection();
 $tables = $pdo->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN);

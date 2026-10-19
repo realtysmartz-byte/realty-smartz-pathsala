@@ -83,18 +83,20 @@ spl_autoload_register(function ($class) {
 // ----------------------------------------------------------------
 // Helper: config()
 // ----------------------------------------------------------------
-function config(string $key, $default = null) {
-    if (array_key_exists($key, $_ENV)) {
-        return $_ENV[$key];
+if (!function_exists('config')) {
+    function config(string $key, $default = null) {
+        if (array_key_exists($key, $_ENV)) {
+            return $_ENV[$key];
+        }
+        $val = getenv($key);
+        if ($val !== false) {
+            return $val;
+        }
+        if (array_key_exists($key, $_SERVER)) {
+            return $_SERVER[$key];
+        }
+        return $default;
     }
-    $val = getenv($key);
-    if ($val !== false) {
-        return $val;
-    }
-    if (array_key_exists($key, $_SERVER)) {
-        return $_SERVER[$key];
-    }
-    return $default;
 }
 
 // Error handling settings
