@@ -1,0 +1,78 @@
+/* ================================================================
+   Realty Smartz Pathshala - Design Tokens (tokens.css)
+   DEEP FOREST GREEN PALETTE (Single source of truth)
+   ================================================================ */
+
+:root {
+  /* 1. Core Color Palette */
+  --bg:          #F7F5EF; /* warm ivory page background */
+  --surface:     #FFFFFF; /* pure crisp white surface */
+  --surface-2:   #EFEBE0; /* alternate sections, table headers */
+  --line:        #E2DDD0; /* refined warm divider */
+  --text:        #26332D; /* deep green-grey, not black */
+  --muted:       #6D766F; /* muted text */
+  --brand:       #1F5C4A; /* primary buttons, links, active states; white text passes 4.5:1 */
+  --brand-hover: #174839; /* darkened deep forest green */
+  --brand-soft:  #E2EEE8; /* selected rows, active nav item, chips */
+  --gold:        #C9A24A; /* logo gold: thin accents only, small rules, progress fill, never text on white */
+  --success:     #2E7D5B; /* calm emerald/forest success */
+  --warning:     #C77700; /* amber warning */
+  --danger:      #C0392B; /* rich crimson/terracotta danger */
+
+  /* Aliases for Bootstrap & Theme compatibility */
+  --primary:      var(--brand);
+  --primary-hover:var(--brand-hover);
+  --primary-soft: var(--brand-soft);
+  --border:       var(--line);
+  --accent:       var(--gold);
+
+  /* 2. Typography Token (DM Sans variable ONLY) */
+  --font-family: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-sans:   "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* 3. Border Radius System Tokens (Strict token set ONLY) */
+  --r-sm:   8px;   /* checkboxes, small chips, table cell tags */
+  --r-md:   12px;  /* buttons, inputs, selects, dropdowns, toasts */
+  --r-lg:   20px;  /* cards, panels, modals, offcanvas top corners, image frames */
+  --r-full: 999px; /* navbar pill, status pills, avatars, icon buttons */
+
+  /* Backwards compatibility aliases */
+  --radius-sm:          var(--r-sm);
+  --radius-md:          var(--r-md);
+  --radius-card:        var(--r-lg);
+  --border-radius:      var(--r-md);
+  --border-radius-sm:   var(--r-sm);
+  --border-radius-md:   var(--r-md);
+  --border-radius-lg:   var(--r-lg);
+  --border-radius-pill: var(--r-full);
+
+  /* 4. Navbar Tokens */
+  --nav-h: 72px;
+  --ease: cubic-bezier(.2,.7,.2,1);
+}
+
+/* ================================================================
+   ALTERNATIVE PALETTES (To switch brand, uncomment one block below)
+   ================================================================
+
+   --- Option A: Terracotta ---
+   :root {
+     --brand:       #A4472B;
+     --brand-hover: #8B3B23;
+     --brand-soft:  #FAECE8;
+   }
+
+   --- Option B: Deep Maroon ---
+   :root {
+     --brand:       #7B2D3B;
+     --brand-hover: #63232E;
+     --brand-soft:  #F6E9EB;
+   }
+
+   --- Option C: Teal ---
+   :root {
+     --brand:       #17605F;
+     --brand-hover: #114A49;
+     --brand-soft:  #E0EFEF;
+   }
+   ================================================================ */

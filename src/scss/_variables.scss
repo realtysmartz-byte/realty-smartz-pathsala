@@ -1,0 +1,228 @@
+// ================================================================
+// Realty Smartz Pathshala - Master Sass Theme & Bootstrap Overrides
+// Deep Forest Green Palette, DM Sans Only, Strict Radius Tokens
+// ZERO Blue. ZERO Black (#000). ZERO Gradients.
+// ================================================================
+
+// 1. Brand Palette Tokens
+$theme-bg:          #F7F5EF; // warm ivory page background
+$theme-surface:     #FFFFFF; // pure crisp white surface
+$theme-surface-2:   #EFEBE0; // soft ivory-sand, for alternate sections, table headers
+$theme-line:        #E2DDD0; // refined warm divider
+$theme-text:        #26332D; // deep green-grey (not black)
+$theme-muted:       #6D766F; // muted slate green-grey text
+$theme-brand:       #1F5C4A; // deep forest green (white text passes 4.5:1)
+$theme-brand-hover: #174839; // darkened forest green
+$theme-brand-soft:  #E2EEE8; // selected rows, chips, active nav background
+$theme-gold:        #C9A24A; // logo gold: thin accents only, small rules, progress fill
+$theme-success:     #2E7D5B; // calm emerald/forest success
+$theme-warning:     #C77700; // warm amber warning
+$theme-danger:      #C0392B; // rich crimson danger
+
+// 2. Strict Border Radius Tokens: ONLY 8px, 12px, 20px, 999px
+$r-sm:   8px;   // checkboxes, small chips, table cell tags
+$r-md:   12px;  // buttons, inputs, selects, dropdowns, toasts
+$r-lg:   20px;  // cards, panels, modals, offcanvas top corners, image frames
+$r-full: 999px; // navbar pill, status pills, avatars, icon buttons
+
+// 3. Override Bootstrap Base Colors so NO blue or black exists
+$blue:    $theme-brand;
+$indigo:  $theme-brand;
+$purple:  $theme-brand;
+$cyan:    $theme-brand;
+
+$colors: (
+  "blue":       $theme-brand,
+  "indigo":     $theme-brand,
+  "purple":     $theme-brand,
+  "pink":       $theme-brand,
+  "red":        $theme-danger,
+  "orange":     $theme-warning,
+  "yellow":     $theme-gold,
+  "green":      $theme-success,
+  "teal":       $theme-success,
+  "cyan":       $theme-brand,
+  "black":      $theme-text,
+  "white":      $theme-surface,
+  "gray":       $theme-muted,
+  "gray-dark":  $theme-text
+);
+
+// 4. Bootstrap Theme Color System Override
+$primary:       $theme-brand;
+$secondary:     $theme-muted;
+$success:       $theme-success;
+$warning:       $theme-warning;
+$danger:        $theme-danger;
+$info:          $theme-brand;
+$light:         $theme-surface-2;
+$dark:          $theme-text;
+
+$body-bg:       $theme-bg;
+$body-color:    $theme-text;
+$border-color:  $theme-line;
+
+$link-color:              $theme-brand;
+$link-hover-color:        $theme-brand-hover;
+$link-decoration:         none;
+$link-hover-decoration:   underline;
+
+// 5. Typography Override: DM SANS ONLY (No serif font anywhere)
+$font-family-sans-serif: 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+$font-family-serif:      $font-family-sans-serif;
+$font-family-monospace:  SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+$font-family-base:       $font-family-sans-serif;
+$font-size-base:         1rem; // 16px
+$line-height-base:       1.6;
+
+$font-weight-lighter:    300;
+$font-weight-light:      300;
+$font-weight-normal:     400;
+$font-weight-medium:     500;
+$font-weight-semibold:   600;
+$font-weight-bold:       600;
+$headings-font-family:   $font-family-sans-serif;
+$headings-font-weight:   400;
+$headings-color:         $theme-text;
+$headings-margin-bottom: 1rem;
+
+// 6. Spacing Scale: 4 / 8 / 16 / 24 / 32 / 48 / 72 / 96
+$spacers: (
+  0: 0,
+  1: 0.25rem,  // 4px
+  2: 0.5rem,   // 8px
+  3: 1rem,     // 16px
+  4: 1.5rem,   // 24px
+  5: 2rem,     // 32px
+  6: 3rem,     // 48px
+  7: 4.5rem,   // 72px
+  8: 6rem      // 96px
+);
+
+// 7. Border Radius Assignments (Strict Token Mapping: 8px / 12px / 20px / 999px)
+$border-radius-sm:     8px;   // --r-sm
+$border-radius:        12px;  // --r-md
+$border-radius-md:     12px;  // --r-md
+$border-radius-lg:     20px;  // --r-lg
+$border-radius-xl:     20px;  // --r-lg
+$border-radius-xxl:    20px;  // --r-lg
+$border-radius-2xl:    20px;  // --r-lg
+$border-radius-pill:   999px; // --r-full
+
+// 8. Buttons: 12px radius (--r-md), 44px min height, weight 500
+$btn-border-radius:    12px;
+$btn-border-radius-sm: 8px;
+$btn-border-radius-lg: 12px;
+$btn-padding-y:        0.625rem;
+$btn-padding-x:        1.5rem;
+$btn-padding-y-sm:     0.45rem;
+$btn-padding-x-sm:     1rem;
+$btn-padding-y-lg:     0.875rem;
+$btn-padding-x-lg:     2rem;
+$btn-font-size:        1rem;
+$btn-font-weight:      500;
+$btn-focus-box-shadow: 0 0 0 3px #E2EEE8;
+
+// 9. Form Controls: 44px height, 12px radius (--r-md), 1px --line border, white
+$input-bg:                  $theme-surface;
+$input-color:               $theme-text;
+$input-border-color:        $theme-line;
+$input-border-radius:       12px;
+$input-border-radius-sm:    8px;
+$input-border-radius-lg:    12px;
+$input-padding-y:           0.625rem;
+$input-padding-x:           1rem;
+$input-font-size:           1rem;    // 16px
+$input-font-weight:         400;
+$input-line-height:         1.5;
+$input-placeholder-color:   $theme-muted;
+$input-focus-border-color:  $theme-brand;
+$input-focus-box-shadow:    0 0 0 3px #E2EEE8;
+
+// Form Checks & Radios (--r-sm for checkbox: 8px)
+$form-check-input-border-radius:        8px;
+$form-check-input-width:                1.25em;
+$form-check-input-border:               1px solid $theme-line;
+$form-check-input-checked-bg-color:     $theme-brand;
+$form-check-input-checked-border-color: $theme-brand;
+$form-check-input-focus-box-shadow:     0 0 0 3px #E2EEE8;
+
+// 10. Cards: 20px radius (--r-lg), border 1px --line, white background
+$card-border-radius:        20px;
+$card-inner-border-radius:  12px;
+$card-border-color:         $theme-line;
+$card-bg:                   $theme-surface;
+$card-box-shadow:           none;
+
+// 11. Tables: 52px rows, header in surface-2, border in line
+$table-cell-padding-y:      0.875rem;
+$table-cell-padding-x:      1rem;
+$table-border-color:        $theme-line;
+$table-bg:                  $theme-surface;
+$table-striped-bg:          $theme-surface-2;
+$table-active-bg:           $theme-brand-soft;
+$table-color:               $theme-text;
+
+// 12. Badges: 8px radius (--r-sm)
+$badge-font-size:           0.8125rem; // 13px
+$badge-font-weight:         500;
+$badge-padding-y:           0.35rem;
+$badge-padding-x:           0.65rem;
+$badge-border-radius:       8px;
+
+// 13. Dropdowns: 12px radius (--r-md)
+$dropdown-bg:               $theme-surface;
+$dropdown-border-color:     $theme-line;
+$dropdown-border-radius:    12px;
+$dropdown-box-shadow:       0 8px 24px rgba(38, 51, 45, 0.08);
+$dropdown-link-color:       $theme-text;
+$dropdown-link-hover-color: $theme-brand;
+$dropdown-link-hover-bg:    $theme-brand-soft;
+$dropdown-link-active-color:$theme-brand;
+$dropdown-link-active-bg:   $theme-brand-soft;
+
+// 14. Navs & Tabs
+$nav-link-color:            $theme-muted;
+$nav-link-hover-color:      $theme-text;
+$nav-tabs-border-color:     $theme-line;
+$nav-tabs-link-active-color:$theme-brand;
+$nav-tabs-link-active-bg:   $theme-surface;
+$nav-tabs-link-active-border-color: $theme-line $theme-line $theme-surface;
+$nav-tabs-border-radius:    12px;
+$nav-pills-link-active-color: $theme-brand;
+$nav-pills-link-active-bg:  $theme-brand-soft;
+$nav-pills-border-radius:   8px;
+
+// 15. Progress bars: 999px radius (--r-full)
+$progress-bg:               $theme-line;
+$progress-bar-bg:           $theme-gold;
+$progress-border-radius:    999px;
+
+// 16. Modals & Offcanvas: 20px radius (--r-lg)
+$modal-content-bg:                  $theme-surface;
+$modal-content-border-color:        $theme-line;
+$modal-content-border-radius:       20px;
+$modal-content-inner-border-radius: 12px;
+$modal-backdrop-bg:                 $theme-text;
+$modal-backdrop-opacity:            0.35;
+$offcanvas-bg-color:                $theme-surface;
+$offcanvas-border-color:            $theme-line;
+
+// 17. Alerts & Toasts: 12px radius (--r-md)
+$alert-border-radius:       12px;
+$toast-border-radius:       12px;
+
+// 18. Pagination: 12px radius (--r-md)
+$pagination-border-radius:    12px;
+$pagination-border-radius-sm: 8px;
+$pagination-border-radius-lg: 12px;
+$pagination-color:            $theme-text;
+$pagination-bg:               $theme-surface;
+$pagination-border-color:     $theme-line;
+$pagination-focus-box-shadow: 0 0 0 3px #E2EEE8;
+$pagination-hover-color:      $theme-brand;
+$pagination-hover-bg:         $theme-brand-soft;
+$pagination-hover-border-color: $theme-line;
+$pagination-active-color:     #FFFFFF;
+$pagination-active-bg:        $theme-brand;
+$pagination-active-border-color: $theme-brand;

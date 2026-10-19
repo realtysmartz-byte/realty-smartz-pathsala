@@ -1,0 +1,24 @@
+# ================================================================
+# Realty Smartz Pathshala - Root Directory Security & Forwarder
+# Supports both:
+# 1) Direct deployment into public_html (rewrites to /public/)
+# 2) Blocks direct access to sensitive core directories and .env
+# ================================================================
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Prevent direct web access to sensitive directories and config files
+    RewriteRule ^(\.git|\.env|\.htaccess|composer\.(json|lock)) - [F,L]
+    RewriteRule ^(app|storage|database|vendor|bin|tests|scratch) - [F,L]
+
+    # If already targeting public, don't loop
+    RewriteCond %{REQUEST_URI} ^/public/ [NC]
+    RewriteRule ^ - [L]
+
+    # Forward all other requests to the public/ folder
+    RewriteRule ^(.*)$ public/$1 [L,QSA]
+</IfModule>
+
+# Disable Directory Listing
+Options -Indexes

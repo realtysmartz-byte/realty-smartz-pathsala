@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /candidate/
+Disallow: /test/
+Disallow: /storage/
+Disallow: /api/
+
+Sitemap: https://realtysmartzpathshala.in/sitemap.xml

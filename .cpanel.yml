@@ -1,0 +1,41 @@
+---
+# ==============================================================================
+# Realty Smartz Pathshala - cPanel Git Auto-Deployment Specification
+# ==============================================================================
+# Instructions:
+# 1. Replace "YOUR_CPANEL_USERNAME" with your actual cPanel username (e.g., realtysmartz)
+# 2. If deploying to an addon domain or subdomain instead of main public_html,
+#    change PUBLIC_PATH to: /home/$CPANEL_USER/subdomain.domain.com
+# ==============================================================================
+
+deployment:
+  tasks:
+    # Set deployment target directories
+    - export CPANEL_USER=realtys1
+    - export APP_DIR=/home/$CPANEL_USER/pathshala_app
+    - export PUBLIC_DIR=/home/$CPANEL_USER/public_html
+
+    # Ensure application & storage directories exist above public_html
+    - /bin/mkdir -p $APP_DIR
+    - /bin/mkdir -p $APP_DIR/app
+    - /bin/mkdir -p $APP_DIR/vendor
+    - /bin/mkdir -p $APP_DIR/database
+    - /bin/mkdir -p $APP_DIR/bin
+    - /bin/mkdir -p $APP_DIR/storage/uploads
+    - /bin/mkdir -p $APP_DIR/storage/logs
+    - /bin/mkdir -p $APP_DIR/storage/backups
+    - /bin/mkdir -p $PUBLIC_DIR
+
+    # Deploy App Code (excluding .env and persistent storage to prevent overwriting)
+    - /bin/cp -R app/* $APP_DIR/app/
+    - /bin/cp -R vendor/* $APP_DIR/vendor/
+    - /bin/cp -R database/* $APP_DIR/database/
+    - /bin/cp -R bin/* $APP_DIR/bin/ 2>/dev/null || :
+
+    # Deploy Public Assets and Front Controller to Web Root
+    - /bin/cp -R public/* $PUBLIC_DIR/
+    - /bin/cp public/.htaccess $PUBLIC_DIR/.htaccess 2>/dev/null || :
+
+    # Set secure directory permissions
+    - /bin/chmod -R 755 $APP_DIR/storage
+    - /bin/chmod 644 $PUBLIC_DIR/.htaccess 2>/dev/null || :

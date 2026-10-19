@@ -1,0 +1,35 @@
+# Environment Configuration (NEVER commit secrets to Git)
+.env
+.env.backup
+.env.local
+
+# Storage runtime data (preserve directory structure via .gitkeep)
+/storage/uploads/*
+!/storage/uploads/.gitkeep
+/storage/logs/*
+!/storage/logs/.gitkeep
+/storage/backups/*
+!/storage/backups/.gitkeep
+/storage/cache/*
+!/storage/cache/.gitkeep
+/storage/scratch/*
+!/storage/scratch/.gitkeep
+*.log
+
+# Dependencies
+node_modules/
+
+# Testing & Scratch Files
+test-results/
+tests/verification_screenshots/
+scratch/
+scratch_*
+bin/cookies.txt
+
+# System & IDE Files
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.tmp
