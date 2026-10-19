@@ -28,8 +28,8 @@ Then run:
 # Set primary branch to main
 git branch -M main
 
-# Add your GitHub remote repository (replace with your actual GitHub repo URL)
-git remote add origin https://github.com/YOUR_GITHUB_USERNAME/realty-smartz-pathsala.git
+# Add your GitHub remote repository (replace repository name if different)
+git remote add origin https://github.com/realtysmartz-byte/realty-smartz-pathsala.git
 
 # Push your code to GitHub
 git push -u origin main
