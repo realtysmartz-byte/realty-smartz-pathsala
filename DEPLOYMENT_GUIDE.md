@@ -47,7 +47,7 @@ You can choose either **Option A (Automated via Git Version Control - Recommende
 
 This project includes a ready-to-use `.cpanel.yml` file that automates separating core app files (`pathshala_app/`) from publicly accessible web assets (`public_html/`).
 
-1. **Log in to cPanel** (e.g. `https://realtysmartzpathshala.in:2083`).
+1. **Log in to cPanel** (e.g. `https://43.242.226.197:2083` or `https://realtysmartzpathshala.in:2083`).
 2. Navigate to **Files** &rarr; **Git™ Version Control**.
 3. Click **Create**:
    - **Clone a Repository**: Toggle to ON.
@@ -97,7 +97,8 @@ In cPanel **File Manager**:
 APP_NAME="Realty Smartz Pathshala"
 APP_ENV=production
 APP_DEBUG=false
-APP_URL=https://realtysmartzpathshala.in
+# Use your server IP or domain:
+APP_URL=http://43.242.226.197
 APP_KEY=c2VjdXJlX2FlczI1Nl9rZXlfcmVhbHR5c21hcnR6cGF0aHNoYWxhMjAyNg==
 
 # Database Credentials (Localhost inside cPanel)
@@ -118,23 +119,25 @@ MAIL_ENCRYPTION=ssl
 MAIL_FROM_ADDRESS=info@realtysmartzpathshala.in
 MAIL_FROM_NAME="Realty Smartz Pathshala"
 
-# Security & Sessions
+# Security & Sessions (set to false to allow login on both HTTP IP and HTTPS domain)
 SESSION_LIFETIME=120
-SESSION_SECURE_COOKIE=true
+SESSION_SECURE_COOKIE=false
 ```
 
-> **Important Note on `DB_HOST`:**
-> When running *on* the live cPanel server, always set `DB_HOST=localhost`.
+> **Important Notes:**
+> - When running *on* the live cPanel server, always set `DB_HOST=localhost`.
+> - If accessing via IP `http://43.242.226.197`, keep `SESSION_SECURE_COOKIE=false` so the browser does not reject HTTP session cookies. When you install an SSL certificate on your domain, you can set it to `true`.
+> - The application's `url()` helper dynamically detects whether you are accessing via `http://43.242.226.197` or `https://realtysmartzpathshala.in` and serves all assets and links matching your active address automatically.
 
 ---
 
 ## Part 5: Verify Live Website
 
-1. **Public Site**: Open `https://realtysmartzpathshala.in`
+1. **Public Site**: Open `http://43.242.226.197` (or `https://realtysmartzpathshala.in`)
    - Test navigation (Home, About, Projects, Blog, Contact).
    - Verify borderless images and authentic social media brand icons in the footer.
-2. **Candidate Onboarding**: Open `https://realtysmartzpathshala.in/register`
+2. **Candidate Onboarding**: Open `http://43.242.226.197/register`
    - Test candidate registration, email OTP, and document submission.
-3. **Admin Portal**: Open `https://realtysmartzpathshala.in/admin/login`
-   - Log in with your Super Admin credentials.
+3. **Admin Portal**: Open `http://43.242.226.197/admin/login`
+   - Log in with your Super Admin credentials (`admin@realtysmartzpathshala.in` / `Admin@2026`).
    - Verify candidates directory, joining date editing, deletion, and assessment reports.

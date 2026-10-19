@@ -214,17 +214,21 @@ function url(string $path = ''): string {
                (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https') ||
                (!empty($_SERVER['SERVER_PORT']) && (int)$_SERVER['SERVER_PORT'] === 443);
     $currentScheme = $isHttps ? 'https' : 'http';
-    $currentHost = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $currentHost = $_SERVER['HTTP_HOST'] ?? '';
 
-    if ($envUrl !== '' && !str_starts_with($envUrl, 'http://localhost') && !empty($_SERVER['HTTP_HOST'])) {
-        $base = rtrim($envUrl, '/');
-    } else {
+    // If accessed through web request (browser), dynamically adapt to the active host
+    // (e.g. 43.242.226.197, realtysmartzpathshala.in, or localhost)
+    if (!empty($currentHost)) {
         $base = "{$currentScheme}://{$currentHost}";
         $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
         $scriptDir = str_replace('\\', '/', dirname($scriptName));
         if ($scriptDir !== '/' && $scriptDir !== '.' && $scriptDir !== '') {
             $base .= rtrim($scriptDir, '/');
         }
+    } elseif ($envUrl !== '') {
+        $base = rtrim($envUrl, '/');
+    } else {
+        $base = 'http://localhost';
     }
 
     $cleanPath = '/' . ltrim($path, '/');
