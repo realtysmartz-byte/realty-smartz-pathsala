@@ -1464,9 +1464,160 @@ class AdminController {
         redirect('/admin/dashboard');
     }
 
+    /**
+     * Aptitude Test Candidates Directory (/admin/aptitude-candidates)
+     */
+    public function aptitudeCandidates(): void {
+        $db = Database::getConnection();
+
+        $search = trim($_GET['q'] ?? '');
+        $testStatus = $_GET['test_status'] ?? '';
+        $dateRange = $_GET['date_range'] ?? '';
+        $page = max(1, (int)($_GET['page'] ?? 1));
+        $perPage = 15;
+        $offset = ($page - 1) * $perPage;
+
+        $where = ["u.role = 'candidate'", "u.is_archived = 0", "u.candidate_type = 'aptitude_only'"];
+        $params = [];
+
+        if (!empty($search)) {
+            $where[] = "(u.full_name LIKE :search OR u.email LIKE :search OR u.mobile LIKE :search)";
+            $params[':search'] = '%' . $search . '%';
+        }
+
+        if (!empty($dateRange)) {
+            if ($dateRange === 'today') {
+                $where[] = "DATE(u.created_at) = CURDATE()";
+            } elseif ($dateRange === '7days') {
+                $where[] = "u.created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
+            } elseif ($dateRange === '30days') {
+                $where[] = "u.created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)";
+            }
+        }
+
+        if ($testStatus === 'taken') {
+            $where[] = "ta.score IS NOT NULL";
+        } elseif ($testStatus === 'not_taken') {
+            $where[] = "ta.score IS NULL";
+        }
+
+        $whereClause = implode(' AND ', $where);
+
+        $countSql = "SELECT COUNT(DISTINCT u.id) 
+                     FROM `users` u 
+                     LEFT JOIN (
+                         SELECT ta1.user_id, ta1.score
+                         FROM test_attempts ta1
+                         INNER JOIN (SELECT user_id, MAX(id) as max_id FROM test_attempts WHERE status = 'completed' GROUP BY user_id) ta2 ON ta1.id = ta2.max_id
+                     ) ta ON u.id = ta.user_id
+                     WHERE {$whereClause}";
+        $countStmt = $db->prepare($countSql);
+        $countStmt->execute($params);
+        $totalCandidates = (int) $countStmt->fetchColumn();
+        $totalPages = max(1, (int)ceil($totalCandidates / $perPage));
+
+        $sql = "SELECT u.id, u.full_name, u.email, u.mobile, u.whatsapp, u.created_at, u.candidate_type, u.source,
+                ta.id as attempt_id, ta.score as test_score, ta.total_questions as test_total, ta.percentage as test_percentage,
+                ta.passed as test_passed, ta.set_name
+                FROM `users` u
+                LEFT JOIN (
+                    SELECT ta1.id, ta1.user_id, ta1.score, ta1.total_questions, ta1.percentage, ta1.passed,
+                           COALESCE(s.set_code, s.name, 'Set A') as set_name
+                    FROM test_attempts ta1
+                    LEFT JOIN aptitude_sets s ON ta1.set_id = s.id
+                    INNER JOIN (SELECT user_id, MAX(id) as max_id FROM test_attempts WHERE status = 'completed' GROUP BY user_id) ta2 ON ta1.id = ta2.max_id
+                ) ta ON u.id = ta.user_id
+                WHERE {$whereClause}
+                ORDER BY u.created_at DESC
+                LIMIT :limit OFFSET :offset";
+
+        $stmt = $db->prepare($sql);
+        foreach ($params as $k => $v) {
+            $stmt->bindValue($k, $v);
+        }
+        $stmt->bindValue(':limit', $perPage, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        $candidates = $stmt->fetchAll();
+
+        // Stat metrics
+        $statTotal = (int) $db->query("SELECT COUNT(*) FROM `users` WHERE `role` = 'candidate' AND `candidate_type` = 'aptitude_only' AND `is_archived` = 0")->fetchColumn();
+        $statTaken = (int) $db->query("SELECT COUNT(DISTINCT u.id) FROM `users` u JOIN `test_attempts` ta ON u.id = ta.user_id WHERE u.role = 'candidate' AND u.candidate_type = 'aptitude_only' AND ta.status = 'completed' AND u.is_archived = 0")->fetchColumn();
+
+        $viewTitle = "Aptitude Candidates";
+        $pageTitle = "Aptitude Test Candidates | Realty Smartz Pathshala";
+
+        require APP_PATH . '/views/admin/aptitude_candidates.php';
+    }
+
+    /**
+     * Convert Aptitude Candidate to Full Onboarding (POST /admin/aptitude-candidates/{id}/convert)
+     */
+    public function initiateOnboarding(int $id): void {
+        $db = Database::getConnection();
+        $stmt = $db->prepare("UPDATE `users` SET `candidate_type` = 'onboarding', `updated_at` = NOW() WHERE `id` = :id");
+        $stmt->execute([':id' => $id]);
+
+        AuditLog::log('converted_to_onboarding', 'users', $id, null, [
+            'admin_id' => auth()['id'],
+            'converted_at' => date('Y-m-d H:i:s')
+        ], auth()['id']);
+
+        // Sync with Google Sheets
+        try {
+            \App\Helpers\GoogleSheetsService::syncCandidate($id);
+        } catch (\Throwable $e) {
+            error_log("Google Sheets sync failed on convert: " . $e->getMessage());
+        }
+
+        flash('success', 'Candidate successfully upgraded to full onboarding profile!');
+        redirect('/admin/candidates/' . $id);
+    }
+
+    /**
+     * QR Code Management Section (/admin/qr-codes)
+     */
+    public function qrCodes(): void {
+        $onboardingUrl = \App\Helpers\QrCodeHelper::getOnboardingUrl();
+        $aptitudeUrl = \App\Helpers\QrCodeHelper::getAptitudeUrl();
+
+        $onboardingSvg = \App\Helpers\QrCodeHelper::getSvg($onboardingUrl, 6, 6, '#1F5C4A');
+        $aptitudeSvg = \App\Helpers\QrCodeHelper::getSvg($aptitudeUrl, 6, 6, '#1F5C4A');
+
+        $viewTitle = "QR Codes";
+        $pageTitle = "QR Code Management | Realty Smartz Pathshala";
+
+        require APP_PATH . '/views/admin/qr_codes.php';
+    }
+
+    /**
+     * Download QR Code as PNG (/admin/qr-codes/download/{type})
+     */
+    public function downloadQrCode(string $type): void {
+        $targetUrl = ($type === 'aptitude') 
+            ? \App\Helpers\QrCodeHelper::getAptitudeUrl() 
+            : \App\Helpers\QrCodeHelper::getOnboardingUrl();
+
+        $filename = ($type === 'aptitude') ? 'Realty_Smartz_Aptitude_QR.png' : 'Realty_Smartz_Onboarding_QR.png';
+
+        $pngData = \App\Helpers\QrCodeHelper::getPng($targetUrl, 10, 10, '#1F5C4A');
+
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+
+        header('Content-Type: image/png');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Content-Length: ' . strlen($pngData));
+        header('Cache-Control: public, max-age=86400');
+        echo $pngData;
+        exit;
+    }
+
     private function isAjax(): bool {
         return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') ||
                (!empty($_SERVER['CONTENT_TYPE']) && str_contains($_SERVER['CONTENT_TYPE'], 'application/json')) ||
                (isset($_POST['is_ajax']) && $_POST['is_ajax'] === '1');
     }
 }
+

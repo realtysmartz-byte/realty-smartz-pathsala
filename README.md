@@ -22,6 +22,10 @@ Runs natively on **standard cPanel / shared PHP hosting** with **zero Composer o
 9. [Security & Data Protection Blueprint](#9-security--data-protection-blueprint)
 10. [Email Deliverability & Anti-Spam Configuration](#10-email-deliverability--anti-spam-configuration)
 11. [Administrative Account CLI Management (reset-admin.php)](#11-administrative-account-cli-management-reset-adminphp)
+12. [Aptitude Test & Guest Links Module](#12-aptitude-test--guest-links-module)
+13. [QR Codes Management & Walk-In Registration](#13-qr-codes-management--walk-in-registration)
+14. [Google Sheets Live Sync Integration](#14-google-sheets-live-sync-integration)
+15. [Automated Playwright Test Suite](#15-automated-playwright-test-suite)
 
 ---
 
@@ -382,6 +386,80 @@ php bin/reset-admin.php admin@realtysmartzpathshala.in "YourStrongPassword123"
    - `is_archived = 0`
 3. Clears all rate-limiting lockout records from the `login_attempts` table for that administrative email.
 4. Records the administrative intervention to `/storage/logs/auth.log`.
+
+---
+
+## 12. Aptitude Test & Guest Links Module
+
+The application provides a resilient, proctored aptitude testing engine that operates under two workflows:
+1. **Registered Candidates**: Take the test as part of their candidate onboarding progression.
+2. **Guest Test Candidates (`/test/g/{token}`)**:
+   - HR administrators generate tokenized, time-limited assessment links from **Assessments > Guest Links** or directly from any candidate profile.
+   - Links can be assigned to an existing candidate or created as open links.
+   - Open guest links prompt the candidate for Full Name, Mobile, and Email prior to test entry.
+   - Features:
+     - 10-minute server-enforced countdown timer.
+     - Autosave on every question selection.
+     - Mid-test refresh support (resumes seamlessly on the same link without losing answers or time).
+     - Automatic submission on timer expiration.
+     - Rate-limited, CSRF-protected, and strictly forbidden from accessing any administrative or dashboard routes.
+
+---
+
+## 13. QR Codes Management & Walk-In Registration
+
+Located under **Admin Panel > QR Codes** (`/admin/qr-codes`):
+- **QR Code 1 (Full Onboarding Portal)**: Directs applicants to `/register` for complete personal data, KYC document uploads, and aptitude testing.
+- **QR Code 2 (Walk-In Aptitude Test)**: Directs applicants to `/aptitude/register` for instant, mobile-first registration without requiring immediate document uploads.
+- **Features**:
+  - High-resolution SVG downloads.
+  - Direct PNG image downloads.
+  - Printable branded A4 flyers with clear scanning instructions.
+  - Dedicated **Aptitude Test Candidates** admin directory (`/admin/aptitude-candidates`) with a 1-click **Convert to Onboarding** workflow.
+
+---
+
+## 14. Google Sheets Live Sync Integration
+
+Automatic, real-time candidate data synchronization into Google Sheets via `GoogleSheetsService.php`:
+- **17 Structured Columns**:
+  1. Timestamp
+  2. Candidate ID
+  3. Full Name
+  4. Email
+  5. Mobile
+  6. Candidate Type (`Onboarding` / `Aptitude-only`)
+  7. Source (`Web`, `QR Walk-in`, `Guest Link`)
+  8. Registration Date
+  9. Aadhaar Number (Masked: `XXXX XXXX 1234`)
+  10. PAN Number
+  11. Current Status
+  12. Aptitude Score (%)
+  13. Category Breakdown
+  14. Anti-Cheat Flags (Tab switches, Fullscreen exits)
+  15. Test Date & Time
+  16. Profile URL
+  17. Notes / Remarks
+- **Supported Modes**:
+  - **Webhook Mode (Zero Credential Setup)**: Set `google_sheets_webhook_url` in `app/config/config.php` using Google Apps Script.
+  - **Service Account Mode**: Place service account JSON in `storage/credentials/google-sheets-sa.json` and configure `google_sheets_spreadsheet_id`.
+
+---
+
+## 15. Automated Playwright Test Suite
+
+The test suite is located in `/tests` and runs using Playwright:
+```bash
+# Run all tests
+npx playwright test
+
+# Run specific specification
+npx playwright test tests/admin_shell_viewports.spec.js
+npx playwright test tests/approval_wording_purge.spec.js
+npx playwright test tests/candidate_profile_and_pdf.spec.js
+npx playwright test tests/guest_link_end_to_end.spec.js
+npx playwright test tests/aptitude_qr_and_candidates.spec.js
+```
 
 ---
 

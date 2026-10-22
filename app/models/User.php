@@ -33,17 +33,21 @@ class User {
         $hash = password_hash($data['password'], PASSWORD_BCRYPT, ['cost' => 11]);
         $cleanMobile = preg_replace('/\D/', '', $data['mobile']);
         $fatherName = trim($data['father_name'] ?? '');
+        $candidateType = $data['candidate_type'] ?? 'onboarding';
+        $source = $data['source'] ?? 'direct';
 
         $stmt = $db->prepare("INSERT INTO `users`
-            (`full_name`, `father_name`, `email`, `mobile`, `password_hash`, `role`, `status`, `created_at`)
-            VALUES (:name, :father, :email, :mobile, :hash, 'candidate', 'registered', NOW())");
+            (`full_name`, `father_name`, `email`, `mobile`, `password_hash`, `role`, `candidate_type`, `source`, `status`, `created_at`)
+            VALUES (:name, :father, :email, :mobile, :hash, 'candidate', :ctype, :source, 'registered', NOW())");
 
         $stmt->execute([
             ':name'   => trim($data['full_name']),
             ':father' => $fatherName ?: null,
             ':email'  => strtolower(trim($data['email'])),
             ':mobile' => $cleanMobile,
-            ':hash'   => $hash
+            ':hash'   => $hash,
+            ':ctype'  => $candidateType,
+            ':source' => $source
         ]);
 
         $userId = (int) $db->lastInsertId();
@@ -178,6 +182,8 @@ class User {
         $stmt = $db->prepare("UPDATE `users` SET `is_archived` = 1, `archived_at` = NOW(), `archived_by` = :by WHERE `id` = :uid");
         $stmt->execute([':by' => $archivedBy, ':uid' => $userId]);
 
+        $db->prepare("UPDATE `documents` SET `is_archived` = 1 WHERE `user_id` = :uid")->execute([':uid' => $userId]);
+
         AuditLog::log('candidate_archived', 'users', $userId, null, ['archived' => 1], $archivedBy);
     }
 
@@ -185,6 +191,8 @@ class User {
         $db = Database::getConnection();
         $stmt = $db->prepare("UPDATE `users` SET `is_archived` = 0, `archived_at` = NULL, `archived_by` = NULL WHERE `id` = :uid");
         $stmt->execute([':uid' => $userId]);
+
+        $db->prepare("UPDATE `documents` SET `is_archived` = 0 WHERE `user_id` = :uid")->execute([':uid' => $userId]);
 
         AuditLog::log('candidate_restored', 'users', $userId, null, ['archived' => 0], $restoredBy);
     }

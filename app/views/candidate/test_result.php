@@ -17,6 +17,7 @@ $categoryBreakdown = $stmtCat->fetchAll();
 
 $passed = !empty($attempt['passed']);
 $score = (int)$attempt['score'];
+$totalQuestions = (int)($attempt['total_questions'] ?? 15);
 $percentage = round((float)$attempt['percentage']);
 
 $diffSec = 0;
@@ -164,7 +165,7 @@ $timeTakenStr = sprintf('%02d:%02d', $min, $sec);
 <body>
     <div class="result-card">
         <div class="result-title">Assessment Result</div>
-        <div class="score-large"><?= $score ?> / 15</div>
+        <div class="score-large"><?= $score ?> / <?= $totalQuestions ?></div>
         <div class="percentage-chip"><?= $percentage ?>% Correct</div>
         <div class="status-badge"><?= $passed ? 'Passed &bull; Recommended' : 'Failed &bull; Below 60%' ?></div>
 

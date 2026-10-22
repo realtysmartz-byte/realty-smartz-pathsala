@@ -15,6 +15,7 @@ deployment:
     - /bin/mkdir -p /home/realtys1/pathshala_app/storage/uploads
     - /bin/mkdir -p /home/realtys1/pathshala_app/storage/logs
     - /bin/mkdir -p /home/realtys1/pathshala_app/storage/backups
+    - /bin/mkdir -p /home/realtys1/pathshala_app/storage/credentials
     - /bin/mkdir -p /home/realtys1/public_html
 
     # 2. Force copy application files directly (prevent interactive prompt freeze)

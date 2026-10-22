@@ -342,6 +342,7 @@ function buildFilterUrl(array $overrides = []): string {
         position: relative;
         z-index: 10;
         overflow: hidden;
+        pointer-events: auto !important;
     }
 
     .modal-header {
@@ -689,6 +690,16 @@ function buildFilterUrl(array $overrides = []): string {
         <h2>Candidates</h2>
         <p><?= number_format($total) ?> candidate<?= $total === 1 ? '' : 's' ?> in total</p>
     </div>
+    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <a href="<?= url('/admin/aptitude-candidates') ?>" class="btn-bulk-outline" style="height:38px; display:inline-flex; align-items:center; gap:6px; padding:0 14px; text-decoration:none; color:var(--text); border:1px solid var(--line); border-radius:var(--r-md); font-size:13.5px; font-weight:500;" aria-label="Aptitude Candidates">
+            <svg width="15" height="15" aria-hidden="true"><use href="#icon-users"></use></svg>
+            <span>Aptitude Candidates</span>
+        </a>
+        <a href="<?= url('/admin/qr-codes') ?>" class="btn-bulk-outline" style="height:38px; display:inline-flex; align-items:center; gap:6px; padding:0 14px; text-decoration:none; color:var(--text); border:1px solid var(--line); border-radius:var(--r-md); font-size:13.5px; font-weight:500;" aria-label="QR Codes">
+            <svg width="15" height="15" aria-hidden="true"><use href="#icon-award"></use></svg>
+            <span>QR Codes</span>
+        </a>
+    </div>
 </div>
 
 <!-- Filter Bar -->
@@ -844,7 +855,7 @@ function buildFilterUrl(array $overrides = []): string {
         <!-- Mobile Stacked Rows (< 768px) -->
         <div class="candidates-mobile-list" role="list">
             <?php foreach ($candidates as $c): ?>
-                <div class="candidate-mobile-card" role="listitem">
+                <div class="candidate-mobile-card" id="candidateMobileCard_<?= $c['id'] ?>" role="listitem">
                     <div class="card-mobile-top">
                         <div style="display:flex; align-items:center; gap:8px;">
                             <input type="checkbox" class="row-checkbox candidate-select" value="<?= $c['id'] ?>" aria-label="Select <?= e($c['full_name']) ?>">
@@ -1137,6 +1148,12 @@ function executeDeleteCandidate() {
                 row.style.transition = 'opacity 0.3s ease';
                 row.style.opacity = '0';
                 setTimeout(function() { row.remove(); }, 300);
+            }
+            var mCard = document.getElementById('candidateMobileCard_' + currentDeleteId);
+            if (mCard) {
+                mCard.style.transition = 'opacity 0.3s ease';
+                mCard.style.opacity = '0';
+                setTimeout(function() { mCard.remove(); }, 300);
             }
         } else {
             errEl.textContent = res.error || 'Failed to delete candidate.';

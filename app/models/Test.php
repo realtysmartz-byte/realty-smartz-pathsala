@@ -347,6 +347,13 @@ class Test {
         // Update user status to test_completed
         User::updateStatus((int)$attempt['user_id'], 'test_completed', "Aptitude Assessment completed with score {$finalScore}/{$totalQuestions} ({$percentage}%) - " . ($passed ? 'PASSED' : 'FAILED'), (int)$attempt['user_id']);
 
+        // Sync candidate result to Google Sheets
+        try {
+            \App\Helpers\GoogleSheetsService::syncCandidate((int)$attempt['user_id']);
+        } catch (\Throwable $e) {
+            error_log("Google Sheets sync failed on test finalize: " . $e->getMessage());
+        }
+
         AuditLog::log('test_finalized', 'test_attempts', $attemptId, null, [
             'score' => $finalScore,
             'percentage' => $percentage,

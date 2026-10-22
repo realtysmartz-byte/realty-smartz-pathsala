@@ -94,13 +94,23 @@ class AuthController {
         }
 
         // Create candidate with father_name in users and profiles
+        $source = trim($_POST['source'] ?? $_GET['source'] ?? 'direct');
         $userId = User::createCandidate([
-            'full_name'   => $fullName,
-            'father_name' => $fatherName,
-            'email'       => $email,
-            'mobile'      => $cleanMobile,
-            'password'    => $pwd
+            'full_name'      => $fullName,
+            'father_name'    => $fatherName,
+            'email'          => $email,
+            'mobile'         => $cleanMobile,
+            'password'       => $pwd,
+            'candidate_type' => 'onboarding',
+            'source'         => $source ?: 'direct'
         ]);
+
+        // Sync initial candidate record to Google Sheets
+        try {
+            \App\Helpers\GoogleSheetsService::syncCandidate($userId);
+        } catch (\Throwable $e) {
+            error_log("Google Sheets sync failed on registration: " . $e->getMessage());
+        }
 
         // Generate verification OTP & token
         $ver = User::createVerification($userId);

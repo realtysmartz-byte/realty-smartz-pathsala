@@ -374,6 +374,14 @@ $viewTitle = "Assessments";
     </div>
 
     <div class="assessments-actions">
+        <a href="<?= url('/admin/aptitude-candidates') ?>" class="btn-outline-action" aria-label="Aptitude Test Candidates">
+            <svg width="16" height="16" aria-hidden="true"><use href="#icon-users"></use></svg>
+            <span>Aptitude Candidates</span>
+        </a>
+        <a href="<?= url('/admin/qr-codes') ?>" class="btn-outline-action" aria-label="QR Code Management">
+            <svg width="16" height="16" aria-hidden="true"><use href="#icon-award"></use></svg>
+            <span>QR Codes</span>
+        </a>
         <button type="button" class="btn-create-link" onclick="openCreateLinkModal()" aria-label="Create guest test link">
             <svg width="16" height="16" aria-hidden="true"><use href="#icon-plus"></use></svg>
             <span>Create link</span>

@@ -186,7 +186,18 @@ class CandidateController {
      */
     public function submitOnboarding(): void {
         $userId = (int) auth()['id'];
+        $candidate = Profile::getFullProfile($userId);
         $isAjax = $this->isAjax();
+
+        if (!empty($candidate['profile']['is_locked']) && !in_array($candidate['status'], ['changes_requested'], true)) {
+            $msg = 'Your onboarding application has already been submitted and is locked under review.';
+            if ($isAjax) {
+                response_json(['success' => false, 'error' => $msg, 'redirect' => url('/dashboard/aptitude')], 403);
+            }
+            flash('info', $msg);
+            redirect('/dashboard/aptitude');
+            return;
+        }
 
         $res = Profile::submitStepD($userId, $_POST);
 
@@ -197,6 +208,11 @@ class CandidateController {
             flash('error', $res['error']);
             redirect('/dashboard/onboarding?step=step_d');
             return;
+        // Sync candidate updated onboarding data to Google Sheets
+        try {
+            \App\Helpers\GoogleSheetsService::syncCandidate($userId);
+        } catch (\Throwable $e) {
+            error_log("Google Sheets sync failed on submitOnboarding: " . $e->getMessage());
         }
 
         $successMsg = '🎉 Onboarding submitted successfully! Please complete your aptitude assessment.';
@@ -224,10 +240,22 @@ class CandidateController {
      */
     public function saveSection(string $section = ''): void {
         $userId = (int) auth()['id'];
+        $candidate = Profile::getFullProfile($userId);
+        $isAjax = $this->isAjax();
+
+        if (!empty($candidate['profile']['is_locked']) && !in_array($candidate['status'], ['changes_requested'], true)) {
+            $msg = 'Your profile is locked under review. Details cannot be modified.';
+            if ($isAjax) {
+                response_json(['success' => false, 'error' => $msg], 403);
+            }
+            flash('error', $msg);
+            redirect('/dashboard/onboarding');
+            return;
+        }
+
         if (empty($section)) {
             $section = $_POST['section'] ?? 'personal';
         }
-        $isAjax = $this->isAjax();
 
         try {
             switch ($section) {
@@ -292,8 +320,19 @@ class CandidateController {
      */
     public function uploadDocument(): void {
         $userId = (int) auth()['id'];
+        $candidate = Profile::getFullProfile($userId);
         $docType = $_POST['document_type'] ?? '';
         $isAjax = $this->isAjax();
+
+        if (!empty($candidate['profile']['is_locked']) && !in_array($candidate['status'], ['changes_requested'], true)) {
+            $msg = 'Your profile is locked under review. Documents cannot be uploaded or modified.';
+            if ($isAjax) {
+                response_json(['success' => false, 'error' => $msg], 403);
+            }
+            flash('error', $msg);
+            redirect('/dashboard/onboarding?step=step_c');
+            return;
+        }
 
         if (empty($_FILES['file']) || empty($docType)) {
             $msg = 'No file or document type specified.';

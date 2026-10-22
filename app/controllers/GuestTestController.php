@@ -163,6 +163,8 @@ class GuestTestController {
 
         if ($existing) {
             $userId = (int)$existing['id'];
+            // Bump created_at to NOW() so the candidate is immediately visible at the top of recent candidates
+            $db->prepare("UPDATE `users` SET `created_at` = NOW() WHERE `id` = :id")->execute([':id' => $userId]);
         } else {
             // Create a new candidate record of type "Guest"
             $tempPassword = bin2hex(random_bytes(8));

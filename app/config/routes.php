@@ -146,6 +146,10 @@ Router::post('/dashboard/profile/save', [CandidateController::class, 'saveSectio
 Router::post('/dashboard/document/upload', [CandidateController::class, 'uploadDocument'], ['auth', 'csrf']);
 Router::post('/dashboard/profile/submit', [CandidateController::class, 'submitOnboarding'], ['auth', 'csrf']);
 
+// Dedicated Aptitude Assessment Registration (QR Code 2)
+Router::get('/aptitude/register', [AptitudeController::class, 'showAptitudeRegister']);
+Router::post('/aptitude/register', [AptitudeController::class, 'registerAptitudeCandidate'], ['csrf']);
+
 // Aptitude Assessment
 Router::get('/dashboard/aptitude', [AptitudeController::class, 'showTest'], ['auth']);
 Router::get('/dashboard/test', [AptitudeController::class, 'showTest'], ['auth']);
@@ -183,6 +187,14 @@ Router::post('/admin/candidates/bulk-pdf-zip', [AdminController::class, 'bulkPdf
 Router::get('/admin/candidates/export-excel', [AdminController::class, 'exportExcel'], ['admin']);
 Router::post('/admin/candidates/export-excel', [AdminController::class, 'exportExcel'], ['admin', 'csrf']);
 Router::get('/admin/candidates/export-csv', [AdminController::class, 'exportExcel'], ['admin']);
+
+// Aptitude Candidates Management
+Router::get('/admin/aptitude-candidates', [AdminController::class, 'aptitudeCandidates'], ['admin']);
+Router::post('/admin/aptitude-candidates/{id}/convert', [AdminController::class, 'initiateOnboarding'], ['admin', 'csrf']);
+
+// QR Code Management
+Router::get('/admin/qr-codes', [AdminController::class, 'qrCodes'], ['admin']);
+Router::get('/admin/qr-codes/download/{type}', [AdminController::class, 'downloadQrCode'], ['admin']);
 
 // Guest Test Link Admin Management
 Router::post('/admin/guest-links/create', [AdminController::class, 'createGuestLink'], ['admin', 'csrf']);

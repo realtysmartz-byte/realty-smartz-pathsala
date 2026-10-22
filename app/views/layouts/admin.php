@@ -520,6 +520,17 @@ $viewTitle = $viewTitle ?? 'Dashboard';
                 padding: 16px;
             }
         }
+
+        /* Ensure all admin modals and child interactive elements have pointer-events auto */
+        .modal-overlay {
+            pointer-events: auto !important;
+        }
+        .modal-dialog {
+            pointer-events: auto !important;
+        }
+        .modal-dialog * {
+            pointer-events: auto;
+        }
     </style>
 </head>
 <body>
@@ -557,11 +568,27 @@ $viewTitle = $viewTitle ?? 'Dashboard';
             </a>
 
             <a href="<?= url('/admin/candidates') ?>" 
-               class="sidebar-item <?= str_starts_with($currentPath, '/admin/candidates') ? 'active' : '' ?>" 
+               class="sidebar-item <?= ($currentPath === '/admin/candidates' || str_starts_with($currentPath, '/admin/candidates/')) ? 'active' : '' ?>" 
                data-tooltip="Candidates" 
                aria-label="Candidates">
                 <svg width="20" height="20" aria-hidden="true"><use href="#icon-users"></use></svg>
                 <span>Candidates</span>
+            </a>
+
+            <a href="<?= url('/admin/aptitude-candidates') ?>" 
+               class="sidebar-item <?= str_starts_with($currentPath, '/admin/aptitude-candidates') ? 'active' : '' ?>" 
+               data-tooltip="Aptitude Candidates" 
+               aria-label="Aptitude Candidates">
+                <svg width="20" height="20" aria-hidden="true"><use href="#icon-user-check"></use></svg>
+                <span>Aptitude Candidates</span>
+            </a>
+
+            <a href="<?= url('/admin/qr-codes') ?>" 
+               class="sidebar-item <?= str_starts_with($currentPath, '/admin/qr-codes') ? 'active' : '' ?>" 
+               data-tooltip="QR Codes" 
+               aria-label="QR Codes">
+                <svg width="20" height="20" aria-hidden="true"><use href="#icon-qr-code"></use></svg>
+                <span>QR Codes</span>
             </a>
 
             <a href="<?= url('/admin/documents') ?>" 

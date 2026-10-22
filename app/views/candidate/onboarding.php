@@ -35,6 +35,7 @@ if (!$isLocked) {
 $isEmailVerified = !empty($candidate['email_verified_at']);
 $isOnboardingSubmitted = !empty($profile['declaration_accepted']) || $isLocked || (int)($profile['completion_percentage'] ?? 0) >= 100 || in_array($status, ['documents_submitted', 'profile_completed', 'test_pending', 'test_completed'], true);
 $isTestCompleted = !empty($attempt) && in_array($attempt['status'] ?? '', ['completed', 'passed', 'failed', 'submitted'], true);
+$isDecisionDone = !empty($candidate['status']) && in_array($candidate['status'], ['accepted', 'rejected', 'shortlisted', 'joined'], true);
 
 $step1State = 'completed';
 $step2State = $isEmailVerified ? 'completed' : 'current';
@@ -128,7 +129,7 @@ function renderCandidateDocSlot(string $type, string $label, string $description
                 <a id="slot_view_<?= $type ?>" href="<?= $isUploaded ? url('/document/download/' . $doc['id']) : '#' ?>" target="_blank" class="btn btn-outline btn-sm" style="padding:4px 10px; font-size:12px; border-radius:var(--r-sm);">
                     View
                 </a>
-                <?php if (!$isLocked || $isReupload): ?>
+                <?php if (!$isLocked && !empty($isReupload)): ?>
                     <button type="button" class="btn btn-outline btn-sm" style="padding:4px 10px; font-size:12px; border-radius:var(--r-sm);" onclick="triggerUpload('<?= $type ?>')">
                         Replace
                     </button>
@@ -138,16 +139,22 @@ function renderCandidateDocSlot(string $type, string $label, string $description
 
         <input type="file" id="file_<?= $type ?>" accept="image/jpeg,image/png,image/webp,application/pdf" style="display:none;" onchange="handleFileUpload(this, '<?= $type ?>')">
 
-        <div class="dropzone-box" id="dropzone_<?= $type ?>" data-doctype="<?= $type ?>" onclick="triggerUpload('<?= $type ?>')" style="<?= ($isUploaded && !$isReupload) ? 'display:none;' : '' ?>">
-            <div style="margin-bottom:6px; color:var(--brand);">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        <?php if (!$isLocked): ?>
+            <div class="dropzone-box" id="dropzone_<?= $type ?>" data-doctype="<?= $type ?>" onclick="triggerUpload('<?= $type ?>')" style="<?= ($isUploaded && empty($isReupload)) ? 'display:none;' : '' ?>">
+                <div style="margin-bottom:6px; color:var(--brand);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                </div>
+                <div style="font-size:13px; font-weight:600; color:var(--text);">Drag &amp; Drop or Browse File</div>
+                <div style="font-size:11px; color:var(--muted); margin-top:2px;">JPG, PNG, PDF &bull; Max 2 MB (Pre-compressed)</div>
+                <div class="dropzone-progress" id="progress_<?= $type ?>">
+                    <div class="dropzone-progress-bar" id="bar_<?= $type ?>"></div>
+                </div>
             </div>
-            <div style="font-size:13px; font-weight:600; color:var(--text);">Drag &amp; Drop or Browse File</div>
-            <div style="font-size:11px; color:var(--muted); margin-top:2px;">JPG, PNG, PDF &bull; Max 2 MB (Pre-compressed)</div>
-            <div class="dropzone-progress" id="progress_<?= $type ?>">
-                <div class="dropzone-progress-bar" id="bar_<?= $type ?>"></div>
+        <?php elseif (!$isUploaded): ?>
+            <div class="dropzone-box" id="dropzone_<?= $type ?>" style="opacity: 0.6; cursor: not-allowed; pointer-events: none; border-style: dashed; padding: 12px; text-align: center;">
+                <div style="font-size:12.5px; font-weight:500; color:var(--muted);">Document not submitted (Profile Locked)</div>
             </div>
-        </div>
+        <?php endif; ?>
     </div>
 <?php
 }
@@ -532,6 +539,16 @@ function renderCandidateDocSlot(string $type, string $label, string $description
         }
     </style>
 
+        <?php if ($isLocked): ?>
+            <div class="alert d-flex align-items-center gap-3 p-3 mb-4" style="background: rgba(31,92,74,0.08); border: 1px solid var(--line); border-radius: var(--r-md); color: var(--brand);">
+                <div style="font-size: 22px; flex-shrink: 0;"><i class="fas fa-lock"></i></div>
+                <div>
+                    <strong style="display:block; font-size: 14.5px; margin-bottom: 2px;">Application Submitted &bull; Profile Locked</strong>
+                    <span style="font-size: 13px; color: var(--text);">Your onboarding information, identity proofs, and documents have been submitted for verification. Modifications are permanently disabled.</span>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <!-- ================================================================
              STEP A: BASIC DETAILS
              ================================================================ -->
@@ -644,10 +661,16 @@ function renderCandidateDocSlot(string $type, string $label, string $description
 
                 <!-- Actions -->
                 <div style="display:flex; justify-content:flex-end; gap:12px; border-top:1px solid var(--line); padding-top:20px;">
-                    <button type="submit" class="btn btn-primary" style="padding:12px 28px; font-weight:600; border-radius:var(--r-full);">
-                        <span>Save &amp; Continue to Social Links</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:6px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                    </button>
+                    <?php if ($isLocked): ?>
+                        <button type="button" class="btn btn-outline" onclick="switchStep('step_b')" style="padding:12px 28px; font-weight:600; border-radius:var(--r-full);">
+                            <span>Next: View Social Links &rarr;</span>
+                        </button>
+                    <?php else: ?>
+                        <button type="submit" class="btn btn-primary" style="padding:12px 28px; font-weight:600; border-radius:var(--r-full);">
+                            <span>Save &amp; Continue to Social Links</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:6px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </button>
+                    <?php endif; ?>
                 </div>
             </form>
         </div>
@@ -662,16 +685,16 @@ function renderCandidateDocSlot(string $type, string $label, string $description
 
                 <div style="margin-bottom:24px;">
                     <h3 style="font-size:1.25rem; font-weight:600; color:var(--text); margin:0 0 4px;">Step B &bull; Professional &amp; Social Links</h3>
-                    <p style="font-size:13.5px; color:var(--muted); margin:0;">Share your online profiles to help our hiring partners know you better. All links are optional.</p>
+                    <p style="font-size:13.5px; color:var(--muted); margin:0;">Share your online profiles to help our hiring partners know you better. <strong style="color:var(--text);">LinkedIn profile is required.</strong></p>
                 </div>
 
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px; margin-bottom:30px;">
                     <!-- LinkedIn -->
                     <div>
                         <label class="form-label" for="soc_linkedin">
-                            <i class="fab fa-linkedin" style="color:var(--muted); margin-right:4px;"></i> LinkedIn Profile URL
+                            <i class="fab fa-linkedin" style="color:#0A66C2; margin-right:4px;"></i> LinkedIn Profile URL <span style="color:var(--danger,#E05252);">*</span>
                         </label>
-                        <input type="url" id="soc_linkedin" name="linkedin" class="form-control" value="<?= e($social['linkedin'] ?? '') ?>" placeholder="https://linkedin.com/in/yourname" <?= $isLocked ? 'readonly' : '' ?>>
+                        <input type="url" id="soc_linkedin" name="linkedin" class="form-control" value="<?= e($social['linkedin'] ?? '') ?>" placeholder="https://linkedin.com/in/yourname" required <?= $isLocked ? 'readonly' : '' ?>>
                     </div>
 
                     <!-- Instagram -->
@@ -720,10 +743,16 @@ function renderCandidateDocSlot(string $type, string $label, string $description
                     <button type="button" class="btn btn-outline" onclick="switchStep('step_a')" style="padding:10px 22px; border-radius:var(--r-full); font-weight:600; border-color:var(--line);">
                         &larr; Back to Basic Details
                     </button>
-                    <button type="submit" class="btn btn-primary" style="padding:12px 28px; font-weight:600; border-radius:var(--r-full);">
-                        <span>Save &amp; Continue to Documents</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:6px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                    </button>
+                    <?php if ($isLocked): ?>
+                        <button type="button" class="btn btn-outline" onclick="switchStep('step_c')" style="padding:12px 28px; font-weight:600; border-radius:var(--r-full);">
+                            <span>Next: View Documents &rarr;</span>
+                        </button>
+                    <?php else: ?>
+                        <button type="submit" class="btn btn-primary" style="padding:12px 28px; font-weight:600; border-radius:var(--r-full);">
+                            <span>Save &amp; Continue to Documents</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:6px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </button>
+                    <?php endif; ?>
                 </div>
             </form>
         </div>
@@ -819,16 +848,16 @@ function renderCandidateDocSlot(string $type, string $label, string $description
                         <div class="p-3" style="border:1px solid var(--line); border-radius:var(--r-md); background:var(--bg);">
                             <div style="font-weight:600; font-size:13px; color:var(--text); margin-bottom:12px;">Primary Emergency Contact</div>
                             <div style="margin-bottom:12px;">
-                                <label class="form-label" style="font-size:12px;">Contact Name *</label>
-                                <input type="text" name="emergency_name_1" class="form-control" value="<?= e($emergency['contact_name'] ?? '') ?>" placeholder="e.g. Ramesh Malhotra" required <?= $isLocked ? 'readonly' : '' ?>>
+                                <label class="form-label" for="emergency_name_1" style="font-size:12px;">Contact Name *</label>
+                                <input type="text" id="emergency_name_1" name="emergency_name_1" class="form-control" value="<?= e($emergency['contact_name'] ?? '') ?>" placeholder="e.g. Ramesh Malhotra" required <?= $isLocked ? 'readonly' : '' ?>>
                             </div>
                             <div style="margin-bottom:12px;">
-                                <label class="form-label" style="font-size:12px;">Relationship *</label>
-                                <input type="text" name="emergency_rel_1" class="form-control" value="<?= e($emergency['relationship'] ?? 'Father') ?>" placeholder="e.g. Father, Mother, Spouse" required <?= $isLocked ? 'readonly' : '' ?>>
+                                <label class="form-label" for="emergency_rel_1" style="font-size:12px;">Relationship *</label>
+                                <input type="text" id="emergency_rel_1" name="emergency_rel_1" class="form-control" value="<?= e($emergency['relationship'] ?? 'Father') ?>" placeholder="e.g. Father, Mother, Spouse" required <?= $isLocked ? 'readonly' : '' ?>>
                             </div>
                             <div>
-                                <label class="form-label" style="font-size:12px;">Phone Number *</label>
-                                <input type="tel" name="emergency_phone_1" maxlength="10" pattern="[6-9][0-9]{9}" class="form-control" value="<?= e($emergency['mobile'] ?? '') ?>" placeholder="9876543210" required <?= $isLocked ? 'readonly' : '' ?>>
+                                <label class="form-label" for="emergency_phone_1" style="font-size:12px;">Phone Number *</label>
+                                <input type="tel" id="emergency_phone_1" name="emergency_phone_1" maxlength="10" pattern="[6-9][0-9]{9}" class="form-control" value="<?= e($emergency['mobile'] ?? '') ?>" placeholder="9876543210" required <?= $isLocked ? 'readonly' : '' ?>>
                             </div>
                         </div>
 
@@ -856,10 +885,16 @@ function renderCandidateDocSlot(string $type, string $label, string $description
                     <button type="button" class="btn btn-outline" onclick="switchStep('step_b')" style="padding:10px 22px; border-radius:var(--r-full); font-weight:600; border-color:var(--line);">
                         &larr; Back to Social Links
                     </button>
-                    <button type="submit" class="btn btn-primary" style="padding:12px 28px; font-weight:600; border-radius:var(--r-full);">
-                        <span>Review &amp; Sign Declaration</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:6px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                    </button>
+                    <?php if ($isLocked): ?>
+                        <button type="button" class="btn btn-outline" onclick="switchStep('step_d')" style="padding:12px 28px; font-weight:600; border-radius:var(--r-full);">
+                            <span>Next: View Declaration &rarr;</span>
+                        </button>
+                    <?php else: ?>
+                        <button type="submit" class="btn btn-primary" style="padding:12px 28px; font-weight:600; border-radius:var(--r-full);">
+                            <span>Review &amp; Sign Declaration</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:6px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </button>
+                    <?php endif; ?>
                 </div>
             </form>
         </div>
@@ -943,11 +978,11 @@ function renderCandidateDocSlot(string $type, string $label, string $description
                         </div>
 
                         <!-- Toggle Buttons -->
-                        <div class="d-flex gap-1 p-1 bg-white border" style="border-radius:var(--r-full); border-color:var(--line) !important;">
-                            <button type="button" id="btnSigType" class="btn btn-sm <?= (($profile['signature_type'] ?? 'typed') === 'typed') ? 'btn-primary' : 'btn-outline' ?>" style="border-radius:var(--r-full); font-size:12px; padding:4px 14px;" onclick="setSignatureMode('typed')">
+                        <div class="d-flex gap-1 p-1 bg-white border" style="border-radius:var(--r-full); border-color:var(--line) !important; <?= $isLocked ? 'pointer-events:none; opacity:0.6;' : '' ?>">
+                            <button type="button" id="btnSigType" class="btn btn-sm <?= (($profile['signature_type'] ?? 'typed') === 'typed') ? 'btn-primary' : 'btn-outline' ?>" style="border-radius:var(--r-full); font-size:12px; padding:4px 14px;" onclick="setSignatureMode('typed')" <?= $isLocked ? 'disabled' : '' ?>>
                                 Type Name
                             </button>
-                            <button type="button" id="btnSigDraw" class="btn btn-sm <?= (($profile['signature_type'] ?? '') === 'drawn') ? 'btn-primary' : 'btn-outline' ?>" style="border-radius:var(--r-full); font-size:12px; padding:4px 14px;" onclick="setSignatureMode('drawn')">
+                            <button type="button" id="btnSigDraw" class="btn btn-sm <?= (($profile['signature_type'] ?? '') === 'drawn') ? 'btn-primary' : 'btn-outline' ?>" style="border-radius:var(--r-full); font-size:12px; padding:4px 14px;" onclick="setSignatureMode('drawn')" <?= $isLocked ? 'disabled' : '' ?>>
                                 Draw Signature
                             </button>
                         </div>
@@ -1157,6 +1192,31 @@ function validateStepA() {
         missing.focus();
         missing.classList.add('pulse-highlight');
         setTimeout(() => missing.classList.remove('pulse-highlight'), 3000);
+        return false;
+    }
+    return true;
+}
+
+function validateStepB() {
+    const linkedinInput = document.getElementById('soc_linkedin');
+    const linkedinVal = linkedinInput ? linkedinInput.value.trim() : '';
+    if (!linkedinVal) {
+        showToast('LinkedIn profile URL is required to proceed.', 'warning');
+        if (linkedinInput) {
+            linkedinInput.focus();
+            linkedinInput.classList.add('pulse-highlight');
+            setTimeout(() => linkedinInput.classList.remove('pulse-highlight'), 3000);
+        }
+        return false;
+    }
+    const linkedinPattern = /^(https?:\/\/)?([a-zA-Z0-9_\-]+\.)?linkedin\.com\/.+/i;
+    if (!linkedinPattern.test(linkedinVal)) {
+        showToast('Please enter a valid LinkedIn URL (e.g. https://www.linkedin.com/in/yourname)', 'warning');
+        if (linkedinInput) {
+            linkedinInput.focus();
+            linkedinInput.classList.add('pulse-highlight');
+            setTimeout(() => linkedinInput.classList.remove('pulse-highlight'), 3000);
+        }
         return false;
     }
     return true;
@@ -1609,11 +1669,19 @@ function compressImageClientSide(file, maxWidth = 1600, targetMaxBytes = 1887436
 }
 
 function triggerUpload(docType) {
+    if (stepState.is_locked) {
+        showToast('Your onboarding is submitted and locked. Documents cannot be modified.', 'warning');
+        return;
+    }
     const input = document.getElementById('file_' + docType);
     if (input) input.click();
 }
 
 async function handleFileUpload(fileInputOrFile, docType) {
+    if (stepState.is_locked) {
+        showToast('Your onboarding is submitted and locked. Documents cannot be modified.', 'warning');
+        return;
+    }
     let originalFile = null;
     if (fileInputOrFile instanceof File) {
         originalFile = fileInputOrFile;
@@ -1807,6 +1875,9 @@ function initDropzones() {
 
 // Auto-Save Engine (text fields only, excluding file inputs and hidden inputs)
 function setupAutoSave() {
+    if (stepState.is_locked) {
+        return; // Disable all auto-saving if profile is locked
+    }
     document.querySelectorAll('#form_step_a, #form_step_b, #form_step_c').forEach(form => {
         form.querySelectorAll('input:not([type="file"]):not([type="hidden"]), select, textarea').forEach(input => {
             input.addEventListener('input', () => {
@@ -1821,8 +1892,22 @@ function setupAutoSave() {
 }
 
 async function saveStepData(stepId, advanceToNext = false) {
+    if (stepState.is_locked) {
+        if (advanceToNext) {
+            const nextStep = (stepId === 'step_a') ? 'step_b' : ((stepId === 'step_b') ? 'step_c' : 'step_d');
+            switchStep(nextStep);
+        }
+        return;
+    }
+
     if (stepId === 'step_a' && advanceToNext) {
         if (!validateStepA()) {
+            return;
+        }
+    }
+
+    if (stepId === 'step_b' && advanceToNext) {
+        if (!validateStepB()) {
             return;
         }
     }

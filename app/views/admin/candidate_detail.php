@@ -777,6 +777,7 @@ function formatFileSize(?int $bytes): string {
         position: relative;
         z-index: 10;
         overflow: hidden;
+        pointer-events: auto !important;
     }
 
     .modal-header {

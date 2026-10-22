@@ -14,6 +14,8 @@
 !/storage/cache/.gitkeep
 /storage/scratch/*
 !/storage/scratch/.gitkeep
+/storage/credentials/*
+!/storage/credentials/.gitkeep
 *.log
 
 # Dependencies

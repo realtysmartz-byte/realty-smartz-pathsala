@@ -485,8 +485,9 @@ class Profile {
             $points++;
         }
 
-        // Step B: Social Links
-        if (!empty($p['social_links'])) {
+        // Step B: Social Links (LinkedIn is required)
+        $socialLinks = !empty($p['social_links']) ? (is_string($p['social_links']) ? json_decode($p['social_links'], true) : $p['social_links']) : [];
+        if (!empty($socialLinks['linkedin'])) {
             $points++;
         }
 
@@ -530,8 +531,14 @@ class Profile {
             && !empty($p['state']) 
             && !empty($p['pincode']);
 
-        // Step 2: Social Links & Professional Profiles (all optional, acknowledged on save or progression)
-        $hasSocial = $hasBasic && ($p['social_links'] !== null || !empty($p['social']) || !empty($p['social_links']));
+        // Step 2: Social Links & Professional Profiles (LinkedIn is required)
+        $linkedinVal = $p['social']['linkedin'] ?? '';
+        if (empty($linkedinVal) && !empty($p['social_links'])) {
+            $decoded = is_string($p['social_links']) ? json_decode($p['social_links'], true) : $p['social_links'];
+            $linkedinVal = $decoded['linkedin'] ?? '';
+        }
+        $hasLinkedIn = !empty(trim((string)$linkedinVal));
+        $hasSocial = $hasBasic && $hasLinkedIn;
 
         // Step 3: Documents & KYC (Aadhaar & PAN numbers + uploaded proofs + emergency contact)
         $hasAadhaar = !empty($p['aadhaar_last4']) || !empty($p['aadhaar_enc']) || !empty($p['aadhaar_encrypted']);
@@ -634,8 +641,16 @@ class Profile {
     public static function saveStepB(int $userId, array $data): void {
         $db = Database::getConnection();
 
+        $linkedin = trim($data['linkedin'] ?? '');
+        if (empty($linkedin)) {
+            throw new Exception("LinkedIn profile URL is required.");
+        }
+        if (!preg_match('#^(https?:\/\/)?([a-zA-Z0-9_\-]+\.)?linkedin\.com\/#i', $linkedin)) {
+            throw new Exception("Please provide a valid LinkedIn profile URL (e.g. https://www.linkedin.com/in/username).");
+        }
+
         $social = [
-            'linkedin'  => trim($data['linkedin'] ?? ''),
+            'linkedin'  => $linkedin,
             'instagram' => trim($data['instagram'] ?? ''),
             'facebook'  => trim($data['facebook'] ?? ''),
             'twitter'   => trim($data['twitter'] ?? ($data['x'] ?? '')),

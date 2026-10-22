@@ -295,6 +295,7 @@ $pageTitle = 'Dashboard | Realty Smartz Pathshala';
         position: relative;
         z-index: 10;
         overflow: hidden;
+        pointer-events: auto !important;
     }
 
     .modal-header {
@@ -871,9 +872,8 @@ function executeDeleteCandidate() {
     btn.disabled = true;
     btn.textContent = 'Deleting...';
 
-    var csrfToken = document.querySelector('input[name="_csrf_token"]') ? document.querySelector('input[name="_csrf_token"]').value : '';
     var fd = new FormData();
-    fd.append('_csrf_token', csrfToken);
+    fd.append('_csrf_token', '<?= csrf_token() ?>');
 
     fetch('<?= url("/admin/candidates/") ?>' + currentDeleteId + '/delete', {
         method: 'POST',
