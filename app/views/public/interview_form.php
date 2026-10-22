@@ -223,10 +223,12 @@
         /* Visually hidden real input */
         .radio-pill-label input[type="radio"] {
             position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
             opacity: 0;
-            width: 0;
-            height: 0;
-            pointer-events: none;
+            cursor: pointer;
+            z-index: 1;
         }
 
         /* Indicator dot */
@@ -865,6 +867,16 @@
 
             refRadios.forEach(r => r.addEventListener('change', updateReferenceVisibility));
             updateReferenceVisibility();
+
+            // Clear inline errors immediately when radio option is chosen
+            ['experience_type', 'vehicle_available', 'has_references', 'immediate_joiner'].forEach(name => {
+                form.querySelectorAll(`input[name="${name}"]`).forEach(r => {
+                    r.addEventListener('change', () => {
+                        const err = document.getElementById('err_' + name);
+                        if (err) err.classList.remove('show');
+                    });
+                });
+            });
 
             // Mobile input sanitation: strip +91 and spaces on input
             const mobileInput = document.getElementById('mobile');

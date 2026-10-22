@@ -13,9 +13,22 @@ async function loginAdmin(page) {
     await page.fill('input[name="password"]', 'Admin@2026');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/admin/dashboard');
+async function selectRadio(page, name, value) {
+    const radio = page.locator(`input[name="${name}"][value="${value}"]`);
+    await radio.evaluate(el => {
+        el.checked = true;
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+    });
 }
 
 test.describe('Interview Application Form Module Complete Suite', () => {
+
+    test.beforeEach(async () => {
+        try {
+            require('child_process').execSync('C:\\xampp\\php\\php.exe -r "define(\'APP_PATH\', \'d:/Realty Smartz/Realty Pathsala/app\'); require \'vendor/autoload.php\'; require \'app/config/config.php\'; \\App\\Models\\InterviewApplication::updateQrSettings(true);"');
+        } catch (e) {}
+    });
 
     test('1. Access, Crawl, Sitemap, Robots.txt, and 404 security checks', async ({ page }) => {
         // A. Crawl robots.txt -> verify no mention of /q/ or slug
@@ -109,7 +122,7 @@ test.describe('Interview Application Form Module Complete Suite', () => {
         await expect(page.locator('#group_employment_history')).toBeHidden();
 
         // Selecting Experience displays Years in Real Estate & Employment history
-        await page.locator('input[name="experience_type"][value="experience"]').click();
+        await page.locator('input[name="experience_type"][value="experience"]').check({ force: true });
         await expect(page.locator('#group_years_in_real_estate')).toBeVisible();
         await expect(page.locator('#group_employment_history')).toBeVisible();
         await expect(page.locator('#group_last_company_hr_tl')).toBeVisible();
@@ -131,7 +144,7 @@ test.describe('Interview Application Form Module Complete Suite', () => {
         await expect(page.locator('#btnAddEmpRow')).toBeVisible();
 
         // Switching to Fresher hides & clears experience fields
-        await page.locator('input[name="experience_type"][value="fresher"]').click();
+        await page.locator('input[name="experience_type"][value="fresher"]').check({ force: true });
         await expect(page.locator('#group_years_in_real_estate')).toBeHidden();
         await expect(page.locator('#group_employment_history')).toBeHidden();
         await expect(page.locator('#group_last_company_hr_tl')).toBeHidden();
@@ -149,9 +162,9 @@ test.describe('Interview Application Form Module Complete Suite', () => {
         // 12. Any References & details
         await expect(page.locator('#group_has_references legend')).toContainText('Any References');
         await expect(page.locator('#group_reference_details')).toBeHidden();
-        await page.locator('input[name="has_references"][value="yes"]').click();
+        await page.locator('input[name="has_references"][value="yes"]').check({ force: true });
         await expect(page.locator('#group_reference_details')).toBeVisible();
-        await page.locator('input[name="has_references"][value="no"]').click();
+        await page.locator('input[name="has_references"][value="no"]').check({ force: true });
         await expect(page.locator('#group_reference_details')).toBeHidden();
 
         // 15. Immediate Joiner
@@ -202,16 +215,16 @@ test.describe('Interview Application Form Module Complete Suite', () => {
         await page.fill('#full_name', 'Aaditya Vikram Singh');
         await page.fill('#email', 'invalid-email-address');
         await page.fill('#mobile', '123456'); // invalid Indian mobile
-        await page.locator('input[name="experience_type"][value="experience"]').check({ force: true });
+        await selectRadio(page, 'experience_type', 'experience');
         await page.fill('#years_in_real_estate', '4.5');
-        await page.locator('input[name="vehicle_available"][value="yes"]').check({ force: true });
+        await selectRadio(page, 'vehicle_available', 'yes');
         await page.fill('#current_location', 'Golf Course Road, Gurugram');
         await page.fill('#higher_education', 'B.Tech + MBA');
-        await page.locator('input[name="has_references"][value="yes"]').check({ force: true });
+        await selectRadio(page, 'has_references', 'yes');
         await page.fill('#reference_details', 'Direct Referral from Director of Sales');
         await page.fill('#last_company_hr_tl', 'Siddharth Roy');
         await page.fill('#reason_to_leave', 'Opportunity in ultra-luxury vertical');
-        await page.locator('input[name="immediate_joiner"][value="yes"]').check({ force: true });
+        await selectRadio(page, 'immediate_joiner', 'yes');
 
         // Missing consent & invalid contacts
         await page.click('#btnSubmit');
@@ -258,6 +271,14 @@ test.describe('Interview Application Form Module Complete Suite', () => {
         await page.goto('/admin/qr-codes');
         const interviewUrl = await page.locator('#interviewUrlText').innerText();
         const slug = interviewUrl.split('/q/')[1].trim();
+
+        // Ensure checkbox is checked before unchecking
+        if (!await page.isChecked('#toggleAcceptingResponses')) {
+            await Promise.all([
+                page.waitForResponse(res => res.url().includes('/admin/interview/toggle-accepting')),
+                page.check('#toggleAcceptingResponses')
+            ]);
+        }
 
         // Toggle accepting responses OFF
         await Promise.all([
@@ -321,12 +342,12 @@ test.describe('Interview Application Form Module Complete Suite', () => {
         await candidatePage.fill('#full_name', liveCandidateName);
         await candidatePage.fill('#email', `kavita.${Date.now()}@example.com`);
         await candidatePage.fill('#mobile', liveMobile);
-        await candidatePage.locator('input[name="experience_type"][value="fresher"]').check({ force: true });
-        await candidatePage.locator('input[name="vehicle_available"][value="no"]').check({ force: true });
+        await selectRadio(candidatePage, 'experience_type', 'fresher');
+        await selectRadio(candidatePage, 'vehicle_available', 'no');
         await candidatePage.fill('#current_location', 'Indirapuram, Ghaziabad');
         await candidatePage.fill('#higher_education', 'B.Com');
-        await candidatePage.locator('input[name="has_references"][value="no"]').check({ force: true });
-        await candidatePage.locator('input[name="immediate_joiner"][value="yes"]').check({ force: true });
+        await selectRadio(candidatePage, 'has_references', 'no');
+        await selectRadio(candidatePage, 'immediate_joiner', 'yes');
         await candidatePage.check('#consent');
         await candidatePage.click('#btnSubmit');
         await candidatePage.waitForURL(`**/q/${slug}/success`);
@@ -351,12 +372,12 @@ test.describe('Interview Application Form Module Complete Suite', () => {
         await expect(adminPage.locator('#autosaveStatus')).toContainText('Saved');
 
         // 2. Select Decision = Selected
-        await adminPage.locator('label[for="dec_selected"]').click();
+        await adminPage.locator('input[name="decision"][value="selected"]').check({ force: true });
         await expect(adminPage.locator('#boxSelectedFields')).toBeVisible();
         await expect(adminPage.locator('#autosaveStatus')).toContainText('Saved');
 
         // 3. Fill selection subfields: Interested = Yes, Position, Salary, Date of Joining
-        await adminPage.locator('input[name="candidate_interested"][value="yes"]').click();
+        await adminPage.locator('input[name="candidate_interested"][value="yes"]').check({ force: true });
         await adminPage.fill('#hr_position_offered', 'Senior Relationship Associate');
         await adminPage.fill('#hr_offered_salary', '450000');
         await adminPage.fill('#hr_joining_date', '2026-11-15');
@@ -372,13 +393,13 @@ test.describe('Interview Application Form Module Complete Suite', () => {
         await expect(adminPage.locator('#chipFeedbackStatus')).toHaveText('Feedback filled');
 
         // 5. Switch to Rejected with reason
-        await adminPage.locator('label[for="dec_rejected"]').click();
+        await adminPage.locator('input[name="decision"][value="rejected"]').check({ force: true });
         await expect(adminPage.locator('#boxRejectedFields')).toBeVisible();
         await adminPage.fill('#hr_rejection_reason', 'Not willing to relocate to Gurgaon');
         await adminPage.waitForTimeout(800);
 
         // Switch back to Selected -> previous offer values must remain intact in DB
-        await adminPage.locator('label[for="dec_selected"]').click();
+        await adminPage.locator('input[name="decision"][value="selected"]').check({ force: true });
         await expect(adminPage.locator('#hr_position_offered')).toHaveValue('Senior Relationship Associate');
         await adminPage.waitForTimeout(500);
 

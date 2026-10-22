@@ -356,3 +356,23 @@ function redirect(string $path, int $statusCode = 302): void {
     }
     exit;
 }
+
+/**
+ * Relative time helper (e.g. "just now", "2 min ago", "3 hours ago", "yesterday", "5 days ago")
+ */
+function time_ago($datetime): string {
+    if (empty($datetime)) return '-';
+    $time = is_numeric($datetime) ? (int)$datetime : strtotime($datetime);
+    if (!$time) return '-';
+    
+    $diff = time() - $time;
+    if ($diff < 10) return 'just now';
+    if ($diff < 60) return $diff . ' sec ago';
+    if ($diff < 120) return '1 min ago';
+    if ($diff < 3600) return floor($diff / 60) . ' min ago';
+    if ($diff < 7200) return '1 hour ago';
+    if ($diff < 86400) return floor($diff / 3600) . ' hours ago';
+    if ($diff < 172800) return 'yesterday';
+    if ($diff < 2592000) return floor($diff / 86400) . ' days ago';
+    return date('d M Y', $time);
+}

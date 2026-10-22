@@ -361,8 +361,12 @@ if (!empty($app['updated_at'])) {
     }
     .segmented-option input[type="radio"] {
         position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
         opacity: 0;
-        pointer-events: none;
+        cursor: pointer;
+        z-index: 1;
     }
     .segmented-label {
         display: block;
