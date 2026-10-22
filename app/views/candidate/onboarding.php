@@ -685,22 +685,22 @@ function renderCandidateDocSlot(string $type, string $label, string $description
 
                 <div style="margin-bottom:24px;">
                     <h3 style="font-size:1.25rem; font-weight:600; color:var(--text); margin:0 0 4px;">Step B &bull; Professional &amp; Social Links</h3>
-                    <p style="font-size:13.5px; color:var(--muted); margin:0;">Share your online profiles to help our hiring partners know you better. <strong style="color:var(--text);">LinkedIn profile is required.</strong></p>
+                    <p style="font-size:13.5px; color:var(--muted); margin:0;">Share your online profiles to help our hiring partners know you better. <strong style="color:var(--brand);">At least one profile link (LinkedIn or Instagram) is required.</strong></p>
                 </div>
 
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px; margin-bottom:30px;">
                     <!-- LinkedIn -->
                     <div>
                         <label class="form-label" for="soc_linkedin">
-                            <i class="fab fa-linkedin" style="color:#0A66C2; margin-right:4px;"></i> LinkedIn Profile URL <span style="color:var(--danger,#E05252);">*</span>
+                            <i class="fab fa-linkedin" style="color:#0A66C2; margin-right:4px;"></i> LinkedIn Profile URL <span style="font-size:12px; color:var(--muted); font-weight:normal;">(Required if no Instagram)</span>
                         </label>
-                        <input type="url" id="soc_linkedin" name="linkedin" class="form-control" value="<?= e($social['linkedin'] ?? '') ?>" placeholder="https://linkedin.com/in/yourname" required <?= $isLocked ? 'readonly' : '' ?>>
+                        <input type="url" id="soc_linkedin" name="linkedin" class="form-control" value="<?= e($social['linkedin'] ?? '') ?>" placeholder="https://linkedin.com/in/yourname" <?= $isLocked ? 'readonly' : '' ?>>
                     </div>
 
                     <!-- Instagram -->
                     <div>
                         <label class="form-label" for="soc_instagram">
-                            <i class="fab fa-instagram" style="color:var(--muted); margin-right:4px;"></i> Instagram Handle / URL
+                            <i class="fab fa-instagram" style="color:#E1306C; margin-right:4px;"></i> Instagram Handle / URL <span style="font-size:12px; color:var(--muted); font-weight:normal;">(Required if no LinkedIn)</span>
                         </label>
                         <input type="text" id="soc_instagram" name="instagram" class="form-control" value="<?= e($social['instagram'] ?? '') ?>" placeholder="@yourhandle or URL" <?= $isLocked ? 'readonly' : '' ?>>
                     </div>
@@ -1199,9 +1199,12 @@ function validateStepA() {
 
 function validateStepB() {
     const linkedinInput = document.getElementById('soc_linkedin');
+    const instagramInput = document.getElementById('soc_instagram');
     const linkedinVal = linkedinInput ? linkedinInput.value.trim() : '';
-    if (!linkedinVal) {
-        showToast('LinkedIn profile URL is required to proceed.', 'warning');
+    const instagramVal = instagramInput ? instagramInput.value.trim() : '';
+
+    if (!linkedinVal && !instagramVal) {
+        showToast('Please provide at least one social profile link (LinkedIn or Instagram).', 'warning');
         if (linkedinInput) {
             linkedinInput.focus();
             linkedinInput.classList.add('pulse-highlight');
@@ -1209,15 +1212,18 @@ function validateStepB() {
         }
         return false;
     }
-    const linkedinPattern = /^(https?:\/\/)?([a-zA-Z0-9_\-]+\.)?linkedin\.com\/.+/i;
-    if (!linkedinPattern.test(linkedinVal)) {
-        showToast('Please enter a valid LinkedIn URL (e.g. https://www.linkedin.com/in/yourname)', 'warning');
-        if (linkedinInput) {
-            linkedinInput.focus();
-            linkedinInput.classList.add('pulse-highlight');
-            setTimeout(() => linkedinInput.classList.remove('pulse-highlight'), 3000);
+
+    if (linkedinVal) {
+        const linkedinPattern = /^(https?:\/\/)?([a-zA-Z0-9_\-]+\.)?linkedin\.com\/.+/i;
+        if (!linkedinPattern.test(linkedinVal)) {
+            showToast('Please enter a valid LinkedIn URL (e.g. https://www.linkedin.com/in/yourname)', 'warning');
+            if (linkedinInput) {
+                linkedinInput.focus();
+                linkedinInput.classList.add('pulse-highlight');
+                setTimeout(() => linkedinInput.classList.remove('pulse-highlight'), 3000);
+            }
+            return false;
         }
-        return false;
     }
     return true;
 }

@@ -258,10 +258,7 @@ class AptitudeController {
                 'source'         => 'qr_aptitude'
             ]);
 
-            // Auto-verify email for instant test taking
-            $db->prepare("UPDATE `users` SET `email_verified_at` = NOW(), `email_verified` = 1 WHERE `id` = :id")
-               ->execute([':id' => $userId]);
-
+            // Do not auto-verify email. User must verify email if they ever register for full onboarding.
             $user = User::findById($userId);
         }
 

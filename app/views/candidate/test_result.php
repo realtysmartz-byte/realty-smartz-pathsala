@@ -184,7 +184,15 @@ $timeTakenStr = sprintf('%02d:%02d', $min, $sec);
 
         <div class="result-actions">
             <a href="<?= url('/dashboard/test/scorecard/' . $attemptId) ?>" class="btn-primary">Download Scorecard PDF</a>
-            <a href="<?= url('/dashboard') ?>" class="btn-secondary">Back to Dashboard</a>
+            <?php
+            $currUser = auth();
+            $isAptitudeOnly = empty($currUser) || ($currUser['candidate_type'] ?? '') === 'aptitude_only' || !empty($attempt['guest_test_link_id']);
+            ?>
+            <?php if ($isAptitudeOnly): ?>
+                <a href="<?= url('/') ?>" class="btn-secondary">Back to Home</a>
+            <?php else: ?>
+                <a href="<?= url('/dashboard') ?>" class="btn-secondary">Back to Dashboard</a>
+            <?php endif; ?>
         </div>
     </div>
 </body>

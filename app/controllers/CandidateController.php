@@ -16,6 +16,10 @@ class CandidateController {
     public function dashboard(): void {
         $userId = (int) auth()['id'];
         $candidate = Profile::getFullProfile($userId);
+        if (($candidate['candidate_type'] ?? '') === 'aptitude_only') {
+            redirect('/');
+            return;
+        }
         $db = Database::getConnection();
 
         // Fetch recent reviewer comments
@@ -41,6 +45,10 @@ class CandidateController {
     public function onboarding(): void {
         $userId = (int) auth()['id'];
         $candidate = Profile::getFullProfile($userId);
+        if (($candidate['candidate_type'] ?? '') === 'aptitude_only') {
+            redirect('/');
+            return;
+        }
 
         if (empty($candidate['email_verified_at'])) {
             flash('warning', 'Please verify your email address to access onboarding.');

@@ -289,6 +289,13 @@ class AuthController {
         }
 
         // Candidate status checks
+        if (($user['candidate_type'] ?? '') === 'aptitude_only') {
+            unset($_SESSION['user']);
+            flash('info', 'Your aptitude assessment has been recorded. Full onboarding requires account registration and email verification.');
+            redirect('/register');
+            return;
+        }
+
         if (empty($user['email_verified_at'])) {
             flash('warning', 'Please verify your registered email address to continue.');
             redirect('/verify-email');

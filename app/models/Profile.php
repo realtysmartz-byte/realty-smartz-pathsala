@@ -485,9 +485,9 @@ class Profile {
             $points++;
         }
 
-        // Step B: Social Links (LinkedIn is required)
+        // Step B: Social Links (LinkedIn or Instagram is required)
         $socialLinks = !empty($p['social_links']) ? (is_string($p['social_links']) ? json_decode($p['social_links'], true) : $p['social_links']) : [];
-        if (!empty($socialLinks['linkedin'])) {
+        if (!empty($socialLinks['linkedin']) || !empty($socialLinks['instagram'])) {
             $points++;
         }
 
@@ -531,14 +531,13 @@ class Profile {
             && !empty($p['state']) 
             && !empty($p['pincode']);
 
-        // Step 2: Social Links & Professional Profiles (LinkedIn is required)
-        $linkedinVal = $p['social']['linkedin'] ?? '';
-        if (empty($linkedinVal) && !empty($p['social_links'])) {
-            $decoded = is_string($p['social_links']) ? json_decode($p['social_links'], true) : $p['social_links'];
-            $linkedinVal = $decoded['linkedin'] ?? '';
+        // Step 2: Social Links & Professional Profiles (LinkedIn or Instagram is required)
+        $socialData = $p['social'] ?? [];
+        if (empty($socialData) && !empty($p['social_links'])) {
+            $socialData = is_string($p['social_links']) ? json_decode($p['social_links'], true) : $p['social_links'];
         }
-        $hasLinkedIn = !empty(trim((string)$linkedinVal));
-        $hasSocial = $hasBasic && $hasLinkedIn;
+        $hasSocialLink = !empty(trim((string)($socialData['linkedin'] ?? ''))) || !empty(trim((string)($socialData['instagram'] ?? '')));
+        $hasSocial = $hasBasic && $hasSocialLink;
 
         // Step 3: Documents & KYC (Aadhaar & PAN numbers + uploaded proofs + emergency contact)
         $hasAadhaar = !empty($p['aadhaar_last4']) || !empty($p['aadhaar_enc']) || !empty($p['aadhaar_encrypted']);
@@ -642,16 +641,19 @@ class Profile {
         $db = Database::getConnection();
 
         $linkedin = trim($data['linkedin'] ?? '');
-        if (empty($linkedin)) {
-            throw new Exception("LinkedIn profile URL is required.");
+        $instagram = trim($data['instagram'] ?? '');
+
+        if (empty($linkedin) && empty($instagram)) {
+            throw new Exception("Please provide at least one social profile link (LinkedIn or Instagram).");
         }
-        if (!preg_match('#^(https?:\/\/)?([a-zA-Z0-9_\-]+\.)?linkedin\.com\/#i', $linkedin)) {
+
+        if (!empty($linkedin) && !preg_match('#^(https?:\/\/)?([a-zA-Z0-9_\-]+\.)?linkedin\.com\/#i', $linkedin)) {
             throw new Exception("Please provide a valid LinkedIn profile URL (e.g. https://www.linkedin.com/in/username).");
         }
 
         $social = [
             'linkedin'  => $linkedin,
-            'instagram' => trim($data['instagram'] ?? ''),
+            'instagram' => $instagram,
             'facebook'  => trim($data['facebook'] ?? ''),
             'twitter'   => trim($data['twitter'] ?? ($data['x'] ?? '')),
             'youtube'   => trim($data['youtube'] ?? ''),
