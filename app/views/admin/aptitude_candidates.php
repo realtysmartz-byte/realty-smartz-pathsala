@@ -229,6 +229,59 @@ function buildAptitudeFilterUrl(array $overrides = []): string {
         background: var(--surface-2);
         border-color: var(--muted);
     }
+    .btn-action-edit {
+        height: 34px;
+        padding: 0 10px;
+        background: var(--surface-2);
+        color: var(--text);
+        border: 1px solid var(--line);
+        border-radius: var(--r-md);
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        text-decoration: none;
+    }
+    .btn-action-edit:hover {
+        background: #E8ECE9;
+        border-color: var(--muted);
+    }
+    .btn-action-delete {
+        height: 34px;
+        padding: 0 10px;
+        background: #FFF5F5;
+        color: #C53030;
+        border: 1px solid #FEB2B2;
+        border-radius: var(--r-md);
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .btn-action-delete:hover {
+        background: #FED7D7;
+    }
+    .btn-action-reset {
+        height: 34px;
+        padding: 0 10px;
+        background: #FEF3C7;
+        color: #92400E;
+        border: 1px solid #FDE68A;
+        border-radius: var(--r-md);
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .btn-action-reset:hover {
+        background: #FDE68A;
+    }
     .pagination-bar {
         display: flex;
         align-items: center;
@@ -397,6 +450,29 @@ function buildAptitudeFilterUrl(array $overrides = []): string {
                                     </a>
                                 <?php endif; ?>
 
+                                <?php if (!empty($c['test_score']) || !empty($c['attempt_id'])): ?>
+                                    <form action="<?= url('/admin/candidates/' . $c['id'] . '/allow-reattempt') ?>" method="POST" onsubmit="return confirm('Allow <?= e($c['full_name']) ?> to retake the aptitude test?');" style="display:inline;">
+                                        <?= csrf_field() ?>
+                                        <button type="submit" class="btn-action-reset" aria-label="Allow reattempt for <?= e($c['full_name']) ?>" title="Allow Retake Test">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+                                            <span>Reset Test</span>
+                                        </button>
+                                    </form>
+                                <?php endif; ?>
+
+                                <button type="button" class="btn-action-edit" onclick='openEditModal(<?= json_encode($c, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>)' aria-label="Edit <?= e($c['full_name']) ?>">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                    <span>Edit</span>
+                                </button>
+
+                                <form action="<?= url('/admin/candidates/' . $c['id'] . '/delete') ?>" method="POST" onsubmit="return confirm('Are you sure you want to delete <?= e($c['full_name']) ?>?');" style="display:inline;">
+                                    <?= csrf_field() ?>
+                                    <button type="submit" class="btn-action-delete" aria-label="Delete <?= e($c['full_name']) ?>">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                        <span>Delete</span>
+                                    </button>
+                                </form>
+
                                 <form action="<?= url('/admin/aptitude-candidates/' . $c['id'] . '/convert') ?>" method="POST" onsubmit="return confirm('Upgrade <?= e($c['full_name']) ?> to full onboarding profile?');" style="display:inline;">
                                     <?= csrf_field() ?>
                                     <button type="submit" class="btn-action-upgrade" aria-label="Upgrade <?= e($c['full_name']) ?> to onboarding">
@@ -445,7 +521,22 @@ function buildAptitudeFilterUrl(array $overrides = []): string {
                         <?php if (!empty($c['attempt_id'])): ?>
                             <a href="<?= url('/dashboard/test/scorecard/' . $c['attempt_id']) ?>" class="btn-action-pdf" aria-label="Download scorecard for <?= e($c['full_name']) ?>">Scorecard PDF</a>
                         <?php endif; ?>
-                        <form action="<?= url('/admin/aptitude-candidates/' . $c['id'] . '/convert') ?>" method="POST" onsubmit="return confirm('Upgrade to full onboarding?');">
+
+                        <?php if (!empty($c['test_score']) || !empty($c['attempt_id'])): ?>
+                            <form action="<?= url('/admin/candidates/' . $c['id'] . '/allow-reattempt') ?>" method="POST" onsubmit="return confirm('Allow retake test?');" style="display:inline;">
+                                <?= csrf_field() ?>
+                                <button type="submit" class="btn-action-reset" aria-label="Reset test for <?= e($c['full_name']) ?>">Reset Test</button>
+                            </form>
+                        <?php endif; ?>
+
+                        <button type="button" class="btn-action-edit" onclick='openEditModal(<?= json_encode($c, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>)' aria-label="Edit <?= e($c['full_name']) ?>">Edit</button>
+
+                        <form action="<?= url('/admin/candidates/' . $c['id'] . '/delete') ?>" method="POST" onsubmit="return confirm('Delete <?= e($c['full_name']) ?>?');" style="display:inline;">
+                            <?= csrf_field() ?>
+                            <button type="submit" class="btn-action-delete" aria-label="Delete <?= e($c['full_name']) ?>">Delete</button>
+                        </form>
+
+                        <form action="<?= url('/admin/aptitude-candidates/' . $c['id'] . '/convert') ?>" method="POST" onsubmit="return confirm('Upgrade to full onboarding?');" style="display:inline;">
                             <?= csrf_field() ?>
                             <button type="submit" class="btn-action-upgrade" aria-label="Upgrade <?= e($c['full_name']) ?>">Upgrade to Onboarding</button>
                         </form>
@@ -468,6 +559,66 @@ function buildAptitudeFilterUrl(array $overrides = []): string {
         <?php endif; ?>
     <?php endif; ?>
 </div>
+
+<!-- Edit Candidate Modal -->
+<div id="editCandidateModal" class="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:9999; align-items:center; justify-content:center; padding:16px;">
+    <div class="modal-dialog" style="background:#FFFFFF; border-radius:var(--r-lg); max-width:480px; width:100%; border:1px solid var(--line); box-shadow:0 12px 32px rgba(0,0,0,0.12); overflow:hidden;">
+        <div style="padding:18px 24px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;">
+            <h3 style="margin:0; font-size:17px; color:var(--text); font-weight:600;">Edit Candidate Details</h3>
+            <button type="button" onclick="closeEditModal()" style="background:none; border:none; cursor:pointer; color:var(--muted); font-size:22px; line-height:1; padding:0 4px;" aria-label="Close modal">&times;</button>
+        </div>
+        <form id="editCandidateForm" method="POST" action="" style="padding:20px 24px;">
+            <?= csrf_field() ?>
+            <div style="margin-bottom:14px;">
+                <label style="display:block; font-size:13px; font-weight:500; color:var(--text); margin-bottom:6px;">Full Name *</label>
+                <input type="text" name="full_name" id="editFullName" required class="filter-input" style="width:100%; box-sizing:border-box;">
+            </div>
+            <div style="margin-bottom:14px;">
+                <label style="display:block; font-size:13px; font-weight:500; color:var(--text); margin-bottom:6px;">Email Address *</label>
+                <input type="email" name="email" id="editEmail" required class="filter-input" style="width:100%; box-sizing:border-box;">
+            </div>
+            <div style="margin-bottom:14px;">
+                <label style="display:block; font-size:13px; font-weight:500; color:var(--text); margin-bottom:6px;">Mobile Number *</label>
+                <input type="tel" name="mobile" id="editMobile" required class="filter-input" style="width:100%; box-sizing:border-box;">
+            </div>
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:500; color:var(--text); margin-bottom:6px;">WhatsApp Number</label>
+                <input type="tel" name="whatsapp" id="editWhatsapp" class="filter-input" style="width:100%; box-sizing:border-box;">
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button type="button" onclick="closeEditModal()" class="btn-filter-reset" style="cursor:pointer;">Cancel</button>
+                <button type="submit" class="btn-filter-submit">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openEditModal(c) {
+    var form = document.getElementById('editCandidateForm');
+    form.action = '<?= url('/admin/candidates/') ?>' + c.id + '/update';
+    document.getElementById('editFullName').value = c.full_name || '';
+    document.getElementById('editEmail').value = c.email || '';
+    document.getElementById('editMobile').value = c.mobile || '';
+    document.getElementById('editWhatsapp').value = c.whatsapp || '';
+    
+    var modal = document.getElementById('editCandidateModal');
+    modal.style.display = 'flex';
+}
+
+function closeEditModal() {
+    var modal = document.getElementById('editCandidateModal');
+    modal.style.display = 'none';
+}
+
+// Close modal when clicking outside
+window.addEventListener('click', function(e) {
+    var modal = document.getElementById('editCandidateModal');
+    if (e.target === modal) {
+        closeEditModal();
+    }
+});
+</script>
 
 <?php
 $content = ob_get_clean();

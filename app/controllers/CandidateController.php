@@ -208,6 +208,8 @@ class CandidateController {
             flash('error', $res['error']);
             redirect('/dashboard/onboarding?step=step_d');
             return;
+        }
+
         // Sync candidate updated onboarding data to Google Sheets
         try {
             \App\Helpers\GoogleSheetsService::syncCandidate($userId);

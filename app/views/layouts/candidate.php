@@ -96,7 +96,7 @@ $candidateStatus = $currentUser['status'] ?? 'registered';
     <!-- Top Bar: Logo left; Right side = avatar button with dropdown (ONE clean row) -->
     <header class="candidate-topbar" role="banner">
         <div class="candidate-topbar-inner">
-            <a href="<?= url('/dashboard') ?>" class="text-decoration-none d-flex align-items-center" aria-label="Candidate Dashboard">
+            <a href="<?= url('/') ?>" class="text-decoration-none d-flex align-items-center" aria-label="Realty Smartz Pathshala Homepage">
                 <img src="<?= asset('/assets/img/logo/Pathshala.webp') ?>" alt="Realty Smartz Pathshala" height="40" width="auto">
             </a>
 

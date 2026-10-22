@@ -1614,6 +1614,29 @@ class AdminController {
         exit;
     }
 
+    /**
+     * Allow Re-attempt / Reset Test for Candidate (POST /admin/candidates/{id}/allow-reattempt)
+     */
+    public function allowReattempt(int $id): void {
+        $db = Database::getConnection();
+        $adminId = (int) (auth()['id'] ?? 1);
+
+        // Mark existing completed attempts with allow_reattempt = 1
+        $upd = $db->prepare("UPDATE `test_attempts` SET `allow_reattempt` = 1 WHERE `user_id` = :uid");
+        $upd->execute([':uid' => $id]);
+
+        AuditLog::log('test_reattempt_allowed', 'test_attempts', $id, null, ['user_id' => $id], $adminId);
+
+        $msg = 'Candidate can now take the aptitude test again.';
+        if ($this->isAjax()) {
+            response_json(['success' => true, 'message' => $msg]);
+            return;
+        }
+
+        flash('success', $msg);
+        redirect($_SERVER['HTTP_REFERER'] ?? '/admin/candidates/' . $id);
+    }
+
     private function isAjax(): bool {
         return (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') ||
                (!empty($_SERVER['CONTENT_TYPE']) && str_contains($_SERVER['CONTENT_TYPE'], 'application/json')) ||

@@ -548,7 +548,7 @@ $viewTitle = $viewTitle ?? 'Dashboard';
     <aside class="sidebar" id="adminSidebar" aria-label="Admin Navigation">
         <!-- Top Logo -->
         <div class="sidebar-header">
-            <a href="<?= url('/admin/dashboard') ?>" aria-label="Realty Smartz Pathshala Dashboard" style="display:flex; align-items:center;">
+            <a href="<?= url('/') ?>" aria-label="Realty Smartz Pathshala Homepage" style="display:flex; align-items:center;">
                 <img src="<?= asset('/assets/img/logo/Pathshala.webp') ?>" alt="Pathshala" class="sidebar-logo">
             </a>
             <button type="button" class="sidebar-close-btn" aria-label="Close navigation menu" onclick="toggleAdminSidebar(false)">
