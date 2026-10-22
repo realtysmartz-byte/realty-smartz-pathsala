@@ -575,6 +575,20 @@ $viewTitle = $viewTitle ?? 'Dashboard';
                 <span>Candidates</span>
             </a>
 
+            <a href="<?= url('/admin/interview-candidates') ?>" 
+               class="sidebar-item <?= str_starts_with($currentPath, '/admin/interview-candidates') ? 'active' : '' ?>" 
+               data-tooltip="Interview Candidates" 
+               aria-label="Interview Candidates">
+                <svg width="20" height="20" aria-hidden="true"><use href="#icon-file-text"></use></svg>
+                <span>Interview Candidates</span>
+                <?php 
+                $unopenedCount = \App\Models\InterviewApplication::getUnopenedCount();
+                ?>
+                <span class="badge sidebar-count-badge" id="interviewSidebarBadge" style="margin-left:auto; background:var(--brand); color:#fff; border-radius:var(--r-full); font-size:11px; padding:2px 7px; font-weight:600; <?= ($unopenedCount > 0) ? '' : 'display:none;' ?>">
+                    <?= $unopenedCount ?>
+                </span>
+            </a>
+
             <a href="<?= url('/admin/aptitude-candidates') ?>" 
                class="sidebar-item <?= str_starts_with($currentPath, '/admin/aptitude-candidates') ? 'active' : '' ?>" 
                data-tooltip="Aptitude Candidates" 

@@ -79,6 +79,13 @@ class Mailer {
     }
 
     /**
+     * Send email with raw HTML body
+     */
+    public static function sendRawHtml(string $toEmail, string $subject, string $htmlBody): bool {
+        return self::send($toEmail, '', $subject, $htmlBody);
+    }
+
+    /**
      * Send a test email from the Admin Panel to verify SMTP deliverability
      */
     public static function sendTestEmail(string $toEmail, string $toName): array {

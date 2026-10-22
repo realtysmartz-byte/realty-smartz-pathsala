@@ -846,4 +846,375 @@ class PdfHelper {
 
         return $pdf->Output('', 'S');
     }
+
+    /**
+     * Generate print-ready A4 PDF mirroring the paper Interview Application Form
+     */
+    public static function generateInterviewFormPdf(array $app): string {
+        $pdf = new Fpdi('P', 'mm', 'A4');
+        $pdf->SetAutoPageBreak(true, 15);
+        $pdf->AddPage('P', 'A4');
+        $pdf->SetMargins(15, 12, 15);
+
+        // Header Accent Bar
+        $pdf->SetFillColor(31, 92, 74); // #1F5C4A brand
+        $pdf->Rect(0, 0, 210, 6, 'F');
+
+        // Logo
+        $logoPath = PUBLIC_PATH . '/assets/img/logo/Pathshala.png';
+        if (file_exists($logoPath)) {
+            $pdf->Image($logoPath, 15, 10, 36, 0, 'PNG');
+        } else {
+            $pdf->SetFont('helvetica', 'B', 14);
+            $pdf->SetTextColor(31, 92, 74);
+            $pdf->SetXY(15, 12);
+            $pdf->Cell(50, 7, 'REALTY SMARTZ', 0, 0, 'L');
+        }
+
+        // Title
+        $pdf->SetFont('helvetica', 'B', 15);
+        $pdf->SetTextColor(38, 51, 45); // #26332D text
+        $pdf->SetXY(60, 10);
+        $pdf->Cell(90, 6, 'INTERVIEW APPLICATION FORM', 0, 0, 'C');
+
+        // Date (top right)
+        $subDate = !empty($app['submitted_at']) ? date('d/m/Y', strtotime($app['submitted_at'])) : date('d/m/Y');
+        $pdf->SetFont('helvetica', 'B', 9);
+        $pdf->SetTextColor(109, 118, 111);
+        $pdf->SetXY(150, 10);
+        $pdf->Cell(45, 5, 'Date: ' . $subDate, 0, 1, 'R');
+        $pdf->SetFont('helvetica', '', 8);
+        $pdf->SetXY(150, 15);
+        $pdf->Cell(45, 4, 'Ref #' . str_pad((string)$app['id'], 5, '0', STR_PAD_LEFT), 0, 1, 'R');
+
+        // Divider
+        $pdf->SetDrawColor(226, 221, 208); // #E2DDD0
+        $pdf->SetLineWidth(0.3);
+        $pdf->Line(15, 23, 195, 23);
+
+        $curY = 26;
+
+        // SECTION 1: TOP META (HR Name, Source By, Post Applied For)
+        $pdf->SetFillColor(247, 245, 239); // #F7F5EF
+        $pdf->Rect(15, $curY, 180, 14, 'F');
+        $pdf->Rect(15, $curY, 180, 14, 'D');
+
+        $pdf->SetFont('helvetica', 'B', 8.5);
+        $pdf->SetTextColor(109, 118, 111);
+        $pdf->SetXY(18, $curY + 2);
+        $pdf->Cell(35, 4, 'HR Name:', 0, 0, 'L');
+        $pdf->SetTextColor(38, 51, 45);
+        $pdf->SetFont('helvetica', 'B', 9);
+        $pdf->Cell(45, 4, $app['hr_name'] ?? 'N/A', 0, 0, 'L');
+
+        $pdf->SetFont('helvetica', 'B', 8.5);
+        $pdf->SetTextColor(109, 118, 111);
+        $pdf->Cell(25, 4, 'Source By:', 0, 0, 'L');
+        $pdf->SetTextColor(38, 51, 45);
+        $pdf->SetFont('helvetica', '', 9);
+        $pdf->Cell(55, 4, $app['source_by'] ?: 'N/A', 0, 1, 'L');
+
+        $pdf->SetFont('helvetica', 'B', 8.5);
+        $pdf->SetTextColor(109, 118, 111);
+        $pdf->SetXY(18, $curY + 8);
+        $pdf->Cell(35, 4, 'Post Applied For:', 0, 0, 'L');
+        $pdf->SetTextColor(31, 92, 74);
+        $pdf->SetFont('helvetica', 'B', 9.5);
+        $pdf->Cell(125, 4, $app['post_applied'] ?? 'N/A', 0, 1, 'L');
+
+        $curY += 17;
+
+        // SECTION 2: CANDIDATE PARTICULARS
+        $pdf->SetFont('helvetica', 'B', 9.5);
+        $pdf->SetTextColor(31, 92, 74);
+        $pdf->SetXY(15, $curY);
+        $pdf->Cell(180, 5, 'CANDIDATE PARTICULARS', 0, 1, 'L');
+        $curY += 6;
+
+        $pdf->SetDrawColor(226, 221, 208);
+        $pdf->SetLineWidth(0.2);
+
+        $rowHeight = 6.2;
+        $labelW = 42;
+        $valW = 48;
+
+        // Row 1: Full Name | Mail ID
+        $pdf->SetFont('helvetica', 'B', 8.5);
+        $pdf->SetTextColor(109, 118, 111);
+        $pdf->SetXY(15, $curY);
+        $pdf->Cell($labelW, $rowHeight, 'Full Name:', 'B', 0, 'L');
+        $pdf->SetFont('helvetica', 'B', 9);
+        $pdf->SetTextColor(38, 51, 45);
+        $pdf->Cell($valW, $rowHeight, $app['full_name'], 'B', 0, 'L');
+
+        $pdf->SetFont('helvetica', 'B', 8.5);
+        $pdf->SetTextColor(109, 118, 111);
+        $pdf->Cell($labelW, $rowHeight, 'Mail ID:', 'B', 0, 'L');
+        $pdf->SetFont('helvetica', '', 8.5);
+        $pdf->SetTextColor(38, 51, 45);
+        $pdf->Cell($valW, $rowHeight, $app['email'], 'B', 1, 'L');
+        $curY += $rowHeight;
+
+        // Row 2: Contact Number | Experience / Fresher
+        $pdf->SetFont('helvetica', 'B', 8.5);
+        $pdf->SetTextColor(109, 118, 111);
+        $pdf->SetXY(15, $curY);
+        $pdf->Cell($labelW, $rowHeight, 'Contact Number:', 'B', 0, 'L');
+        $pdf->SetFont('helvetica', 'B', 9);
+        $pdf->SetTextColor(38, 51, 45);
+        $pdf->Cell($valW, $rowHeight, '+91 ' . $app['mobile'], 'B', 0, 'L');
+
+        $pdf->SetFont('helvetica', 'B', 8.5);
+        $pdf->SetTextColor(109, 118, 111);
+        $pdf->Cell($labelW, $rowHeight, 'Experience / Fresher:', 'B', 0, 'L');
+        $pdf->SetFont('helvetica', 'B', 8.5);
+        $pdf->SetTextColor(38, 51, 45);
+        $pdf->Cell($valW, $rowHeight, ucfirst($app['experience_type']), 'B', 1, 'L');
+        $curY += $rowHeight;
+
+        // Row 3: Years in Real Estate | Vehicle Available
+        $pdf->SetFont('helvetica', 'B', 8.5);
+        $pdf->SetTextColor(109, 118, 111);
+        $pdf->SetXY(15, $curY);
+        $pdf->Cell($labelW, $rowHeight, 'Years in Real Estate:', 'B', 0, 'L');
+        $pdf->SetFont('helvetica', '', 8.5);
+        $pdf->SetTextColor(38, 51, 45);
+        $yearsText = ($app['experience_type'] === 'experience') ? (($app['years_in_real_estate'] !== null) ? $app['years_in_real_estate'] . ' Years' : '0 Years') : 'N/A (Fresher)';
+        $pdf->Cell($valW, $rowHeight, $yearsText, 'B', 0, 'L');
+
+        $pdf->SetFont('helvetica', 'B', 8.5);
+        $pdf->SetTextColor(109, 118, 111);
+        $pdf->Cell($labelW, $rowHeight, 'Vehicle Available:', 'B', 0, 'L');
+        $pdf->SetFont('helvetica', '', 8.5);
+        $pdf->SetTextColor(38, 51, 45);
+        $pdf->Cell($valW, $rowHeight, ucfirst($app['vehicle_available']), 'B', 1, 'L');
+        $curY += $rowHeight;
+
+        // Row 4: Current Location | Higher Education
+        $pdf->SetFont('helvetica', 'B', 8.5);
+        $pdf->SetTextColor(109, 118, 111);
+        $pdf->SetXY(15, $curY);
+        $pdf->Cell($labelW, $rowHeight, 'Current Location:', 'B', 0, 'L');
+        $pdf->SetFont('helvetica', '', 8.5);
+        $pdf->SetTextColor(38, 51, 45);
+        $pdf->Cell($valW, $rowHeight, $app['current_location'], 'B', 0, 'L');
+
+        $pdf->SetFont('helvetica', 'B', 8.5);
+        $pdf->SetTextColor(109, 118, 111);
+        $pdf->Cell($labelW, $rowHeight, 'Higher Education:', 'B', 0, 'L');
+        $pdf->SetFont('helvetica', '', 8.5);
+        $pdf->SetTextColor(38, 51, 45);
+        $pdf->Cell($valW, $rowHeight, $app['higher_education'], 'B', 1, 'L');
+        $curY += $rowHeight;
+
+        // Row 5: Immediate Joiner | Any References
+        $pdf->SetFont('helvetica', 'B', 8.5);
+        $pdf->SetTextColor(109, 118, 111);
+        $pdf->SetXY(15, $curY);
+        $pdf->Cell($labelW, $rowHeight, 'Immediate Joiner:', 'B', 0, 'L');
+        $pdf->SetFont('helvetica', 'B', 8.5);
+        $pdf->SetTextColor(38, 51, 45);
+        $pdf->Cell($valW, $rowHeight, ucfirst($app['immediate_joiner']), 'B', 0, 'L');
+
+        $pdf->SetFont('helvetica', 'B', 8.5);
+        $pdf->SetTextColor(109, 118, 111);
+        $pdf->Cell($labelW, $rowHeight, 'Any References:', 'B', 0, 'L');
+        $pdf->SetFont('helvetica', '', 8.5);
+        $pdf->SetTextColor(38, 51, 45);
+        $refText = ucfirst($app['has_references']) . ($app['has_references'] === 'yes' ? ' (' . ($app['reference_details'] ?: 'No details') . ')' : '');
+        $pdf->Cell($valW, $rowHeight, $refText, 'B', 1, 'L');
+        $curY += $rowHeight;
+
+        // Row 6 (if experience): Last Company HR & TL | Reason to Leave
+        if ($app['experience_type'] === 'experience') {
+            $pdf->SetFont('helvetica', 'B', 8.5);
+            $pdf->SetTextColor(109, 118, 111);
+            $pdf->SetXY(15, $curY);
+            $pdf->Cell($labelW, $rowHeight, 'Last Company HR & TL:', 'B', 0, 'L');
+            $pdf->SetFont('helvetica', '', 8.5);
+            $pdf->SetTextColor(38, 51, 45);
+            $pdf->Cell($valW, $rowHeight, $app['last_company_hr_tl'] ?: 'N/A', 'B', 0, 'L');
+
+            $pdf->SetFont('helvetica', 'B', 8.5);
+            $pdf->SetTextColor(109, 118, 111);
+            $pdf->Cell($labelW, $rowHeight, 'Reason to Leave:', 'B', 0, 'L');
+            $pdf->SetFont('helvetica', '', 8.5);
+            $pdf->SetTextColor(38, 51, 45);
+            $pdf->Cell($valW, $rowHeight, $app['reason_to_leave'] ?: 'N/A', 'B', 1, 'L');
+            $curY += $rowHeight;
+        }
+
+        $curY += 4;
+
+        // SECTION 3: EMPLOYMENT HISTORY TABLE
+        if ($app['experience_type'] === 'experience') {
+            $pdf->SetFont('helvetica', 'B', 9.5);
+            $pdf->SetTextColor(31, 92, 74);
+            $pdf->SetXY(15, $curY);
+            $pdf->Cell(180, 5, 'EMPLOYMENT HISTORY', 0, 1, 'L');
+            $curY += 6;
+
+            // Table Header
+            $pdf->SetFillColor(240, 236, 225); // #F0ECE1
+            $pdf->SetFont('helvetica', 'B', 7.5);
+            $pdf->SetTextColor(38, 51, 45);
+            $pdf->SetXY(15, $curY);
+            $pdf->Cell(52, 6, 'Organisation (current to first)', 1, 0, 'L', true);
+            $pdf->Cell(38, 6, 'Designation', 1, 0, 'L', true);
+            $pdf->Cell(25, 6, 'Salary', 1, 0, 'L', true);
+            $pdf->Cell(40, 6, 'HR Name & Number', 1, 0, 'L', true);
+            $pdf->Cell(25, 6, 'Duration', 1, 1, 'L', true);
+            $curY += 6;
+
+            $rows = $app['employment_rows'] ?? [];
+            if (empty($rows)) {
+                $rows = [['organisation' => 'Not Provided', 'designation' => '-', 'salary' => '-', 'hr_name_number' => '-', 'duration' => '-']];
+            }
+
+            $pdf->SetFont('helvetica', '', 8);
+            $pdf->SetTextColor(38, 51, 45);
+            foreach ($rows as $emp) {
+                $pdf->SetXY(15, $curY);
+                $pdf->Cell(52, 5.5, $emp['organisation'] ?: '-', 1, 0, 'L');
+                $pdf->Cell(38, 5.5, $emp['designation'] ?: '-', 1, 0, 'L');
+                $pdf->Cell(25, 5.5, $emp['salary'] ?: '-', 1, 0, 'L');
+                $pdf->Cell(40, 5.5, $emp['hr_name_number'] ?: '-', 1, 0, 'L');
+                $pdf->Cell(25, 5.5, $emp['duration'] ?: '-', 1, 1, 'L');
+                $curY += 5.5;
+            }
+            $curY += 4;
+        }
+
+        // SECTION 4: NOTE - FOR HR DEPARTMENT ONLY
+        $pdf->SetFillColor(247, 245, 239);
+        $pdf->SetDrawColor(31, 92, 74);
+        $pdf->SetLineWidth(0.4);
+        $pdf->Rect(15, $curY, 180, 78, 'DF');
+
+        // Block Title
+        $pdf->SetFont('helvetica', 'B', 10);
+        $pdf->SetTextColor(31, 92, 74);
+        $pdf->SetXY(18, $curY + 2.5);
+        $pdf->Cell(120, 5, 'NOTE - FOR HR DEPARTMENT ONLY', 0, 0, 'L');
+
+        // Decision pill
+        $dec = ucfirst($app['decision'] ?? 'Pending');
+        $pdf->SetFont('helvetica', 'B', 8.5);
+        if ($dec === 'Selected') {
+            $pdf->SetTextColor(34, 107, 53);
+        } elseif ($dec === 'Rejected') {
+            $pdf->SetTextColor(179, 38, 30);
+        } else {
+            $pdf->SetTextColor(154, 100, 16);
+        }
+        $pdf->SetXY(140, $curY + 2.5);
+        $pdf->Cell(50, 5, 'Decision: ' . $dec, 0, 1, 'R');
+
+        $hrInnerY = $curY + 8;
+
+        // Feedback fields in 2 columns
+        $pdf->SetFont('helvetica', 'B', 8);
+        $pdf->SetTextColor(109, 118, 111);
+
+        // Feedback by (TL / SM)
+        $pdf->SetXY(18, $hrInnerY);
+        $pdf->Cell(85, 4, 'Feedback by (TL / SM):', 0, 1, 'L');
+        $pdf->SetFont('helvetica', '', 8);
+        $pdf->SetTextColor(38, 51, 45);
+        $pdf->SetXY(18, $hrInnerY + 4);
+        $pdf->MultiCell(85, 3.8, $app['feedback_tl_sm'] ?: 'None recorded', 1, 'L', false);
+
+        // Feedback by HR
+        $pdf->SetFont('helvetica', 'B', 8);
+        $pdf->SetTextColor(109, 118, 111);
+        $pdf->SetXY(106, $hrInnerY);
+        $pdf->Cell(85, 4, 'Feedback by HR:', 0, 1, 'L');
+        $pdf->SetFont('helvetica', '', 8);
+        $pdf->SetTextColor(38, 51, 45);
+        $pdf->SetXY(106, $hrInnerY + 4);
+        $pdf->MultiCell(85, 3.8, $app['feedback_hr'] ?: 'None recorded', 1, 'L', false);
+
+        $hrInnerY += 21;
+
+        // Feedback Final
+        $pdf->SetFont('helvetica', 'B', 8);
+        $pdf->SetTextColor(109, 118, 111);
+        $pdf->SetXY(18, $hrInnerY);
+        $pdf->Cell(85, 4, 'Feedback Final:', 0, 1, 'L');
+        $pdf->SetFont('helvetica', '', 8);
+        $pdf->SetTextColor(38, 51, 45);
+        $pdf->SetXY(18, $hrInnerY + 4);
+        $pdf->MultiCell(85, 3.8, $app['feedback_final'] ?: 'None recorded', 1, 'L', false);
+
+        // Module Discussed
+        $pdf->SetFont('helvetica', 'B', 8);
+        $pdf->SetTextColor(109, 118, 111);
+        $pdf->SetXY(106, $hrInnerY);
+        $pdf->Cell(85, 4, 'Module Discussed:', 0, 1, 'L');
+        $pdf->SetFont('helvetica', '', 8);
+        $pdf->SetTextColor(38, 51, 45);
+        $pdf->SetXY(106, $hrInnerY + 4);
+        $pdf->MultiCell(85, 3.8, $app['module_discussed'] ?: 'None recorded', 1, 'L', false);
+
+        $hrInnerY += 21;
+
+        // Selected / Offer Details row
+        $pdf->SetDrawColor(226, 221, 208);
+        $pdf->Line(18, $hrInnerY, 192, $hrInnerY);
+        $hrInnerY += 2;
+
+        $pdf->SetFont('helvetica', 'B', 8);
+        $pdf->SetTextColor(109, 118, 111);
+        $pdf->SetXY(18, $hrInnerY);
+        $pdf->Cell(30, 4, 'Candidate Interested:', 0, 0, 'L');
+        $pdf->SetFont('helvetica', '', 8.5);
+        $pdf->SetTextColor(38, 51, 45);
+        $pdf->Cell(25, 4, $app['candidate_interested'] ? ucfirst($app['candidate_interested']) : 'N/A', 0, 0, 'L');
+
+        $pdf->SetFont('helvetica', 'B', 8);
+        $pdf->SetTextColor(109, 118, 111);
+        $pdf->Cell(28, 4, 'Position Offered:', 0, 0, 'L');
+        $pdf->SetFont('helvetica', 'B', 8.5);
+        $pdf->SetTextColor(38, 51, 45);
+        $pdf->Cell(40, 4, $app['position_offered'] ?: 'N/A', 0, 0, 'L');
+
+        $pdf->SetFont('helvetica', 'B', 8);
+        $pdf->SetTextColor(109, 118, 111);
+        $pdf->Cell(24, 4, 'Offered Salary:', 0, 0, 'L');
+        $pdf->SetFont('helvetica', 'B', 8.5);
+        $pdf->SetTextColor(38, 51, 45);
+        $salTxt = $app['offered_salary'] ? 'Rs. ' . number_format((float)$app['offered_salary'], 2) : 'N/A';
+        $pdf->Cell(30, 4, $salTxt, 0, 1, 'L');
+
+        $hrInnerY += 6;
+
+        $pdf->SetFont('helvetica', 'B', 8);
+        $pdf->SetTextColor(109, 118, 111);
+        $pdf->SetXY(18, $hrInnerY);
+        $pdf->Cell(30, 4, 'Date of Joining:', 0, 0, 'L');
+        $pdf->SetFont('helvetica', 'B', 8.5);
+        $pdf->SetTextColor(31, 92, 74);
+        $joinTxt = $app['joining_date'] ? date('d M Y', strtotime($app['joining_date'])) : 'N/A';
+        $pdf->Cell(50, 4, $joinTxt, 0, 0, 'L');
+
+        if (!empty($app['rejection_reason'])) {
+            $pdf->SetFont('helvetica', 'B', 8);
+            $pdf->SetTextColor(179, 38, 30);
+            $pdf->Cell(28, 4, 'Rejection Reason:', 0, 0, 'L');
+            $pdf->SetFont('helvetica', '', 8);
+            $pdf->SetTextColor(38, 51, 45);
+            $pdf->Cell(65, 4, $app['rejection_reason'], 0, 1, 'L');
+        } else {
+            $pdf->Ln(4);
+        }
+
+        // Footer: Verification & Audit
+        $pdf->SetFont('helvetica', '', 7.5);
+        $pdf->SetTextColor(109, 118, 111);
+        $pdf->SetXY(15, 285);
+        $pdf->Cell(180, 4, 'Realty Smartz Pathshala &bull; Interview Application Form &bull; System Generated Record Ref #' . $app['id'], 0, 0, 'C');
+
+        return $pdf->Output('', 'S');
+    }
 }
+

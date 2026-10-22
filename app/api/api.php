@@ -109,7 +109,8 @@ $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
 if (false !== $pos = strpos($requestUri, '?')) {
     $requestUri = substr($requestUri, 0, $pos);
 }
-$endpoint = '/' . trim(str_replace('/api/v1', '', $requestUri), '/');
+$endpoint = preg_replace('#^/api(/v1)?#', '', $requestUri);
+if ($endpoint === '' || $endpoint === false) $endpoint = '/';
 $method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
 
 // Read JSON payload if content-type is application/json
@@ -315,6 +316,22 @@ try {
         $cat = $_GET['cat'] ?? null;
         $projects = Project::getAllPublished($cat);
         response_json(['success' => true, 'data' => $projects]);
+    }
+
+    // ----------------------------------------------------------------
+    // 12. GET /interview/updates (Live polling for interview candidates)
+    // ----------------------------------------------------------------
+    if ($method === 'GET' && $endpoint === '/interview/updates') {
+        (new \App\Controllers\InterviewController())->apiUpdates();
+        exit;
+    }
+
+    // ----------------------------------------------------------------
+    // 13. PATCH /interview/{id} (Autosave field for interview application)
+    // ----------------------------------------------------------------
+    if ($method === 'PATCH' && preg_match('#^/interview/(\d+)$#', $endpoint, $m)) {
+        (new \App\Controllers\InterviewController())->patchField((int)$m[1], $inputData);
+        exit;
     }
 
     // If endpoint doesn't match any route

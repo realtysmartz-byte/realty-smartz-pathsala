@@ -9,6 +9,7 @@ use App\Controllers\AuthController;
 use App\Controllers\CandidateController;
 use App\Controllers\AptitudeController;
 use App\Controllers\AdminController;
+use App\Controllers\InterviewController;
 use App\Middleware\CsrfMiddleware;
 use App\Middleware\AuthMiddleware;
 use App\Middleware\AdminMiddleware;
@@ -104,6 +105,11 @@ Router::get('/blog/{slug}', [HomeController::class, 'blogDetail']);
 Router::get('/contact', [HomeController::class, 'contact']);
 Router::post('/contact', [HomeController::class, 'submitContact'], ['csrf']);
 
+// Public Interview Application Form (Accessible only via QR code)
+Router::get('/q/{slug}', [InterviewController::class, 'showPublicForm']);
+Router::post('/q/{slug}', [InterviewController::class, 'submitPublicForm']);
+Router::get('/q/{slug}/success', [InterviewController::class, 'showSuccess']);
+
 // ================================================================
 // 2. AUTHENTICATION ROUTES
 // ================================================================
@@ -187,6 +193,16 @@ Router::post('/admin/candidates/bulk-pdf-zip', [AdminController::class, 'bulkPdf
 Router::get('/admin/candidates/export-excel', [AdminController::class, 'exportExcel'], ['admin']);
 Router::post('/admin/candidates/export-excel', [AdminController::class, 'exportExcel'], ['admin', 'csrf']);
 Router::get('/admin/candidates/export-csv', [AdminController::class, 'exportExcel'], ['admin']);
+
+// Interview Candidates Management
+Router::get('/admin/interview-candidates', [InterviewController::class, 'index'], ['admin']);
+Router::get('/admin/interview-candidates/export', [InterviewController::class, 'export'], ['admin']);
+Router::get('/admin/interview-candidates/{id}', [InterviewController::class, 'detail'], ['admin']);
+Router::get('/admin/interview-candidates/{id}/pdf', [InterviewController::class, 'downloadPdf'], ['admin']);
+Router::post('/admin/interview-candidates/{id}/archive', [InterviewController::class, 'archive'], ['admin', 'csrf']);
+Router::post('/admin/interview-candidates/{id}/restore', [InterviewController::class, 'restore'], ['admin', 'csrf']);
+Router::post('/admin/interview/toggle-accepting', [InterviewController::class, 'toggleAccepting'], ['admin', 'csrf']);
+Router::post('/admin/interview/settings', [InterviewController::class, 'saveSettings'], ['admin', 'csrf']);
 
 // Aptitude Candidates Management
 Router::get('/admin/aptitude-candidates', [AdminController::class, 'aptitudeCandidates'], ['admin']);

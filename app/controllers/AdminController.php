@@ -1596,8 +1596,12 @@ class AdminController {
         $onboardingUrl = \App\Helpers\QrCodeHelper::getOnboardingUrl();
         $aptitudeUrl = \App\Helpers\QrCodeHelper::getAptitudeUrl();
 
+        $interviewQr = \App\Models\InterviewApplication::getQrSettings();
+        $interviewUrl = \App\Helpers\QrCodeHelper::getBaseUrl() . '/q/' . $interviewQr['slug'];
+
         $onboardingSvg = \App\Helpers\QrCodeHelper::getSvg($onboardingUrl, 6, 6, '#1F5C4A');
         $aptitudeSvg = \App\Helpers\QrCodeHelper::getSvg($aptitudeUrl, 6, 6, '#1F5C4A');
+        $interviewSvg = \App\Helpers\QrCodeHelper::getSvg($interviewUrl, 6, 6, '#1F5C4A');
 
         $viewTitle = "QR Codes";
         $pageTitle = "QR Code Management | Realty Smartz Pathshala";
@@ -1606,9 +1610,17 @@ class AdminController {
     }
 
     /**
-     * Download QR Code as PNG (/admin/qr-codes/download/{type})
+     * Download QR Code as PNG or SVG (/admin/qr-codes/download/{type})
      */
     public function downloadQrCode(string $type): void {
+        if ($type === 'interview') {
+            (new \App\Controllers\InterviewController())->downloadQrCode('png');
+            return;
+        } elseif ($type === 'interview-svg') {
+            (new \App\Controllers\InterviewController())->downloadQrCode('svg');
+            return;
+        }
+
         $targetUrl = ($type === 'aptitude') 
             ? \App\Helpers\QrCodeHelper::getAptitudeUrl() 
             : \App\Helpers\QrCodeHelper::getOnboardingUrl();
