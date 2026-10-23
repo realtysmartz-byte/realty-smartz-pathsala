@@ -365,6 +365,13 @@ class InterviewController {
                 \App\Helpers\GoogleSheetsService::log("Google Sheets sync failed on interview submit ({$appId}): " . $e->getMessage());
             }
 
+            // Realtime Telegram Alert to Group
+            try {
+                \App\Helpers\TelegramService::sendInterviewCandidateAlert($appId);
+            } catch (\Throwable $e) {
+                \App\Helpers\TelegramService::log("Telegram notification failed on interview submit ({$appId}): " . $e->getMessage());
+            }
+
             // Record idempotency token in session
             $_SESSION['interview_submitted_token'] = $postIdempotency;
             unset($_SESSION['interview_idempotency']);
@@ -805,6 +812,33 @@ class InterviewController {
             return;
         }
 
+        // Handle Test Telegram Bot Connection
+        if (!empty($_POST['action']) && $_POST['action'] === 'send_test_telegram') {
+            $testToken = trim((string)($_POST['telegram_bot_token'] ?? ''));
+            $testChatId = trim((string)($_POST['telegram_chat_id'] ?? ''));
+
+            try {
+                $res = \App\Helpers\TelegramService::testConnection($testToken, $testChatId);
+                response_json($res);
+            } catch (Throwable $e) {
+                response_json(['success' => false, 'error' => $e->getMessage()]);
+            }
+            return;
+        }
+
+        // Handle Auto-Detect Group Chats
+        if (!empty($_POST['action']) && $_POST['action'] === 'detect_telegram_chats') {
+            $testToken = trim((string)($_POST['telegram_bot_token'] ?? ''));
+
+            try {
+                $chats = \App\Helpers\TelegramService::getRecentChats($testToken);
+                response_json(['success' => true, 'chats' => $chats]);
+            } catch (Throwable $e) {
+                response_json(['success' => false, 'error' => $e->getMessage()]);
+            }
+            return;
+        }
+
         // Save Automation switches and templates
         Setting::set('interview_email_hr_new_form', !empty($_POST['interview_email_hr_new_form']) ? 1 : 0);
         Setting::set('interview_email_hr_recipients', trim((string)($_POST['interview_email_hr_recipients'] ?? 'hr@realtysmartzpathshala.in')));
@@ -815,9 +849,18 @@ class InterviewController {
         Setting::set('interview_email_rejected_subject', trim((string)($_POST['interview_email_rejected_subject'] ?? 'Application Update | Realty Smartz Pathshala')));
         Setting::set('interview_email_rejected_body', trim((string)($_POST['interview_email_rejected_body'] ?? '')));
 
+        // Telegram Bot Automation settings
+        Setting::set('telegram_notifications_enabled', !empty($_POST['telegram_notifications_enabled']) ? 1 : 0);
+        if (isset($_POST['telegram_bot_token'])) {
+            Setting::set('telegram_bot_token', trim((string)($_POST['telegram_bot_token'] ?? '')));
+        }
+        if (isset($_POST['telegram_chat_id'])) {
+            Setting::set('telegram_chat_id', trim((string)($_POST['telegram_chat_id'] ?? '')));
+        }
+
         AuditLog::log('update_interview_automation_settings', 'settings', 0, null, [], (int)$user['id']);
 
-        flash('success', 'Interview automation settings updated successfully.');
+        flash('success', 'Interview & Telegram automation settings updated successfully.');
         redirect('/admin/interview-candidates?tab=settings');
     }
 }

@@ -225,6 +225,13 @@ class CandidateController {
             error_log("Google Sheets sync failed on submitOnboarding: " . $e->getMessage());
         }
 
+        // Realtime Telegram Alert to Group
+        try {
+            \App\Helpers\TelegramService::sendStudentCandidateAlert($userId);
+        } catch (\Throwable $e) {
+            \App\Helpers\TelegramService::log("Telegram alert failed on submitOnboarding ({$userId}): " . $e->getMessage());
+        }
+
         $successMsg = '🎉 Onboarding submitted successfully! Please complete your aptitude assessment.';
         if ($isAjax) {
             response_json([

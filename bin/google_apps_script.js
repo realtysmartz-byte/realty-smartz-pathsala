@@ -69,10 +69,28 @@ function doPost(e) {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sheet = getOrCreateSheet(ss, targetTabName, headers);
 
-    // Ensure header row exists in Row 1
-    if (sheet.getLastRow() === 0 && headers.length > 0) {
-      sheet.appendRow(headers);
-      styleHeaderRow(sheet, headers.length);
+    // Ensure header row exists and stays synchronized with latest system columns
+    if (headers && headers.length > 0) {
+      if (sheet.getLastRow() === 0) {
+        sheet.appendRow(headers);
+        styleHeaderRow(sheet, headers.length);
+      } else {
+        var currentLastCol = sheet.getLastColumn();
+        var currentHeaders = currentLastCol > 0 ? sheet.getRange(1, 1, 1, currentLastCol).getValues()[0] : [];
+        var headersChanged = (currentHeaders.length !== headers.length);
+        if (!headersChanged) {
+          for (var h = 0; h < headers.length; h++) {
+            if (String(currentHeaders[h]).trim() !== String(headers[h]).trim()) {
+              headersChanged = true;
+              break;
+            }
+          }
+        }
+        if (headersChanged) {
+          sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+          styleHeaderRow(sheet, headers.length);
+        }
+      }
     }
 
     // Search Column A for existing candidate ID to prevent duplicate rows

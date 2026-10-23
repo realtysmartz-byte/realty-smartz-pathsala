@@ -750,6 +750,51 @@ $viewTitle = "Interview Candidates";
                 </div>
             </div>
 
+            <!-- 4. Telegram Bot Group Alerts -->
+            <div class="setting-group" style="background: rgba(36, 129, 204, 0.05); border: 1px solid rgba(36, 129, 204, 0.25); border-radius: var(--r-md); padding: 16px;">
+                <label class="setting-label" style="display: flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" name="telegram_notifications_enabled" value="1" <?= Setting::get('telegram_notifications_enabled', 1) ? 'checked' : '' ?> style="width: 18px; height: 18px; accent-color: #2481CC;">
+                    <span style="font-weight: 700; color: #1B365D; display: flex; align-items: center; gap: 6px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="#2481CC"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.12.03-1.99 1.27-5.62 3.72-.53.36-1.01.54-1.44.53-.47-.01-1.38-.27-2.05-.49-.83-.27-1.48-.42-1.42-.88.03-.24.37-.49 1.02-.75 3.98-1.73 6.64-2.87 7.97-3.44 3.79-1.63 4.58-1.91 5.1-1.92.11 0 .37.03.54.17.14.12.18.28.2.45-.01.07-.01.17-.02.24z"/></svg>
+                        Telegram Bot Group Alerts (Real-Time Automation)
+                    </span>
+                </label>
+                <p class="setting-desc" style="color: #4A5568; margin-top: 4px;">
+                    Instantly sends complete candidate details (Name, Contact, Post, Segment, HR, Location, Experience) into your Telegram group when a form is submitted.
+                </p>
+
+                <div style="margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div>
+                        <label style="font-size: 12px; font-weight: 700; color: var(--text); display: block; margin-bottom: 4px;">
+                            Telegram Bot Token:
+                        </label>
+                        <input type="text" name="telegram_bot_token" id="telegramBotTokenInput" class="filter-input" value="<?= e(Setting::get('telegram_bot_token', '')) ?>" placeholder="e.g. 7845129631:AAHk..." style="background:#FFFFFF; font-family:monospace; font-size:12.5px;">
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; font-weight: 700; color: var(--text); display: block; margin-bottom: 4px;">
+                            Group Chat ID:
+                        </label>
+                        <input type="text" name="telegram_chat_id" id="telegramChatIdInput" class="filter-input" value="<?= e(Setting::get('telegram_chat_id', '')) ?>" placeholder="e.g. -1002345678901" style="background:#FFFFFF; font-family:monospace; font-size:12.5px;">
+                    </div>
+                </div>
+
+                <div style="margin-top: 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                    <div style="font-size: 11.5px; color: var(--muted); line-height: 1.4;">
+                        💡 <em>Tip: Add <code>@Interviewnotifybot</code> to your group, send any message, then click Auto-Detect!</em>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button type="button" class="btn-action-outline" style="background:#FFFFFF; font-size:12px; height:32px; border-color:#6B7280; color:#374151; font-weight:600;" onclick="detectTelegramChatId()" title="Fetch Chat ID automatically from recent group message">
+                            🔍 Auto-Detect Group ID
+                        </button>
+                        <button type="button" class="btn-action-outline" style="background:#FFFFFF; font-size:12px; height:32px; border-color:#2481CC; color:#2481CC; font-weight:600;" onclick="sendTestTelegramMessage()">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.12.03-1.99 1.27-5.62 3.72-.53.36-1.01.54-1.44.53-.47-.01-1.38-.27-2.05-.49-.83-.27-1.48-.42-1.42-.88.03-.24.37-.49 1.02-.75 3.98-1.73 6.64-2.87 7.97-3.44 3.79-1.63 4.58-1.91 5.1-1.92.11 0 .37.03.54.17.14.12.18.28.2.45-.01.07-.01.17-.02.24z"/></svg>
+                            Test Telegram Bot
+                        </button>
+                    </div>
+                </div>
+                <div id="telegramStatus" style="font-size: 12px; margin-top: 8px; font-weight: 600; display: none;"></div>
+            </div>
+
             <!-- Test Email Section -->
             <div style="background: var(--surface-2); padding: 14px; border-radius: var(--r-md); margin-bottom: 20px;">
                 <label style="font-size: 13px; font-weight: 600; color: var(--text); display: block; margin-bottom: 6px;">Send a Test Email</label>
@@ -991,6 +1036,91 @@ async function sendTestAutomationEmail() {
         }
     } catch(e) {
         st.textContent = 'Error dispatching test email.';
+        st.style.color = 'var(--danger)';
+    }
+}
+
+async function sendTestTelegramMessage() {
+    const token = document.getElementById('telegramBotTokenInput').value.trim();
+    const chatId = document.getElementById('telegramChatIdInput').value.trim();
+    const st = document.getElementById('telegramStatus');
+    st.style.display = 'block';
+
+    if (!token) {
+        st.textContent = '⚠️ Please enter your Telegram Bot Token.';
+        st.style.color = 'var(--danger)';
+        return;
+    }
+    if (!chatId) {
+        st.textContent = '⚠️ Please enter your Telegram Group Chat ID.';
+        st.style.color = 'var(--danger)';
+        return;
+    }
+
+    st.textContent = 'Testing connection with Telegram...';
+    st.style.color = 'var(--muted)';
+
+    try {
+        const fd = new FormData();
+        fd.append('action', 'send_test_telegram');
+        fd.append('telegram_bot_token', token);
+        fd.append('telegram_chat_id', chatId);
+        fd.append('csrf_token', '<?= csrf_token() ?>');
+
+        const res = await fetch('<?= url('/admin/interview/settings') ?>', {
+            method: 'POST',
+            body: fd
+        });
+        const json = await res.json();
+        if (json.success) {
+            st.innerHTML = '✅ <strong>Connected!</strong> ' + (json.message || 'Test message received in Telegram group.') + (json.bot_username ? ' (@' + json.bot_username + ')' : '');
+            st.style.color = '#226B35';
+        } else {
+            st.innerHTML = '❌ ' + (json.error || 'Failed to connect to Telegram.');
+            st.style.color = 'var(--danger)';
+        }
+    } catch(e) {
+        st.textContent = 'Error connecting to server for Telegram test.';
+        st.style.color = 'var(--danger)';
+    }
+}
+
+async function detectTelegramChatId() {
+    const token = document.getElementById('telegramBotTokenInput').value.trim();
+    const st = document.getElementById('telegramStatus');
+    st.style.display = 'block';
+
+    if (!token) {
+        st.textContent = '⚠️ Please enter your Telegram Bot Token first.';
+        st.style.color = 'var(--danger)';
+        return;
+    }
+
+    st.textContent = 'Checking Telegram for recent messages in groups where bot was added...';
+    st.style.color = 'var(--muted)';
+
+    try {
+        const fd = new FormData();
+        fd.append('action', 'detect_telegram_chats');
+        fd.append('telegram_bot_token', token);
+        fd.append('csrf_token', '<?= csrf_token() ?>');
+
+        const res = await fetch('<?= url('/admin/interview/settings') ?>', {
+            method: 'POST',
+            body: fd
+        });
+        const json = await res.json();
+        if (json.success && json.chats && json.chats.length > 0) {
+            const chat = json.chats[0];
+            document.getElementById('telegramChatIdInput').value = chat.id;
+            st.innerHTML = '✅ Found Group: <strong>' + (chat.title || chat.id) + '</strong> (ID: <code>' + chat.id + '</code>). Automatically filled in!';
+            st.style.color = '#226B35';
+        } else {
+            st.innerHTML = 'ℹ️ No recent messages found. Please <strong>1) Add @Interviewnotifybot to your group</strong>, and <strong>2) Send any message</strong> (e.g. "test") in that group, then click Auto-Detect again!';
+            st.style.color = '#D97706';
+        }
+    } catch(e) {
+        st.textContent = 'Error contacting server to detect Telegram chats.';
         st.style.color = 'var(--danger)';
     }
 }

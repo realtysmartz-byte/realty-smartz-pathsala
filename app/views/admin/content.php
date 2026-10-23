@@ -124,6 +124,34 @@ $pageTitle = "Site Content & CMS Manager | Admin Portal";
                 </div>
             </div>
 
+            <!-- Telegram Bot Automation -->
+            <div class="bento-card" style="padding:24px; grid-column: 1 / -1; border-left: 4px solid #2481CC;">
+                <h3 style="font-size:1.15rem; color:var(--text); font-weight:700; margin-bottom:8px; display:flex; align-items:center; gap:8px;">
+                    <i class="fab fa-telegram" style="color:#2481CC; font-size:1.3rem;"></i> Telegram Bot Automation (Candidate Notifications)
+                </h3>
+                <p style="color:var(--muted); font-size:13px; margin-bottom:16px;">
+                    Send instant notifications directly into your Telegram group whenever an interview candidate or student submits their form.
+                </p>
+
+                <div style="display:flex; flex-direction:column; gap:14px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                        <input type="checkbox" name="settings[telegram_notifications_enabled]" value="1" <?= (!empty($settings['telegram_notifications_enabled']) || !isset($settings['telegram_notifications_enabled'])) ? 'checked' : '' ?> style="width:18px; height:18px; accent-color:#2481CC;">
+                        <span style="font-weight:600; font-size:13.5px; color:var(--text);">Enable Real-Time Telegram Group Notifications</span>
+                    </label>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                        <div>
+                            <label style="display:block; color:var(--text); font-size:12.5px; font-weight:600; margin-bottom:4px;">Telegram Bot Token</label>
+                            <input type="text" name="settings[telegram_bot_token]" value="<?= e($settings['telegram_bot_token'] ?? '') ?>" placeholder="e.g. 7845129631:AAHkM..." style="width:100%; padding:9px 12px; background:var(--surface); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13.5px; font-family:monospace;">
+                        </div>
+                        <div>
+                            <label style="display:block; color:var(--text); font-size:12.5px; font-weight:600; margin-bottom:4px;">Telegram Group Chat ID</label>
+                            <input type="text" name="settings[telegram_chat_id]" value="<?= e($settings['telegram_chat_id'] ?? '') ?>" placeholder="e.g. -1002345678901" style="width:100%; padding:9px 12px; background:var(--surface); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13.5px; font-family:monospace;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <div style="margin-top:24px; text-align:right;">
