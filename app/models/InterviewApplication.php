@@ -432,11 +432,11 @@ class InterviewApplication {
 
             $db->commit();
 
-            // Realtime Sync to Google Sheets (Tab: Interview Candidates)
+            // Realtime Sync to Google Sheets (Tab: Interview Candidate)
             try {
                 \App\Helpers\GoogleSheetsService::syncInterviewApplicationAsync($id);
             } catch (\Throwable $e) {
-                error_log("Google Sheets sync failed on interview updateField: " . $e->getMessage());
+                \App\Helpers\GoogleSheetsService::log("Google Sheets sync failed on interview updateField ({$id}): " . $e->getMessage());
             }
 
             // Check automation emails if decision changed (asynchronously)
@@ -568,49 +568,10 @@ class InterviewApplication {
     }
 
     /**
-     * Non-blocking background dispatcher for automation emails
+     * Dispatch automation emails reliably across all hosting environments
      */
     public static function sendAutomationEmailsAsync(int $applicationId, string $triggerType, array $appData = []): void {
-        $binScript = ROOT_PATH . '/bin/send_interview_email.php';
-        if (!file_exists($binScript)) {
-            self::sendAutomationEmails($applicationId, $triggerType, $appData);
-            return;
-        }
-
-        $phpBinary = PHP_BINARY;
-        if (!file_exists($phpBinary) || str_ends_with(strtolower($phpBinary), 'php-cgi.exe') || str_ends_with(strtolower($phpBinary), 'httpd.exe')) {
-            if (file_exists('C:\\xampp\\php\\php.exe')) {
-                $phpBinary = 'C:\\xampp\\php\\php.exe';
-            } else {
-                $phpBinary = 'php';
-            }
-        }
-
-        $escapedPhp = escapeshellarg($phpBinary);
-        $escapedScript = escapeshellarg($binScript);
-        $escapedType = escapeshellarg($triggerType);
-        $id = (int)$applicationId;
-
-        try {
-            if (stripos(PHP_OS, 'WIN') === 0) {
-                $cmd = "{$escapedPhp} {$escapedScript} --id={$id} --type={$escapedType}";
-                $descriptors = [
-                    0 => ['pipe', 'r'],
-                    1 => ['file', 'NUL', 'w'],
-                    2 => ['file', 'NUL', 'w']
-                ];
-                $proc = proc_open($cmd, $descriptors, $pipes, ROOT_PATH, null, ['bypass_shell' => false]);
-                if (is_resource($proc)) {
-                    fclose($pipes[0]);
-                }
-            } else {
-                $cmd = "{$escapedPhp} {$escapedScript} --id={$id} --type={$escapedType} > /dev/null 2>&1 &";
-                exec($cmd);
-            }
-        } catch (\Throwable $t) {
-            error_log("Async email dispatch failed: " . $t->getMessage());
-            self::sendAutomationEmails($applicationId, $triggerType, $appData);
-        }
+        self::sendAutomationEmails($applicationId, $triggerType, $appData);
     }
 
     /**

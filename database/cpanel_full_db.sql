@@ -1,5 +1,5 @@
 -- Realty Smartz Pathshala Complete Production Database Dump
--- Generated: 2026-10-23 13:51:27
+-- Generated: 2026-10-23 14:04:49
 -- Compatible with cPanel MySQL / MariaDB and phpMyAdmin
 
 SET FOREIGN_KEY_CHECKS = 0;
@@ -128,7 +128,7 @@ CREATE TABLE `audit_logs` (
   KEY `idx_audit_user` (`user_id`),
   KEY `idx_audit_action` (`action`),
   KEY `idx_audit_entity` (`entity_type`,`entity_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=593 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=594 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `audit_logs`
 INSERT INTO `audit_logs` (`id`, `user_id`, `action`, `entity_type`, `entity_id`, `ip_address`, `user_agent`, `old_values`, `new_values`, `created_at`) VALUES
@@ -590,7 +590,8 @@ INSERT INTO `audit_logs` (`id`, `user_id`, `action`, `entity_type`, `entity_id`,
   ('589', '1', 'interview_field_update', 'interview_applications', '29', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"selected\"}', '{\"field\":\"decision\",\"new_value\":\"rejected\",\"version\":8}', '2026-10-23 13:39:27'),
   ('590', '1', 'interview_field_update', 'interview_applications', '29', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"rejection_reason\",\"old_value\":null}', '{\"field\":\"rejection_reason\",\"new_value\":\"Not willing to relocate to Gurgaon\",\"version\":9}', '2026-10-23 13:39:28'),
   ('591', '1', 'interview_field_update', 'interview_applications', '29', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"rejected\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":10}', '2026-10-23 13:39:29'),
-  ('592', '1', 'download_interview_pdf', 'interview_applications', '29', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"filename\":\"Interview_Form_Kavita_Live_Test_913_29.pdf\",\"ip\":\"127.0.0.1\"}', '2026-10-23 13:39:30');
+  ('592', '1', 'download_interview_pdf', 'interview_applications', '29', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"filename\":\"Interview_Form_Kavita_Live_Test_913_29.pdf\",\"ip\":\"127.0.0.1\"}', '2026-10-23 13:39:30'),
+  ('593', '1', 'admin_login_success', 'users', '1', '103.240.236.244', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"103.240.236.244\"}', '2026-10-23 13:56:48');
 
 -- --------------------------------------------------------
 -- Table structure for `bank_details`
@@ -930,7 +931,13 @@ CREATE TABLE `interview_applications` (
   KEY `idx_ia_email` (`email`),
   KEY `idx_ia_first_viewed` (`first_viewed_at`),
   KEY `idx_ia_archived` (`is_archived`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table `interview_applications`
+INSERT INTO `interview_applications` (`id`, `hr_name`, `post_applied`, `full_name`, `email`, `mobile`, `experience_type`, `years_in_real_estate`, `vehicle_available`, `current_location`, `higher_education`, `has_references`, `reference_details`, `last_company_hr_tl`, `reason_to_leave`, `immediate_joiner`, `consent_at`, `submitted_at`, `ip_address`, `user_agent`, `source_by`, `feedback_tl_sm`, `feedback_hr`, `feedback_final`, `module_discussed`, `position_offered`, `decision`, `decision_at`, `decision_by`, `candidate_interested`, `offered_salary`, `joining_date`, `rejection_reason`, `version`, `first_viewed_at`, `first_viewed_by`, `updated_by`, `updated_at`, `is_archived`, `archived_at`) VALUES
+  ('1', 'Ankita Mittal', 'Test', 'Abhishek Boora', 'abhishekboora2001@gmail.com', '9306098396', 'fresher', NULL, 'no', 'Gurgaon, IN', 'Mcaaaa', 'no', NULL, NULL, NULL, 'no', '2026-10-23 13:57:55', '2026-10-23 13:57:55', '27.59.70.157', 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Mobile Safari/537.36', NULL, NULL, NULL, NULL, NULL, NULL, 'pending', NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, '2026-10-23 13:57:55', '0', NULL),
+  ('2', 'Ankita Mittal', 'Test', 'Abhishek Boora', 'abhishekboora2001@gmail.com', '9306098396', 'fresher', NULL, 'no', 'Gurgaon, IN', 'Mcaaaa', 'no', NULL, NULL, NULL, 'no', '2026-10-23 13:59:06', '2026-10-23 13:59:06', '27.59.70.157', 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Mobile Safari/537.36', NULL, NULL, NULL, NULL, NULL, NULL, 'pending', NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, '2026-10-23 13:59:06', '0', NULL),
+  ('3', 'Ankita Mittal', 'Hhhj', 'Tyhy', 'abhishekbooa2001@gmail.com', '9306098396', 'fresher', NULL, 'no', 'Gurgaon', 'Mcaaaa', 'no', NULL, NULL, NULL, 'no', '2026-10-23 13:59:33', '2026-10-23 13:59:33', '27.59.70.157', 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Mobile Safari/537.36', NULL, NULL, NULL, NULL, NULL, NULL, 'pending', NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, '2026-10-23 13:59:33', '0', NULL);
 
 -- --------------------------------------------------------
 -- Table structure for `interview_email_log`

@@ -321,11 +321,11 @@ class InterviewController {
 
             $appId = InterviewApplication::create($appData, $employmentRows);
 
-            // Realtime Sync to Google Sheets (Tab: Interview Candidates)
+            // Realtime Sync to Google Sheets (Tab: Interview Candidate)
             try {
-                \App\Helpers\GoogleSheetsService::syncInterviewApplicationAsync($appId);
+                \App\Helpers\GoogleSheetsService::syncInterviewApplication($appId);
             } catch (\Throwable $e) {
-                error_log("Google Sheets sync failed on interview submit: " . $e->getMessage());
+                \App\Helpers\GoogleSheetsService::log("Google Sheets sync failed on interview submit ({$appId}): " . $e->getMessage());
             }
 
             // Record idempotency token in session

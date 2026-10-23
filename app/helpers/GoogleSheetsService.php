@@ -105,11 +105,12 @@ class GoogleSheetsService {
     }
 
     /**
-     * Dispatch background sync process to prevent HTTP request delays
+     * Dispatch background sync process across different hosting environments
      */
     private static function dispatchAsync(string $type, int $id): void {
-        $binScript = ROOT_PATH . '/bin/sync_sheets.php';
-        if (!file_exists($binScript)) {
+        // On cPanel with PHP-FPM, flush response immediately to user then continue in background
+        if (function_exists('fastcgi_finish_request')) {
+            @fastcgi_finish_request();
             if ($type === 'interview') {
                 self::syncInterviewApplication($id);
             } else {
@@ -118,22 +119,23 @@ class GoogleSheetsService {
             return;
         }
 
-        $phpBinary = PHP_BINARY;
-        if (!file_exists($phpBinary) || str_ends_with(strtolower($phpBinary), 'php-cgi.exe') || str_ends_with(strtolower($phpBinary), 'httpd.exe')) {
-            if (file_exists('C:\\xampp\\php\\php.exe')) {
-                $phpBinary = 'C:\\xampp\\php\\php.exe';
-            } else {
-                $phpBinary = 'php';
+        $binScript = ROOT_PATH . '/bin/sync_sheets.php';
+        if (file_exists($binScript) && stripos(PHP_OS, 'WIN') === 0) {
+            $phpBinary = PHP_BINARY;
+            if (!file_exists($phpBinary) || str_ends_with(strtolower($phpBinary), 'php-cgi.exe') || str_ends_with(strtolower($phpBinary), 'httpd.exe')) {
+                if (file_exists('C:\\xampp\\php\\php.exe')) {
+                    $phpBinary = 'C:\\xampp\\php\\php.exe';
+                } else {
+                    $phpBinary = 'php';
+                }
             }
-        }
 
-        $escapedPhp = escapeshellarg($phpBinary);
-        $escapedScript = escapeshellarg($binScript);
-        $escapedType = escapeshellarg($type);
-        $id = (int)$id;
+            $escapedPhp = escapeshellarg($phpBinary);
+            $escapedScript = escapeshellarg($binScript);
+            $escapedType = escapeshellarg($type);
+            $id = (int)$id;
 
-        try {
-            if (stripos(PHP_OS, 'WIN') === 0) {
+            try {
                 $cmd = "{$escapedPhp} {$escapedScript} --type={$escapedType} --id={$id}";
                 $descriptors = [
                     0 => ['pipe', 'r'],
@@ -143,18 +145,18 @@ class GoogleSheetsService {
                 $proc = proc_open($cmd, $descriptors, $pipes, ROOT_PATH, null, ['bypass_shell' => false]);
                 if (is_resource($proc)) {
                     fclose($pipes[0]);
+                    return;
                 }
-            } else {
-                $cmd = "{$escapedPhp} {$escapedScript} --type={$escapedType} --id={$id} > /dev/null 2>&1 &";
-                exec($cmd);
+            } catch (\Throwable $t) {
+                // proceed to direct fallback
             }
-        } catch (\Throwable $t) {
-            self::log("Async dispatch failed ({$t->getMessage()}), falling back to direct sync.");
-            if ($type === 'interview') {
-                self::syncInterviewApplication($id);
-            } else {
-                self::syncCandidate($id);
-            }
+        }
+
+        // Direct sync fallback (guarantees sync works on all hosting environments)
+        if ($type === 'interview') {
+            self::syncInterviewApplication($id);
+        } else {
+            self::syncCandidate($id);
         }
     }
 
