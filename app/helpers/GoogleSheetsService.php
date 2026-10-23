@@ -35,6 +35,7 @@ class GoogleSheetsService {
         'Submitted At',
         'HR Name (Selected)',
         'Post Applied For',
+        'Applied For Segment (Commercial / Residential)',
         'Candidate Full Name',
         'Contact Number',
         'Email Address',
@@ -341,8 +342,9 @@ class GoogleSheetsService {
             !empty($app['submitted_at']) ? date('d-m-Y H:i', strtotime($app['submitted_at'])) : '', // 2. Submitted At
             $app['hr_name'] ?? '',                                                                  // 3. HR Name (Selected)
             $app['post_applied'] ?? '',                                                             // 4. Post Applied For
-            $app['full_name'] ?? '',                                                                // 5. Candidate Full Name
-            $app['mobile'] ?? '',                                                                   // 6. Contact Number
+            ucfirst($app['applied_for_type'] ?? 'Commercial'),                                      // 5. Applied For Segment
+            $app['full_name'] ?? '',                                                                // 6. Candidate Full Name
+            $app['mobile'] ?? '',                                                                   // 7. Contact Number
             $app['email'] ?? '',                                                                    // 7. Email Address
             ucfirst($app['experience_type'] ?? ''),                                                 // 8. Experience Type
             ($app['experience_type'] === 'experience') ? (($app['years_in_real_estate'] !== null) ? $app['years_in_real_estate'] . ' Yrs' : '0 Yrs') : 'Fresher', // 9. Years in RE

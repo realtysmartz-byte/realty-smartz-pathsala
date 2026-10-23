@@ -511,7 +511,7 @@
         <div class="form-card">
             <h1 class="form-title">Interview Application Form</h1>
 
-            <form id="interviewForm" method="POST" action="<?= url('/q/' . urlencode($slug)) ?>" novalidate>
+            <form id="interviewForm" method="POST" action="<?= !empty($isDirect) ? url('/interview-candidate') : url('/q/' . urlencode($slug)) ?>" novalidate>
                 <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
                 <input type="hidden" name="_csrf_token" value="<?= e($csrfToken) ?>">
                 <input type="hidden" name="signed_token" value="<?= e($signedToken ?? '') ?>">
@@ -540,6 +540,31 @@
                     <label for="post_applied" class="field-label">Post Applied For <span class="req" aria-hidden="true">*</span></label>
                     <input type="text" id="post_applied" name="post_applied" class="form-control" maxlength="255" required aria-required="true" value="<?= e($oldInput['post_applied'] ?? '') ?>">
                     <div class="field-error" id="err_post_applied"><?= e($errors['post_applied'] ?? 'Post Applied For is required.') ?></div>
+                </div>
+
+                <!-- 2b. Have you applied for: Commercial or Residential (Radio group, required) -->
+                <div class="field-group" id="group_applied_for_type">
+                    <fieldset class="radio-fieldset" aria-required="true">
+                        <legend class="field-label">Have you applied for <span class="req" aria-hidden="true">*</span></legend>
+                        <div class="radio-pills">
+                            <label class="radio-pill-label">
+                                <input type="radio" name="applied_for_type" value="Commercial" <?= (!isset($oldInput['applied_for_type']) || strtolower($oldInput['applied_for_type']) === 'commercial') ? 'checked' : '' ?> required>
+                                <span class="radio-dot" aria-hidden="true"></span>
+                                <span>Commercial</span>
+                            </label>
+                            <label class="radio-pill-label">
+                                <input type="radio" name="applied_for_type" value="Residential" <?= (isset($oldInput['applied_for_type']) && strtolower($oldInput['applied_for_type']) === 'residential') ? 'checked' : '' ?> required>
+                                <span class="radio-dot" aria-hidden="true"></span>
+                                <span>Residential</span>
+                            </label>
+                            <label class="radio-pill-label">
+                                <input type="radio" name="applied_for_type" value="Both" <?= (isset($oldInput['applied_for_type']) && strtolower($oldInput['applied_for_type']) === 'both') ? 'checked' : '' ?> required>
+                                <span class="radio-dot" aria-hidden="true"></span>
+                                <span>Both</span>
+                            </label>
+                        </div>
+                    </fieldset>
+                    <div class="field-error" id="err_applied_for_type"><?= e($errors['applied_for_type'] ?? 'Please select Commercial or Residential.') ?></div>
                 </div>
 
                 <!-- 3. Full Name (text, required) -->
@@ -871,7 +896,7 @@
             updateReferenceVisibility();
 
             // Clear inline errors immediately when radio option is chosen
-            ['experience_type', 'vehicle_available', 'has_references', 'immediate_joiner'].forEach(name => {
+            ['applied_for_type', 'experience_type', 'vehicle_available', 'has_references', 'immediate_joiner'].forEach(name => {
                 form.querySelectorAll(`input[name="${name}"]`).forEach(r => {
                     r.addEventListener('change', () => {
                         const err = document.getElementById('err_' + name);
@@ -961,6 +986,17 @@
                         if (!firstInvalid) firstInvalid = inp;
                     }
                 });
+
+                // Validate Applied For Segment
+                const appliedTypeChecked = form.querySelector('input[name="applied_for_type"]:checked');
+                const errAppliedType = document.getElementById('err_applied_for_type');
+                if (!appliedTypeChecked) {
+                    isFormValid = false;
+                    errAppliedType.classList.add('show');
+                    if (!firstInvalid) firstInvalid = document.getElementById('group_applied_for_type');
+                } else {
+                    errAppliedType.classList.remove('show');
+                }
 
                 // Validate Experience radio
                 const expChecked = form.querySelector('input[name="experience_type"]:checked');

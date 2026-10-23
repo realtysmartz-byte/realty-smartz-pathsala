@@ -627,7 +627,14 @@ $viewTitle = "Interview Candidates";
                         <?php endif; ?>
                         <?= e($item['full_name']) ?>
                     </td>
-                    <td data-label="Post applied"><?= e($item['post_applied']) ?></td>
+                    <td data-label="Post applied">
+                        <div style="font-weight: 500;"><?= e($item['post_applied']) ?></div>
+                        <?php if (!empty($item['applied_for_type'])): ?>
+                            <span style="display:inline-block; font-size:11px; padding:1px 6px; border-radius:999px; background:var(--brand-soft); color:var(--brand); font-weight:600; margin-top:2px;">
+                                <?= e(ucfirst($item['applied_for_type'])) ?>
+                            </span>
+                        <?php endif; ?>
+                    </td>
                     <td data-label="Mobile"><?= e($item['mobile']) ?></td>
                     <td data-label="HR name"><?= e($item['hr_name']) ?></td>
                     <td data-label="Experience / Fresher"><?= ucfirst(e($item['experience_type'])) ?></td>

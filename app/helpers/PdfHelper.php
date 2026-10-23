@@ -920,7 +920,8 @@ class PdfHelper {
         $pdf->Cell(35, 4, 'Post Applied For:', 0, 0, 'L');
         $pdf->SetTextColor(31, 92, 74);
         $pdf->SetFont('helvetica', 'B', 9.5);
-        $pdf->Cell(125, 4, $app['post_applied'] ?? 'N/A', 0, 1, 'L');
+        $appliedTxt = ($app['post_applied'] ?? 'N/A') . (!empty($app['applied_for_type']) ? ' (' . ucfirst($app['applied_for_type']) . ')' : '');
+        $pdf->Cell(125, 4, $appliedTxt, 0, 1, 'L');
 
         $curY += 17;
 

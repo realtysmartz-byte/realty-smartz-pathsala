@@ -499,6 +499,8 @@ if (!empty($app['updated_at'])) {
             <div class="header-meta-row">
                 <span><?= e($app['post_applied']) ?></span>
                 <span>&bull;</span>
+                <span class="header-chip" style="background:var(--brand-soft); color:var(--brand);"><?= e(ucfirst($app['applied_for_type'] ?? 'Commercial')) ?></span>
+                <span>&bull;</span>
                 <span class="header-chip">Submitted <?= date('d M Y, h:i A', strtotime($app['submitted_at'])) ?></span>
                 
                 <?php if (!empty($repeatApplicants)): ?>
@@ -569,6 +571,15 @@ if (!empty($app['updated_at'])) {
                     <div class="detail-field-item">
                         <div class="detail-label">Post Applied For</div>
                         <div class="detail-value"><?= e($app['post_applied']) ?></div>
+                    </div>
+
+                    <div class="detail-field-item">
+                        <div class="detail-label">Segment (Commercial / Residential)</div>
+                        <div class="detail-value">
+                            <span class="header-chip" style="background:var(--brand-soft); color:var(--brand); font-weight:700;">
+                                <?= e(ucfirst($app['applied_for_type'] ?? 'Commercial')) ?>
+                            </span>
+                        </div>
                     </div>
 
                     <div class="detail-field-item">

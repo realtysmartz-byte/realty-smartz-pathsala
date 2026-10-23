@@ -21,9 +21,36 @@ class InterviewController {
      */
 
     /**
+     * Display the public candidate form via direct clean URL (/interview-candidate)
+     */
+    public function showPublicFormDirect(): void {
+        $qr = InterviewApplication::getQrSettings();
+        $slug = $qr['slug'] ?? 'interview-candidate';
+        $this->showPublicForm($slug, true);
+    }
+
+    /**
+     * Handle public form submission via direct clean URL (/interview-candidate)
+     */
+    public function submitPublicFormDirect(): void {
+        $qr = InterviewApplication::getQrSettings();
+        $slug = $qr['slug'] ?? 'interview-candidate';
+        $this->submitPublicForm($slug, true);
+    }
+
+    /**
+     * Display success page via direct clean URL (/interview-candidate/success)
+     */
+    public function showSuccessDirect(): void {
+        $qr = InterviewApplication::getQrSettings();
+        $slug = $qr['slug'] ?? 'interview-candidate';
+        $this->showSuccess($slug, true);
+    }
+
+    /**
      * Display the public candidate form
      */
-    public function showPublicForm(string $slug): void {
+    public function showPublicForm(string $slug, bool $isDirect = false): void {
         header('X-Robots-Tag: noindex, nofollow');
 
         $slug = trim($slug);
@@ -59,9 +86,9 @@ class InterviewController {
     }
 
     /**
-     * Handle public candidate form submission (POST /q/{slug})
+     * Handle public candidate form submission (POST /q/{slug} or /interview-candidate)
      */
-    public function submitPublicForm(string $slug): void {
+    public function submitPublicForm(string $slug, bool $isDirect = false): void {
         header('X-Robots-Tag: noindex, nofollow');
 
         $slug = trim($slug);
@@ -90,7 +117,7 @@ class InterviewController {
         // Honeypot check: field named "website_url" or "hp_field" must be empty
         if (!empty($_POST['website_url']) || !empty($_POST['hp_field'])) {
             // Silently redirect to success for bot traps without saving
-            redirect('/q/' . urlencode($slug) . '/success');
+            redirect($isDirect ? '/interview-candidate/success' : '/q/' . urlencode($slug) . '/success');
             return;
         }
 
@@ -113,7 +140,7 @@ class InterviewController {
         // Idempotency check: if token was already used, redirect directly to success
         $postIdempotency = trim($_POST['idempotency_token'] ?? '');
         if (!empty($_SESSION['interview_submitted_token']) && $_SESSION['interview_submitted_token'] === $postIdempotency) {
-            redirect('/q/' . urlencode($slug) . '/success');
+            redirect($isDirect ? '/interview-candidate/success' : '/q/' . urlencode($slug) . '/success');
             return;
         }
 
@@ -137,6 +164,15 @@ class InterviewController {
             $errors['post_applied'] = "Post Applied For is required.";
         } elseif (mb_strlen($postApplied) > 255) {
             $errors['post_applied'] = "Post Applied For cannot exceed 255 characters.";
+        }
+
+        // 2b. Applied For Segment (Commercial / Residential / Both)
+        $rawAppliedForType = strtolower(trim((string)($_POST['applied_for_type'] ?? 'commercial')));
+        if (!in_array($rawAppliedForType, ['commercial', 'residential', 'both'], true)) {
+            $errors['applied_for_type'] = "Please select whether you applied for Commercial or Residential.";
+            $appliedForType = 'Commercial';
+        } else {
+            $appliedForType = ucfirst($rawAppliedForType);
         }
 
         // 3. Full Name
@@ -302,6 +338,7 @@ class InterviewController {
             $appData = [
                 'hr_name'              => $hrName,
                 'post_applied'         => $postApplied,
+                'applied_for_type'     => $appliedForType,
                 'full_name'            => $fullName,
                 'email'                => $email,
                 'mobile'               => $cleanMobile,
@@ -333,7 +370,7 @@ class InterviewController {
             unset($_SESSION['interview_idempotency']);
 
             // Post-Redirect-Get to avoid duplicate submissions on refresh
-            redirect('/q/' . urlencode($slug) . '/success');
+            redirect($isDirect ? '/interview-candidate/success' : '/q/' . urlencode($slug) . '/success');
             return;
 
         } catch (Throwable $e) {
@@ -350,9 +387,9 @@ class InterviewController {
     }
 
     /**
-     * Show success page (/q/{slug}/success)
+     * Show success page (/q/{slug}/success or /interview-candidate/success)
      */
-    public function showSuccess(string $slug): void {
+    public function showSuccess(string $slug, bool $isDirect = false): void {
         header('X-Robots-Tag: noindex, nofollow');
 
         $slug = trim($slug);
@@ -708,7 +745,7 @@ class InterviewController {
         }
 
         $qr = InterviewApplication::getQrSettings();
-        $targetUrl = QrCodeHelper::getBaseUrl() . '/q/' . $qr['slug'];
+        $targetUrl = QrCodeHelper::getBaseUrl() . '/interview-candidate';
 
         while (ob_get_level()) {
             ob_end_clean();

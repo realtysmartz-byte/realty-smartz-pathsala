@@ -19,14 +19,14 @@ class InterviewApplication {
 
         try {
             $sql = "INSERT INTO `interview_applications` (
-                `hr_name`, `post_applied`, `full_name`, `email`, `mobile`,
+                `hr_name`, `post_applied`, `applied_for_type`, `full_name`, `email`, `mobile`,
                 `experience_type`, `years_in_real_estate`, `vehicle_available`,
                 `current_location`, `higher_education`, `has_references`,
                 `reference_details`, `last_company_hr_tl`, `reason_to_leave`,
                 `immediate_joiner`, `consent_at`, `submitted_at`, `ip_address`,
                 `user_agent`, `decision`, `version`, `is_archived`
             ) VALUES (
-                :hr_name, :post_applied, :full_name, :email, :mobile,
+                :hr_name, :post_applied, :applied_for_type, :full_name, :email, :mobile,
                 :experience_type, :years_in_real_estate, :vehicle_available,
                 :current_location, :higher_education, :has_references,
                 :reference_details, :last_company_hr_tl, :reason_to_leave,
@@ -38,6 +38,7 @@ class InterviewApplication {
             $stmt->execute([
                 ':hr_name'              => $data['hr_name'],
                 ':post_applied'         => $data['post_applied'],
+                ':applied_for_type'     => $data['applied_for_type'] ?? 'Commercial',
                 ':full_name'            => $data['full_name'],
                 ':email'                => strtolower($data['email']),
                 ':mobile'               => $data['mobile'],
@@ -215,7 +216,7 @@ class InterviewApplication {
         $offset = max(0, ($page - 1) * $perPage);
 
         // Select items
-        $sql = "SELECT ia.id, ia.hr_name, ia.post_applied, ia.full_name, ia.email, ia.mobile,
+        $sql = "SELECT ia.id, ia.hr_name, ia.post_applied, ia.applied_for_type, ia.full_name, ia.email, ia.mobile,
                        ia.experience_type, ia.submitted_at, ia.decision, ia.offered_salary,
                        ia.joining_date, ia.feedback_hr, ia.feedback_final, ia.first_viewed_at,
                        ia.version, ia.is_archived
@@ -282,7 +283,7 @@ class InterviewApplication {
     public static function getUpdatesSince(string $sinceTimestamp): array {
         $db = Database::getConnection();
 
-        $stmt = $db->prepare("SELECT ia.id, ia.hr_name, ia.post_applied, ia.full_name, ia.email, ia.mobile,
+        $stmt = $db->prepare("SELECT ia.id, ia.hr_name, ia.post_applied, ia.applied_for_type, ia.full_name, ia.email, ia.mobile,
                 ia.experience_type, ia.submitted_at, ia.decision, ia.offered_salary,
                 ia.joining_date, ia.feedback_hr, ia.feedback_final, ia.first_viewed_at,
                 ia.version, ia.updated_at
@@ -315,7 +316,7 @@ class InterviewApplication {
         $db = Database::getConnection();
 
         $allowedFields = [
-            'source_by', 'feedback_tl_sm', 'feedback_hr', 'feedback_final',
+            'applied_for_type', 'source_by', 'feedback_tl_sm', 'feedback_hr', 'feedback_final',
             'module_discussed', 'position_offered', 'decision',
             'candidate_interested', 'offered_salary', 'joining_date', 'rejection_reason'
         ];
@@ -340,7 +341,10 @@ class InterviewApplication {
         $oldValue = $current[$field];
 
         // Format and clean values based on field type
-        if ($field === 'offered_salary') {
+        if ($field === 'applied_for_type') {
+            $valLower = strtolower(trim((string)$value));
+            $value = in_array($valLower, ['commercial', 'residential', 'both'], true) ? ucfirst($valLower) : 'Commercial';
+        } elseif ($field === 'offered_salary') {
             if ($value === '' || $value === null) {
                 $value = null;
             } else {
@@ -536,7 +540,7 @@ class InterviewApplication {
 
         if (!$res) {
             // Seed fallback
-            $slug = 'rsp_interview_' . bin2hex(random_bytes(6));
+            $slug = 'interview-candidate';
             $db->prepare("INSERT INTO `qr_settings` (`type`, `slug`, `accepting_responses`, `created_at`) 
                 VALUES ('interview_form', :slug, 1, NOW())")->execute([':slug' => $slug]);
             return ['type' => 'interview_form', 'slug' => $slug, 'accepting_responses' => 1];

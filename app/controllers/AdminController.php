@@ -1597,7 +1597,7 @@ class AdminController {
         $aptitudeUrl = \App\Helpers\QrCodeHelper::getAptitudeUrl();
 
         $interviewQr = \App\Models\InterviewApplication::getQrSettings();
-        $interviewUrl = \App\Helpers\QrCodeHelper::getBaseUrl() . '/q/' . $interviewQr['slug'];
+        $interviewUrl = \App\Helpers\QrCodeHelper::getBaseUrl() . '/interview-candidate';
 
         $onboardingSvg = \App\Helpers\QrCodeHelper::getSvg($onboardingUrl, 6, 4, '#1F5C4A');
         $aptitudeSvg = \App\Helpers\QrCodeHelper::getSvg($aptitudeUrl, 6, 4, '#1F5C4A');

@@ -57,17 +57,16 @@ test.describe('Interview Application Form Module Complete Suite', () => {
     });
 
     test('2. Public Form: Field Rendering, Exact Labels, Hidden HR data, Dynamic Toggles, Viewports', async ({ page }) => {
-        // Read active QR slug from DB/QR page
+        // Read active QR URL from DB/QR page
         await loginAdmin(page);
         await page.goto('/admin/qr-codes');
         const qrUrlEl = page.locator('#interviewUrlText');
         await expect(qrUrlEl).toBeVisible();
         const interviewUrl = await qrUrlEl.innerText();
-        const slug = interviewUrl.split('/q/')[1].trim();
-        expect(slug.length).toBeGreaterThanOrEqual(16);
+        expect(interviewUrl).toContain('/interview-candidate');
 
         // Open public form in candidate browser
-        const formRes = await page.goto(`/q/${slug}`);
+        const formRes = await page.goto('/interview-candidate');
         expect(formRes.status()).toBe(200);
 
         // Check X-Robots-Tag header and meta robots
@@ -104,6 +103,10 @@ test.describe('Interview Application Form Module Complete Suite', () => {
 
         // 2. Post Applied For
         await expect(page.locator('label[for="post_applied"]')).toContainText('Post Applied For');
+
+        // 2b. Have you applied for (Commercial / Residential / Both)
+        await expect(page.locator('#group_applied_for_type legend')).toContainText('Have you applied for');
+        await expect(page.locator('input[name="applied_for_type"]')).toHaveCount(3);
 
         // 3. Full Name
         await expect(page.locator('label[for="full_name"]')).toContainText('Full Name');
@@ -200,10 +203,10 @@ test.describe('Interview Application Form Module Complete Suite', () => {
         await loginAdmin(page);
         await page.goto('/admin/qr-codes');
         const interviewUrl = await page.locator('#interviewUrlText').innerText();
-        const slug = interviewUrl.split('/q/')[1].trim();
+        expect(interviewUrl).toContain('/interview-candidate');
 
         // Candidate navigates to public form
-        await page.goto(`/q/${slug}`);
+        await page.goto('/interview-candidate');
 
         // Try submitting empty form -> errors appear inline and first invalid is scrolled
         await page.click('#btnSubmit');
@@ -214,6 +217,7 @@ test.describe('Interview Application Form Module Complete Suite', () => {
         // Fill invalid email & mobile
         await page.selectOption('#hr_name', { index: 1 });
         await page.fill('#post_applied', 'Associate Director - Luxury Sales');
+        await selectRadio(page, 'applied_for_type', 'Commercial');
         await page.fill('#full_name', 'Aaditya Vikram Singh');
         await page.fill('#email', 'invalid-email-address');
         await page.fill('#mobile', '123456'); // invalid Indian mobile
@@ -252,8 +256,8 @@ test.describe('Interview Application Form Module Complete Suite', () => {
         // Submit form
         await page.click('#btnSubmit');
 
-        // Lands on success page (/q/{slug}/success)
-        await page.waitForURL(`**/q/${slug}/success`);
+        // Lands on success page (/interview-candidate/success)
+        await page.waitForURL('**/interview-candidate/success');
 
         // Check exact success message
         await expect(page.locator('.success-message')).toHaveText(
@@ -272,8 +276,6 @@ test.describe('Interview Application Form Module Complete Suite', () => {
         await loginAdmin(page);
         await page.goto('/admin/qr-codes');
         const interviewUrl = await page.locator('#interviewUrlText').innerText();
-        const slug = interviewUrl.split('/q/')[1].trim();
-
         // Ensure checkbox is checked before unchecking
         if (!await page.isChecked('#toggleAcceptingResponses')) {
             await Promise.all([
@@ -291,7 +293,7 @@ test.describe('Interview Application Form Module Complete Suite', () => {
         // In a new incognito context, visit form
         const candidateContext = await browser.newContext();
         const candidatePage = await candidateContext.newPage();
-        await candidatePage.goto(`/q/${slug}`);
+        await candidatePage.goto('/interview-candidate');
 
         // Exact message displayed
         await expect(candidatePage.locator('.closed-message')).toHaveText(
@@ -327,20 +329,13 @@ test.describe('Interview Application Form Module Complete Suite', () => {
         const candidateContext = await browser.newContext();
         const candidatePage = await candidateContext.newPage();
 
-        // Get slug
-        await adminPage.goto('/admin/qr-codes');
-        const interviewUrl = await adminPage.locator('#interviewUrlText').innerText();
-        const slug = interviewUrl.split('/q/')[1].trim();
-
-        // Return admin to list page
-        await adminPage.goto('/admin/interview-candidates');
-
         const liveCandidateName = 'Kavita Live Test ' + Math.floor(Math.random() * 1000);
         const liveMobile = '99' + Math.floor(10000000 + Math.random() * 90000000);
 
-        await candidatePage.goto(`/q/${slug}`);
+        await candidatePage.goto('/interview-candidate');
         await candidatePage.selectOption('#hr_name', { index: 1 });
         await candidatePage.fill('#post_applied', 'Client Relationship Executive');
+        await selectRadio(candidatePage, 'applied_for_type', 'Residential');
         await candidatePage.fill('#full_name', liveCandidateName);
         await candidatePage.fill('#email', `kavita.${Date.now()}@example.com`);
         await candidatePage.fill('#mobile', liveMobile);
@@ -352,7 +347,7 @@ test.describe('Interview Application Form Module Complete Suite', () => {
         await selectRadio(candidatePage, 'immediate_joiner', 'yes');
         await candidatePage.check('#consent');
         await candidatePage.click('#btnSubmit');
-        await candidatePage.waitForURL(`**/q/${slug}/success`);
+        await candidatePage.waitForURL('**/interview-candidate/success');
 
         // Verification of LIVE UPDATE: adminPage without reload should receive new submission within 15s
         await expect(adminPage.locator('#interviewTableBody').locator(`text=${liveCandidateName}`)).toBeVisible({ timeout: 16000 });

@@ -1,5 +1,5 @@
 -- Realty Smartz Pathshala Complete Production Database Dump
--- Generated: 2026-10-23 14:04:49
+-- Generated: 2026-10-23 15:57:04
 -- Compatible with cPanel MySQL / MariaDB and phpMyAdmin
 
 SET FOREIGN_KEY_CHECKS = 0;
@@ -128,7 +128,7 @@ CREATE TABLE `audit_logs` (
   KEY `idx_audit_user` (`user_id`),
   KEY `idx_audit_action` (`action`),
   KEY `idx_audit_entity` (`entity_type`,`entity_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=594 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=647 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `audit_logs`
 INSERT INTO `audit_logs` (`id`, `user_id`, `action`, `entity_type`, `entity_id`, `ip_address`, `user_agent`, `old_values`, `new_values`, `created_at`) VALUES
@@ -591,7 +591,60 @@ INSERT INTO `audit_logs` (`id`, `user_id`, `action`, `entity_type`, `entity_id`,
   ('590', '1', 'interview_field_update', 'interview_applications', '29', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"rejection_reason\",\"old_value\":null}', '{\"field\":\"rejection_reason\",\"new_value\":\"Not willing to relocate to Gurgaon\",\"version\":9}', '2026-10-23 13:39:28'),
   ('591', '1', 'interview_field_update', 'interview_applications', '29', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"rejected\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":10}', '2026-10-23 13:39:29'),
   ('592', '1', 'download_interview_pdf', 'interview_applications', '29', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"filename\":\"Interview_Form_Kavita_Live_Test_913_29.pdf\",\"ip\":\"127.0.0.1\"}', '2026-10-23 13:39:30'),
-  ('593', '1', 'admin_login_success', 'users', '1', '103.240.236.244', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"103.240.236.244\"}', '2026-10-23 13:56:48');
+  ('593', '1', 'admin_login_success', 'users', '1', '103.240.236.244', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"103.240.236.244\"}', '2026-10-23 13:56:48'),
+  ('594', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 14:05:20'),
+  ('595', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 14:05:23'),
+  ('596', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 14:05:35'),
+  ('597', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":false}', '2026-10-23 14:05:37'),
+  ('598', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":true}', '2026-10-23 14:05:38'),
+  ('599', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 14:05:40'),
+  ('600', '1', 'interview_field_update', 'interview_applications', '5', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"feedback_hr\",\"old_value\":null}', '{\"field\":\"feedback_hr\",\"new_value\":\"Excellent communication skills and strong presentation.\",\"version\":2}', '2026-10-23 14:05:51'),
+  ('601', '1', 'interview_field_update', 'interview_applications', '5', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"pending\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":3}', '2026-10-23 14:05:55'),
+  ('602', '1', 'interview_field_update', 'interview_applications', '5', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"candidate_interested\",\"old_value\":null}', '{\"field\":\"candidate_interested\",\"new_value\":\"yes\",\"version\":4}', '2026-10-23 14:05:59'),
+  ('603', '1', 'interview_field_update', 'interview_applications', '5', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"position_offered\",\"old_value\":null}', '{\"field\":\"position_offered\",\"new_value\":\"Senior Relationship Associate\",\"version\":5}', '2026-10-23 14:06:03'),
+  ('604', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 14:08:34'),
+  ('605', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 14:08:37'),
+  ('606', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 14:08:47'),
+  ('607', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":false}', '2026-10-23 14:08:49'),
+  ('608', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":true}', '2026-10-23 14:08:50'),
+  ('609', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 14:08:51'),
+  ('610', '1', 'interview_field_update', 'interview_applications', '7', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"feedback_hr\",\"old_value\":null}', '{\"field\":\"feedback_hr\",\"new_value\":\"Excellent communication skills and strong presentation.\",\"version\":2}', '2026-10-23 14:09:02'),
+  ('611', '1', 'interview_field_update', 'interview_applications', '7', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"pending\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":3}', '2026-10-23 14:09:06'),
+  ('612', '1', 'interview_field_update', 'interview_applications', '7', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"candidate_interested\",\"old_value\":null}', '{\"field\":\"candidate_interested\",\"new_value\":\"yes\",\"version\":4}', '2026-10-23 14:09:11'),
+  ('613', '1', 'interview_field_update', 'interview_applications', '7', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"position_offered\",\"old_value\":null}', '{\"field\":\"position_offered\",\"new_value\":\"Senior Relationship Associate\",\"version\":5}', '2026-10-23 14:09:14'),
+  ('614', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 14:11:49'),
+  ('615', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 14:11:53'),
+  ('616', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 14:12:03'),
+  ('617', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":false}', '2026-10-23 14:12:04'),
+  ('618', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":true}', '2026-10-23 14:12:05'),
+  ('619', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 14:12:07'),
+  ('620', '1', 'interview_field_update', 'interview_applications', '9', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"feedback_hr\",\"old_value\":null}', '{\"field\":\"feedback_hr\",\"new_value\":\"Excellent communication skills and strong presentation.\",\"version\":2}', '2026-10-23 14:12:18'),
+  ('621', '1', 'interview_field_update', 'interview_applications', '9', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"pending\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":3}', '2026-10-23 14:12:19'),
+  ('622', '1', 'interview_field_update', 'interview_applications', '9', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"candidate_interested\",\"old_value\":null}', '{\"field\":\"candidate_interested\",\"new_value\":\"yes\",\"version\":4}', '2026-10-23 14:12:20'),
+  ('623', '1', 'interview_field_update', 'interview_applications', '9', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"position_offered\",\"old_value\":null}', '{\"field\":\"position_offered\",\"new_value\":\"Senior Relationship Associate\",\"version\":5}', '2026-10-23 14:12:20'),
+  ('624', '1', 'interview_field_update', 'interview_applications', '9', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"offered_salary\",\"old_value\":null}', '{\"field\":\"offered_salary\",\"new_value\":450000,\"version\":6}', '2026-10-23 14:12:21'),
+  ('625', '1', 'interview_field_update', 'interview_applications', '9', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"joining_date\",\"old_value\":null}', '{\"field\":\"joining_date\",\"new_value\":\"2026-11-15\",\"version\":7}', '2026-10-23 14:12:21'),
+  ('626', '1', 'interview_field_update', 'interview_applications', '9', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"selected\"}', '{\"field\":\"decision\",\"new_value\":\"rejected\",\"version\":8}', '2026-10-23 14:12:23'),
+  ('627', '1', 'interview_field_update', 'interview_applications', '9', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"rejection_reason\",\"old_value\":null}', '{\"field\":\"rejection_reason\",\"new_value\":\"Not willing to relocate to Gurgaon\",\"version\":9}', '2026-10-23 14:12:24'),
+  ('628', '1', 'interview_field_update', 'interview_applications', '9', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"rejected\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":10}', '2026-10-23 14:12:24'),
+  ('629', '1', 'download_interview_pdf', 'interview_applications', '9', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"filename\":\"Interview_Form_Kavita_Live_Test_24_9.pdf\",\"ip\":\"127.0.0.1\"}', '2026-10-23 14:12:25'),
+  ('630', '1', 'admin_login_success', 'users', '1', '103.240.236.244', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"103.240.236.244\"}', '2026-10-23 14:43:37'),
+  ('631', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 15:55:57'),
+  ('632', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 15:56:02'),
+  ('633', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 15:56:14'),
+  ('634', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":false}', '2026-10-23 15:56:16'),
+  ('635', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":true}', '2026-10-23 15:56:17'),
+  ('636', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 15:56:20'),
+  ('637', '1', 'interview_field_update', 'interview_applications', '13', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"feedback_hr\",\"old_value\":null}', '{\"field\":\"feedback_hr\",\"new_value\":\"Excellent communication skills and strong presentation.\",\"version\":2}', '2026-10-23 15:56:44'),
+  ('638', '1', 'interview_field_update', 'interview_applications', '13', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"pending\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":3}', '2026-10-23 15:56:45'),
+  ('639', '1', 'interview_field_update', 'interview_applications', '13', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"candidate_interested\",\"old_value\":null}', '{\"field\":\"candidate_interested\",\"new_value\":\"yes\",\"version\":4}', '2026-10-23 15:56:46'),
+  ('640', '1', 'interview_field_update', 'interview_applications', '13', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"position_offered\",\"old_value\":null}', '{\"field\":\"position_offered\",\"new_value\":\"Senior Relationship Associate\",\"version\":5}', '2026-10-23 15:56:47'),
+  ('641', '1', 'interview_field_update', 'interview_applications', '13', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"offered_salary\",\"old_value\":null}', '{\"field\":\"offered_salary\",\"new_value\":450000,\"version\":6}', '2026-10-23 15:56:47'),
+  ('642', '1', 'interview_field_update', 'interview_applications', '13', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"joining_date\",\"old_value\":null}', '{\"field\":\"joining_date\",\"new_value\":\"2026-11-15\",\"version\":7}', '2026-10-23 15:56:48'),
+  ('643', '1', 'interview_field_update', 'interview_applications', '13', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"selected\"}', '{\"field\":\"decision\",\"new_value\":\"rejected\",\"version\":8}', '2026-10-23 15:56:49'),
+  ('644', '1', 'interview_field_update', 'interview_applications', '13', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"rejection_reason\",\"old_value\":null}', '{\"field\":\"rejection_reason\",\"new_value\":\"Not willing to relocate to Gurgaon\",\"version\":9}', '2026-10-23 15:56:50'),
+  ('645', '1', 'interview_field_update', 'interview_applications', '13', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"rejected\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":10}', '2026-10-23 15:56:51'),
+  ('646', '1', 'download_interview_pdf', 'interview_applications', '13', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"filename\":\"Interview_Form_Kavita_Live_Test_412_13.pdf\",\"ip\":\"127.0.0.1\"}', '2026-10-23 15:56:52');
 
 -- --------------------------------------------------------
 -- Table structure for `bank_details`
@@ -886,6 +939,7 @@ CREATE TABLE `interview_applications` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `hr_name` varchar(100) NOT NULL,
   `post_applied` varchar(150) NOT NULL,
+  `applied_for_type` varchar(50) NOT NULL DEFAULT 'Commercial',
   `full_name` varchar(150) NOT NULL,
   `email` varchar(150) NOT NULL,
   `mobile` varchar(20) NOT NULL,
@@ -931,13 +985,23 @@ CREATE TABLE `interview_applications` (
   KEY `idx_ia_email` (`email`),
   KEY `idx_ia_first_viewed` (`first_viewed_at`),
   KEY `idx_ia_archived` (`is_archived`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `interview_applications`
-INSERT INTO `interview_applications` (`id`, `hr_name`, `post_applied`, `full_name`, `email`, `mobile`, `experience_type`, `years_in_real_estate`, `vehicle_available`, `current_location`, `higher_education`, `has_references`, `reference_details`, `last_company_hr_tl`, `reason_to_leave`, `immediate_joiner`, `consent_at`, `submitted_at`, `ip_address`, `user_agent`, `source_by`, `feedback_tl_sm`, `feedback_hr`, `feedback_final`, `module_discussed`, `position_offered`, `decision`, `decision_at`, `decision_by`, `candidate_interested`, `offered_salary`, `joining_date`, `rejection_reason`, `version`, `first_viewed_at`, `first_viewed_by`, `updated_by`, `updated_at`, `is_archived`, `archived_at`) VALUES
-  ('1', 'Ankita Mittal', 'Test', 'Abhishek Boora', 'abhishekboora2001@gmail.com', '9306098396', 'fresher', NULL, 'no', 'Gurgaon, IN', 'Mcaaaa', 'no', NULL, NULL, NULL, 'no', '2026-10-23 13:57:55', '2026-10-23 13:57:55', '27.59.70.157', 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Mobile Safari/537.36', NULL, NULL, NULL, NULL, NULL, NULL, 'pending', NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, '2026-10-23 13:57:55', '0', NULL),
-  ('2', 'Ankita Mittal', 'Test', 'Abhishek Boora', 'abhishekboora2001@gmail.com', '9306098396', 'fresher', NULL, 'no', 'Gurgaon, IN', 'Mcaaaa', 'no', NULL, NULL, NULL, 'no', '2026-10-23 13:59:06', '2026-10-23 13:59:06', '27.59.70.157', 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Mobile Safari/537.36', NULL, NULL, NULL, NULL, NULL, NULL, 'pending', NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, '2026-10-23 13:59:06', '0', NULL),
-  ('3', 'Ankita Mittal', 'Hhhj', 'Tyhy', 'abhishekbooa2001@gmail.com', '9306098396', 'fresher', NULL, 'no', 'Gurgaon', 'Mcaaaa', 'no', NULL, NULL, NULL, 'no', '2026-10-23 13:59:33', '2026-10-23 13:59:33', '27.59.70.157', 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Mobile Safari/537.36', NULL, NULL, NULL, NULL, NULL, NULL, 'pending', NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, '2026-10-23 13:59:33', '0', NULL);
+INSERT INTO `interview_applications` (`id`, `hr_name`, `post_applied`, `applied_for_type`, `full_name`, `email`, `mobile`, `experience_type`, `years_in_real_estate`, `vehicle_available`, `current_location`, `higher_education`, `has_references`, `reference_details`, `last_company_hr_tl`, `reason_to_leave`, `immediate_joiner`, `consent_at`, `submitted_at`, `ip_address`, `user_agent`, `source_by`, `feedback_tl_sm`, `feedback_hr`, `feedback_final`, `module_discussed`, `position_offered`, `decision`, `decision_at`, `decision_by`, `candidate_interested`, `offered_salary`, `joining_date`, `rejection_reason`, `version`, `first_viewed_at`, `first_viewed_by`, `updated_by`, `updated_at`, `is_archived`, `archived_at`) VALUES
+  ('1', 'Ankita Mittal', 'Test', 'Commercial', 'Abhishek Boora', 'abhishekboora2001@gmail.com', '9306098396', 'fresher', NULL, 'no', 'Gurgaon, IN', 'Mcaaaa', 'no', NULL, NULL, NULL, 'no', '2026-10-23 13:57:55', '2026-10-23 13:57:55', '27.59.70.157', 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Mobile Safari/537.36', NULL, NULL, NULL, NULL, NULL, NULL, 'pending', NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, '2026-10-23 13:57:55', '0', NULL),
+  ('2', 'Ankita Mittal', 'Test', 'Commercial', 'Abhishek Boora', 'abhishekboora2001@gmail.com', '9306098396', 'fresher', NULL, 'no', 'Gurgaon, IN', 'Mcaaaa', 'no', NULL, NULL, NULL, 'no', '2026-10-23 13:59:06', '2026-10-23 13:59:06', '27.59.70.157', 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Mobile Safari/537.36', NULL, NULL, NULL, NULL, NULL, NULL, 'pending', NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, '2026-10-23 13:59:06', '0', NULL),
+  ('3', 'Ankita Mittal', 'Hhhj', 'Commercial', 'Tyhy', 'abhishekbooa2001@gmail.com', '9306098396', 'fresher', NULL, 'no', 'Gurgaon', 'Mcaaaa', 'no', NULL, NULL, NULL, 'no', '2026-10-23 13:59:33', '2026-10-23 13:59:33', '27.59.70.157', 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Mobile Safari/537.36', NULL, NULL, NULL, NULL, NULL, NULL, 'pending', NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, '2026-10-23 13:59:33', '0', NULL),
+  ('4', 'Unanti Bhatia', 'Associate Director - Luxury Sales', 'Commercial', 'Aaditya Vikram Singh', 'aaditya.test.1792744526115@realtysmartzpathshala.in', '9829107752', 'experience', '4.5', 'yes', 'Golf Course Road, Gurugram', 'B.Tech + MBA', 'yes', 'Direct Referral from Director of Sales', 'Siddharth Roy', 'Opportunity in ultra-luxury vertical', 'yes', '2026-10-23 14:05:26', '2026-10-23 14:05:26', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, NULL, NULL, NULL, NULL, NULL, 'pending', NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, '2026-10-23 14:05:26', '0', NULL),
+  ('5', 'Unanti Bhatia', 'Client Relationship Executive', 'Commercial', 'Kavita Live Test 167', 'kavita.1792744544245@example.com', '9911624196', 'fresher', NULL, 'no', 'Indirapuram, Ghaziabad', 'B.Com', 'no', NULL, NULL, NULL, 'yes', '2026-10-23 14:05:44', '2026-10-23 14:05:44', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, NULL, 'Excellent communication skills and strong presentation.', NULL, NULL, 'Senior Relationship Associate', 'selected', '2026-10-23 14:05:55', '1', 'yes', NULL, NULL, NULL, '5', '2026-10-23 14:05:49', '1', '1', '2026-10-23 14:06:03', '0', NULL),
+  ('6', 'Unanti Bhatia', 'Associate Director - Luxury Sales', 'Commercial', 'Aaditya Vikram Singh', 'aaditya.test.1792744720516@realtysmartzpathshala.in', '9886791884', 'experience', '4.5', 'yes', 'Golf Course Road, Gurugram', 'B.Tech + MBA', 'yes', 'Direct Referral from Director of Sales', 'Siddharth Roy', 'Opportunity in ultra-luxury vertical', 'yes', '2026-10-23 14:08:40', '2026-10-23 14:08:40', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, NULL, NULL, NULL, NULL, NULL, 'pending', NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, '2026-10-23 14:08:40', '0', NULL),
+  ('7', 'Unanti Bhatia', 'Client Relationship Executive', 'Commercial', 'Kavita Live Test 365', 'kavita.1792744735939@example.com', '9981452012', 'fresher', NULL, 'no', 'Indirapuram, Ghaziabad', 'B.Com', 'no', NULL, NULL, NULL, 'yes', '2026-10-23 14:08:55', '2026-10-23 14:08:55', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, NULL, 'Excellent communication skills and strong presentation.', NULL, NULL, 'Senior Relationship Associate', 'selected', '2026-10-23 14:09:06', '1', 'yes', NULL, NULL, NULL, '5', '2026-10-23 14:09:01', '1', '1', '2026-10-23 14:09:14', '0', NULL),
+  ('8', 'Unanti Bhatia', 'Associate Director - Luxury Sales', 'Commercial', 'Aaditya Vikram Singh', 'aaditya.test.1792744916201@realtysmartzpathshala.in', '9891007665', 'experience', '4.5', 'yes', 'Golf Course Road, Gurugram', 'B.Tech + MBA', 'yes', 'Direct Referral from Director of Sales', 'Siddharth Roy', 'Opportunity in ultra-luxury vertical', 'yes', '2026-10-23 14:11:56', '2026-10-23 14:11:56', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, NULL, NULL, NULL, NULL, NULL, 'pending', NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, '2026-10-23 14:11:56', '0', NULL),
+  ('9', 'Unanti Bhatia', 'Client Relationship Executive', 'Commercial', 'Kavita Live Test 24', 'kavita.1792744931579@example.com', '9964296176', 'fresher', NULL, 'no', 'Indirapuram, Ghaziabad', 'B.Com', 'no', NULL, NULL, NULL, 'yes', '2026-10-23 14:12:11', '2026-10-23 14:12:11', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, NULL, 'Excellent communication skills and strong presentation.', NULL, NULL, 'Senior Relationship Associate', 'selected', '2026-10-23 14:12:24', '1', 'yes', '450000.00', '2026-11-15', 'Not willing to relocate to Gurgaon', '10', '2026-10-23 14:12:17', '1', '1', '2026-10-23 14:12:24', '0', NULL),
+  ('10', 'Priyanka Yadav', 'Test', 'Commercial', 'Demo', 'abhishekboora2001@gmail.com', '9306098395', 'fresher', NULL, 'no', 'Gurgaon', 'Mcaaaa', 'no', NULL, NULL, NULL, 'no', '2026-10-23 14:45:09', '2026-10-23 14:45:09', '27.59.70.157', 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Mobile Safari/537.36', NULL, NULL, NULL, NULL, NULL, NULL, 'pending', NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, '2026-10-23 14:45:09', '0', NULL),
+  ('11', 'Ankita Mittal', 'Sales executive', 'Commercial', 'Ravi kumar', 'ai.mittal51@gmail.com', '9532145698', 'fresher', NULL, 'no', 'Gugi', 'Vivi', 'no', NULL, NULL, NULL, 'no', '2026-10-23 14:50:44', '2026-10-23 14:50:44', '150.242.87.176', 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Mobile Safari/537.36', NULL, NULL, NULL, NULL, NULL, NULL, 'pending', NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, '2026-10-23 14:50:44', '0', NULL),
+  ('12', 'Unanti Bhatia', 'Associate Director - Luxury Sales', 'Commercial', 'Aaditya Vikram Singh', 'aaditya.test.1792751164998@realtysmartzpathshala.in', '9869913078', 'experience', '4.5', 'yes', 'Golf Course Road, Gurugram', 'B.Tech + MBA', 'yes', 'Direct Referral from Director of Sales', 'Siddharth Roy', 'Opportunity in ultra-luxury vertical', 'yes', '2026-10-23 15:56:05', '2026-10-23 15:56:05', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, NULL, NULL, NULL, NULL, NULL, 'pending', NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, '2026-10-23 15:56:05', '0', NULL),
+  ('13', 'Unanti Bhatia', 'Client Relationship Executive', 'Residential', 'Kavita Live Test 412', 'kavita.1792751183135@example.com', '9952313163', 'fresher', NULL, 'no', 'Indirapuram, Ghaziabad', 'B.Com', 'no', NULL, NULL, NULL, 'yes', '2026-10-23 15:56:23', '2026-10-23 15:56:23', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, NULL, 'Excellent communication skills and strong presentation.', NULL, NULL, 'Senior Relationship Associate', 'selected', '2026-10-23 15:56:51', '1', 'yes', '450000.00', '2026-11-15', 'Not willing to relocate to Gurgaon', '10', '2026-10-23 15:56:41', '1', '1', '2026-10-23 15:56:51', '0', NULL);
 
 -- --------------------------------------------------------
 -- Table structure for `interview_email_log`
@@ -955,7 +1019,20 @@ CREATE TABLE `interview_email_log` (
   PRIMARY KEY (`id`),
   KEY `idx_iel_app_type` (`application_id`,`type`),
   KEY `idx_iel_created` (`created_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table `interview_email_log`
+INSERT INTO `interview_email_log` (`id`, `application_id`, `type`, `to_email`, `status`, `error`, `created_at`, `sent_at`) VALUES
+  ('1', '4', 'hr_new_form', 'hr@realtysmartzpathshala.in', 'failed', NULL, '2026-10-23 14:05:26', '2026-10-23 14:05:27'),
+  ('2', '5', 'hr_new_form', 'hr@realtysmartzpathshala.in', 'failed', NULL, '2026-10-23 14:05:44', '2026-10-23 14:05:45'),
+  ('3', '6', 'hr_new_form', 'hr@realtysmartzpathshala.in', 'failed', NULL, '2026-10-23 14:08:40', '2026-10-23 14:08:41'),
+  ('4', '7', 'hr_new_form', 'hr@realtysmartzpathshala.in', 'failed', NULL, '2026-10-23 14:08:56', '2026-10-23 14:08:57'),
+  ('5', '8', 'hr_new_form', 'hr@realtysmartzpathshala.in', 'failed', NULL, '2026-10-23 14:11:56', '2026-10-23 14:11:57'),
+  ('6', '9', 'hr_new_form', 'hr@realtysmartzpathshala.in', 'failed', NULL, '2026-10-23 14:12:11', '2026-10-23 14:12:12'),
+  ('7', '10', 'hr_new_form', 'hr@realtysmartzpathshala.in', 'failed', NULL, '2026-10-23 14:45:09', '2026-10-23 14:45:09'),
+  ('8', '11', 'hr_new_form', 'hr@realtysmartzpathshala.in', 'failed', NULL, '2026-10-23 14:50:44', '2026-10-23 14:50:44'),
+  ('9', '12', 'hr_new_form', 'hr@realtysmartzpathshala.in', 'failed', NULL, '2026-10-23 15:56:05', '2026-10-23 15:56:07'),
+  ('10', '13', 'hr_new_form', 'hr@realtysmartzpathshala.in', 'failed', NULL, '2026-10-23 15:56:23', '2026-10-23 15:56:24');
 
 -- --------------------------------------------------------
 -- Table structure for `interview_employment_rows`
@@ -973,7 +1050,14 @@ CREATE TABLE `interview_employment_rows` (
   PRIMARY KEY (`id`),
   KEY `idx_ier_app_id` (`application_id`),
   CONSTRAINT `fk_ier_app_id` FOREIGN KEY (`application_id`) REFERENCES `interview_applications` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table `interview_employment_rows`
+INSERT INTO `interview_employment_rows` (`id`, `application_id`, `sort_order`, `organisation`, `designation`, `salary`, `hr_name_number`, `duration`) VALUES
+  ('1', '4', '1', 'Emaar India', 'Senior Manager - Sales', '12,00,000 PA', 'Kavita Mehta 9871122334', '3.5 Years'),
+  ('2', '6', '1', 'Emaar India', 'Senior Manager - Sales', '12,00,000 PA', 'Kavita Mehta 9871122334', '3.5 Years'),
+  ('3', '8', '1', 'Emaar India', 'Senior Manager - Sales', '12,00,000 PA', 'Kavita Mehta 9871122334', '3.5 Years'),
+  ('4', '12', '1', 'Emaar India', 'Senior Manager - Sales', '12,00,000 PA', 'Kavita Mehta 9871122334', '3.5 Years');
 
 -- --------------------------------------------------------
 -- Table structure for `interview_field_versions`
@@ -989,7 +1073,36 @@ CREATE TABLE `interview_field_versions` (
   PRIMARY KEY (`id`),
   KEY `idx_ifv_app_field` (`application_id`,`field`),
   KEY `idx_ifv_updated_at` (`updated_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table `interview_field_versions`
+INSERT INTO `interview_field_versions` (`id`, `application_id`, `field`, `value`, `updated_at`, `updated_by`) VALUES
+  ('1', '5', 'feedback_hr', 'Excellent communication skills and strong presentation.', '2026-10-23 14:05:50', '1'),
+  ('2', '5', 'decision', 'selected', '2026-10-23 14:05:55', '1'),
+  ('3', '5', 'candidate_interested', 'yes', '2026-10-23 14:05:59', '1'),
+  ('4', '5', 'position_offered', 'Senior Relationship Associate', '2026-10-23 14:06:03', '1'),
+  ('5', '7', 'feedback_hr', 'Excellent communication skills and strong presentation.', '2026-10-23 14:09:02', '1'),
+  ('6', '7', 'decision', 'selected', '2026-10-23 14:09:06', '1'),
+  ('7', '7', 'candidate_interested', 'yes', '2026-10-23 14:09:11', '1'),
+  ('8', '7', 'position_offered', 'Senior Relationship Associate', '2026-10-23 14:09:14', '1'),
+  ('9', '9', 'feedback_hr', 'Excellent communication skills and strong presentation.', '2026-10-23 14:12:18', '1'),
+  ('10', '9', 'decision', 'selected', '2026-10-23 14:12:19', '1'),
+  ('11', '9', 'candidate_interested', 'yes', '2026-10-23 14:12:20', '1'),
+  ('12', '9', 'position_offered', 'Senior Relationship Associate', '2026-10-23 14:12:20', '1'),
+  ('13', '9', 'offered_salary', '450000', '2026-10-23 14:12:21', '1'),
+  ('14', '9', 'joining_date', '2026-11-15', '2026-10-23 14:12:21', '1'),
+  ('15', '9', 'decision', 'rejected', '2026-10-23 14:12:23', '1'),
+  ('16', '9', 'rejection_reason', 'Not willing to relocate to Gurgaon', '2026-10-23 14:12:24', '1'),
+  ('17', '9', 'decision', 'selected', '2026-10-23 14:12:24', '1'),
+  ('18', '13', 'feedback_hr', 'Excellent communication skills and strong presentation.', '2026-10-23 15:56:43', '1'),
+  ('19', '13', 'decision', 'selected', '2026-10-23 15:56:45', '1'),
+  ('20', '13', 'candidate_interested', 'yes', '2026-10-23 15:56:46', '1'),
+  ('21', '13', 'position_offered', 'Senior Relationship Associate', '2026-10-23 15:56:47', '1'),
+  ('22', '13', 'offered_salary', '450000', '2026-10-23 15:56:47', '1'),
+  ('23', '13', 'joining_date', '2026-11-15', '2026-10-23 15:56:48', '1'),
+  ('24', '13', 'decision', 'rejected', '2026-10-23 15:56:49', '1'),
+  ('25', '13', 'rejection_reason', 'Not willing to relocate to Gurgaon', '2026-10-23 15:56:50', '1'),
+  ('26', '13', 'decision', 'selected', '2026-10-23 15:56:51', '1');
 
 -- --------------------------------------------------------
 -- Table structure for `login_attempts`
@@ -1516,7 +1629,7 @@ CREATE TABLE `qr_settings` (
 
 -- Dumping data for table `qr_settings`
 INSERT INTO `qr_settings` (`id`, `type`, `slug`, `accepting_responses`, `created_at`) VALUES
-  ('1', 'interview_form', 'rsp_interview_7f9c2d1b4e8a', '1', '2026-10-22 16:53:59');
+  ('1', 'interview_form', 'interview-candidate', '1', '2026-10-22 16:53:59');
 
 -- --------------------------------------------------------
 -- Table structure for `questions`

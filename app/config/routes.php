@@ -105,7 +105,11 @@ Router::get('/blog/{slug}', [HomeController::class, 'blogDetail']);
 Router::get('/contact', [HomeController::class, 'contact']);
 Router::post('/contact', [HomeController::class, 'submitContact'], ['csrf']);
 
-// Public Interview Application Form (Accessible only via QR code)
+// Public Interview Application Form (Clean URL & QR code)
+Router::get('/interview-candidate', [InterviewController::class, 'showPublicFormDirect']);
+Router::post('/interview-candidate', [InterviewController::class, 'submitPublicFormDirect']);
+Router::get('/interview-candidate/success', [InterviewController::class, 'showSuccessDirect']);
+
 Router::get('/q/{slug}', [InterviewController::class, 'showPublicForm']);
 Router::post('/q/{slug}', [InterviewController::class, 'submitPublicForm']);
 Router::get('/q/{slug}/success', [InterviewController::class, 'showSuccess']);
