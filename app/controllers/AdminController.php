@@ -1599,9 +1599,9 @@ class AdminController {
         $interviewQr = \App\Models\InterviewApplication::getQrSettings();
         $interviewUrl = \App\Helpers\QrCodeHelper::getBaseUrl() . '/q/' . $interviewQr['slug'];
 
-        $onboardingSvg = \App\Helpers\QrCodeHelper::getSvg($onboardingUrl, 6, 6, '#1F5C4A');
-        $aptitudeSvg = \App\Helpers\QrCodeHelper::getSvg($aptitudeUrl, 6, 6, '#1F5C4A');
-        $interviewSvg = \App\Helpers\QrCodeHelper::getSvg($interviewUrl, 6, 6, '#1F5C4A');
+        $onboardingSvg = \App\Helpers\QrCodeHelper::getSvg($onboardingUrl, 6, 4, '#1F5C4A');
+        $aptitudeSvg = \App\Helpers\QrCodeHelper::getSvg($aptitudeUrl, 6, 4, '#1F5C4A');
+        $interviewSvg = \App\Helpers\QrCodeHelper::getSvg($interviewUrl, 6, 4, '#1F5C4A');
 
         $viewTitle = "QR Codes";
         $pageTitle = "QR Code Management | Realty Smartz Pathshala";
@@ -1627,7 +1627,7 @@ class AdminController {
 
         $filename = ($type === 'aptitude') ? 'Realty_Smartz_Aptitude_QR.png' : 'Realty_Smartz_Onboarding_QR.png';
 
-        $pngData = \App\Helpers\QrCodeHelper::getPng($targetUrl, 10, 10, '#1F5C4A');
+        $pngData = \App\Helpers\QrCodeHelper::getPng($targetUrl, 16, 4, '#1F5C4A');
 
         while (ob_get_level()) {
             ob_end_clean();

@@ -51,6 +51,9 @@ class InterviewController {
         if (!is_array($hrNames)) $hrNames = [];
 
         $csrfToken = csrf_token();
+        $_SESSION['_csrf_token'] = $csrfToken;
+        $_SESSION['csrf_token'] = $csrfToken;
+        $signedToken = hash_hmac('sha256', 'interview_' . $slug, (string)config('APP_KEY', 'realty_smartz_pathsala_secret_2026'));
 
         require APP_PATH . '/views/public/interview_form.php';
     }
@@ -91,9 +94,16 @@ class InterviewController {
             return;
         }
 
-        // CSRF verification
-        $postedCsrf = $_POST['csrf_token'] ?? '';
-        if (empty($postedCsrf) || !hash_equals($_SESSION['csrf_token'] ?? '', $postedCsrf)) {
+        // CSRF verification (supports session CSRF + mobile webview HMAC fallback)
+        $postedCsrf = trim((string)($_POST['csrf_token'] ?? $_POST['_csrf_token'] ?? ''));
+        $postedSigned = trim((string)($_POST['signed_token'] ?? ''));
+        $sessionCsrf = trim((string)($_SESSION['_csrf_token'] ?? $_SESSION['csrf_token'] ?? ''));
+        $expectedSigned = hash_hmac('sha256', 'interview_' . $slug, (string)config('APP_KEY', 'realty_smartz_pathsala_secret_2026'));
+
+        $isCsrfValid = (!empty($postedCsrf) && !empty($sessionCsrf) && hash_equals($sessionCsrf, $postedCsrf));
+        $isSignedValid = (!empty($postedSigned) && hash_equals($expectedSigned, $postedSigned));
+
+        if (!$isCsrfValid && !$isSignedValid) {
             http_response_code(403);
             $errorMessage = "Invalid or expired security token. Please refresh the page and try again.";
             require APP_PATH . '/views/public/interview_error.php';
@@ -310,6 +320,13 @@ class InterviewController {
             ];
 
             $appId = InterviewApplication::create($appData, $employmentRows);
+
+            // Realtime Sync to Google Sheets (Tab: Interview Candidates)
+            try {
+                \App\Helpers\GoogleSheetsService::syncInterviewApplicationAsync($appId);
+            } catch (\Throwable $e) {
+                error_log("Google Sheets sync failed on interview submit: " . $e->getMessage());
+            }
 
             // Record idempotency token in session
             $_SESSION['interview_submitted_token'] = $postIdempotency;
@@ -698,7 +715,7 @@ class InterviewController {
         }
 
         if ($format === 'svg') {
-            $svg = QrCodeHelper::getSvg($targetUrl, 6, 6, '#1F5C4A');
+            $svg = QrCodeHelper::getSvg($targetUrl, 6, 4, '#1F5C4A');
             header('Content-Type: image/svg+xml');
             header('Content-Disposition: attachment; filename="Realty_Smartz_Interview_Form_QR.svg"');
             header('Content-Length: ' . strlen($svg));
@@ -706,8 +723,8 @@ class InterviewController {
             exit;
         }
 
-        // High resolution PNG (at least 1000px, printable at 3cm)
-        $png = QrCodeHelper::getPng($targetUrl, 25, 25, '#1F5C4A');
+        // High resolution PNG with solid white background and 4-module quiet zone (scannable by all devices)
+        $png = QrCodeHelper::getPng($targetUrl, 16, 4, '#1F5C4A');
         header('Content-Type: image/png');
         header('Content-Disposition: attachment; filename="Realty_Smartz_Interview_Form_QR.png"');
         header('Content-Length: ' . strlen($png));

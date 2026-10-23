@@ -88,9 +88,9 @@ class InterviewApplication {
 
             $db->commit();
 
-            // Check & dispatch HR notification email
+            // Check & dispatch HR notification email asynchronously
             try {
-                self::sendAutomationEmails($applicationId, 'new_form', $data);
+                self::sendAutomationEmailsAsync($applicationId, 'new_form', $data);
             } catch (\Throwable $e) {
                 error_log("Interview HR notification email failed: " . $e->getMessage());
             }
@@ -288,7 +288,7 @@ class InterviewApplication {
                 ia.version, ia.updated_at
             FROM `interview_applications` ia
             WHERE ia.is_archived = 0 
-              AND (ia.updated_at > :since1 OR ia.submitted_at > :since2)
+              AND (ia.updated_at >= DATE_SUB(:since1, INTERVAL 10 SECOND) OR ia.submitted_at >= DATE_SUB(:since2, INTERVAL 10 SECOND))
             ORDER BY ia.submitted_at DESC
             LIMIT 50");
 
@@ -367,8 +367,8 @@ class InterviewApplication {
             ];
         }
 
-        // Concurrency check: If client's version is older than database version
-        if ($clientVersion > 0 && $clientVersion < (int)$current['version']) {
+        // Concurrency check: If client's version is older than database version AND modified by another admin
+        if ($clientVersion > 0 && $clientVersion < (int)$current['version'] && !empty($current['updated_by']) && (int)$current['updated_by'] !== $adminId) {
             // Check if this specific field was modified since client's version
             return [
                 'conflict'        => true,
@@ -421,7 +421,10 @@ class InterviewApplication {
             ]);
 
             // Audit Log
-            AuditLog::log('interview_field_update', 'interview_applications', $id, $oldValue, [
+            AuditLog::log('interview_field_update', 'interview_applications', $id, [
+                'field'     => $field,
+                'old_value' => $oldValue
+            ], [
                 'field'     => $field,
                 'new_value' => $value,
                 'version'   => $newVersion
@@ -429,13 +432,20 @@ class InterviewApplication {
 
             $db->commit();
 
-            // Check automation emails if decision changed
+            // Realtime Sync to Google Sheets (Tab: Interview Candidates)
+            try {
+                \App\Helpers\GoogleSheetsService::syncInterviewApplicationAsync($id);
+            } catch (\Throwable $e) {
+                error_log("Google Sheets sync failed on interview updateField: " . $e->getMessage());
+            }
+
+            // Check automation emails if decision changed (asynchronously)
             if ($field === 'decision') {
                 $fullApp = self::findById($id);
                 if ($value === 'selected') {
-                    self::sendAutomationEmails($id, 'selected', $fullApp);
+                    self::sendAutomationEmailsAsync($id, 'selected', $fullApp);
                 } elseif ($value === 'rejected') {
-                    self::sendAutomationEmails($id, 'rejected', $fullApp);
+                    self::sendAutomationEmailsAsync($id, 'rejected', $fullApp);
                 }
             }
 
@@ -450,8 +460,10 @@ class InterviewApplication {
                 'last_updated_text' => $lastUpdatedText
             ];
 
-        } catch (Exception $e) {
-            $db->rollBack();
+        } catch (\Throwable $e) {
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
             return ['success' => false, 'error' => $e->getMessage()];
         }
     }
@@ -553,6 +565,52 @@ class InterviewApplication {
         $stmt->execute([':ip' => $ip]);
         $count = (int) $stmt->fetchColumn();
         return $count < 10;
+    }
+
+    /**
+     * Non-blocking background dispatcher for automation emails
+     */
+    public static function sendAutomationEmailsAsync(int $applicationId, string $triggerType, array $appData = []): void {
+        $binScript = ROOT_PATH . '/bin/send_interview_email.php';
+        if (!file_exists($binScript)) {
+            self::sendAutomationEmails($applicationId, $triggerType, $appData);
+            return;
+        }
+
+        $phpBinary = PHP_BINARY;
+        if (!file_exists($phpBinary) || str_ends_with(strtolower($phpBinary), 'php-cgi.exe') || str_ends_with(strtolower($phpBinary), 'httpd.exe')) {
+            if (file_exists('C:\\xampp\\php\\php.exe')) {
+                $phpBinary = 'C:\\xampp\\php\\php.exe';
+            } else {
+                $phpBinary = 'php';
+            }
+        }
+
+        $escapedPhp = escapeshellarg($phpBinary);
+        $escapedScript = escapeshellarg($binScript);
+        $escapedType = escapeshellarg($triggerType);
+        $id = (int)$applicationId;
+
+        try {
+            if (stripos(PHP_OS, 'WIN') === 0) {
+                $cmd = "{$escapedPhp} {$escapedScript} --id={$id} --type={$escapedType}";
+                $descriptors = [
+                    0 => ['pipe', 'r'],
+                    1 => ['file', 'NUL', 'w'],
+                    2 => ['file', 'NUL', 'w']
+                ];
+                $proc = proc_open($cmd, $descriptors, $pipes, ROOT_PATH, null, ['bypass_shell' => false]);
+                if (is_resource($proc)) {
+                    fclose($pipes[0]);
+                }
+            } else {
+                $cmd = "{$escapedPhp} {$escapedScript} --id={$id} --type={$escapedType} > /dev/null 2>&1 &";
+                exec($cmd);
+            }
+        } catch (\Throwable $t) {
+            error_log("Async email dispatch failed: " . $t->getMessage());
+            self::sendAutomationEmails($applicationId, $triggerType, $appData);
+        }
     }
 
     /**

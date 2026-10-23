@@ -1006,11 +1006,16 @@ if (!empty($app['updated_at'])) {
         });
     });
 
-    // Date picker immediate save
-    document.getElementById('hr_joining_date')?.addEventListener('change', function() {
-        updateIncompleteBadge();
-        queueSave('joining_date', this.value);
-    });
+    // Date picker immediate save (listen to change, input, and blur)
+    const joinDateEl = document.getElementById('hr_joining_date');
+    if (joinDateEl) {
+        ['change', 'input', 'blur'].forEach(ev => {
+            joinDateEl.addEventListener(ev, function() {
+                updateIncompleteBadge();
+                queueSave('joining_date', this.value);
+            });
+        });
+    }
 
     // 2. Debounced save (600ms) and blur save on text/textarea/number fields
     ['source_by', 'position_offered', 'offered_salary', 'rejection_reason', 'feedback_tl_sm', 'feedback_hr', 'feedback_final', 'module_discussed'].forEach(name => {
@@ -1057,6 +1062,7 @@ if (!empty($app['updated_at'])) {
         // Replace existing pending entry for the same field
         pendingQueue = pendingQueue.filter(item => item.field !== field);
         pendingQueue.push({ field, value });
+        setAutosaveState('saving');
         processQueue();
     }
 
@@ -1088,7 +1094,6 @@ if (!empty($app['updated_at'])) {
                 const json = await res.json();
                 conflictMsg.textContent = `The field "${item.field.replace('_', ' ')}" was updated by ${json.updated_by_name || 'another administrator'}.`;
                 conflictBanner.style.display = 'flex';
-                setAutosaveState('saved', 'Merged with conflict');
                 if (json.version) recordVersion = json.version;
             } else if (!res.ok) {
                 throw new Error('Save HTTP error: ' + res.status);
@@ -1097,7 +1102,6 @@ if (!empty($app['updated_at'])) {
                 if (json.success) {
                     if (json.version) recordVersion = json.version;
                     if (json.last_updated_text) lastUpdatedByText.textContent = json.last_updated_text;
-                    setAutosaveState('saved');
                 } else {
                     throw new Error(json.error || 'Autosave error');
                 }
@@ -1109,7 +1113,9 @@ if (!empty($app['updated_at'])) {
         } finally {
             isSaving = false;
             if (pendingQueue.length > 0) {
-                setTimeout(processQueue, 200);
+                processQueue();
+            } else {
+                setAutosaveState('saved');
             }
         }
     }

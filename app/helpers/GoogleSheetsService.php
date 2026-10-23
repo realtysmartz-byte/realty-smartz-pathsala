@@ -30,6 +30,40 @@ class GoogleSheetsService {
         'Test Completion Date'
     ];
 
+    public const INTERVIEW_HEADERS = [
+        'Application Ref',
+        'Submitted At',
+        'HR Name (Selected)',
+        'Post Applied For',
+        'Candidate Full Name',
+        'Contact Number',
+        'Email Address',
+        'Experience Type',
+        'Years in Real Estate',
+        'Vehicle Available',
+        'Current Location',
+        'Higher Education',
+        'Any References',
+        'Reference Details',
+        'Last Company HR and TL',
+        'Reason to Leave',
+        'Immediate Joiner',
+        'Employment History',
+        'Decision',
+        'Candidate Interested',
+        'Position Offered',
+        'Offered Salary',
+        'Date of Joining',
+        'Rejection Reason',
+        'Source By',
+        'Feedback by TL/SM',
+        'Feedback by HR',
+        'Feedback Final',
+        'Module Discussed',
+        'Last Updated At',
+        'Last Updated By'
+    ];
+
     /**
      * Synchronize a candidate's record with Google Sheets
      *
@@ -53,6 +87,74 @@ class GoogleSheetsService {
                 'success' => false,
                 'message' => "Sync error: " . $e->getMessage()
             ];
+        }
+    }
+
+    /**
+     * Non-blocking asynchronous sync for candidates
+     */
+    public static function syncCandidateAsync(int $userId): void {
+        self::dispatchAsync('candidate', $userId);
+    }
+
+    /**
+     * Non-blocking asynchronous sync for interview applications
+     */
+    public static function syncInterviewApplicationAsync(int $applicationId): void {
+        self::dispatchAsync('interview', $applicationId);
+    }
+
+    /**
+     * Dispatch background sync process to prevent HTTP request delays
+     */
+    private static function dispatchAsync(string $type, int $id): void {
+        $binScript = ROOT_PATH . '/bin/sync_sheets.php';
+        if (!file_exists($binScript)) {
+            if ($type === 'interview') {
+                self::syncInterviewApplication($id);
+            } else {
+                self::syncCandidate($id);
+            }
+            return;
+        }
+
+        $phpBinary = PHP_BINARY;
+        if (!file_exists($phpBinary) || str_ends_with(strtolower($phpBinary), 'php-cgi.exe') || str_ends_with(strtolower($phpBinary), 'httpd.exe')) {
+            if (file_exists('C:\\xampp\\php\\php.exe')) {
+                $phpBinary = 'C:\\xampp\\php\\php.exe';
+            } else {
+                $phpBinary = 'php';
+            }
+        }
+
+        $escapedPhp = escapeshellarg($phpBinary);
+        $escapedScript = escapeshellarg($binScript);
+        $escapedType = escapeshellarg($type);
+        $id = (int)$id;
+
+        try {
+            if (stripos(PHP_OS, 'WIN') === 0) {
+                $cmd = "{$escapedPhp} {$escapedScript} --type={$escapedType} --id={$id}";
+                $descriptors = [
+                    0 => ['pipe', 'r'],
+                    1 => ['file', 'NUL', 'w'],
+                    2 => ['file', 'NUL', 'w']
+                ];
+                $proc = proc_open($cmd, $descriptors, $pipes, ROOT_PATH, null, ['bypass_shell' => false]);
+                if (is_resource($proc)) {
+                    fclose($pipes[0]);
+                }
+            } else {
+                $cmd = "{$escapedPhp} {$escapedScript} --type={$escapedType} --id={$id} > /dev/null 2>&1 &";
+                exec($cmd);
+            }
+        } catch (\Throwable $t) {
+            self::log("Async dispatch failed ({$t->getMessage()}), falling back to direct sync.");
+            if ($type === 'interview') {
+                self::syncInterviewApplication($id);
+            } else {
+                self::syncCandidate($id);
+            }
         }
     }
 
@@ -177,27 +279,122 @@ class GoogleSheetsService {
     }
 
     /**
-     * Upsert candidate record in Google Sheets without creating duplicates
+     * Synchronize an interview application's record with Google Sheets
      *
-     * @param array $row 17-element array
+     * @param int $applicationId Interview Application ID
+     * @return array Status array ['success' => bool, 'message' => string]
+     */
+    public static function syncInterviewApplication(int $applicationId): array {
+        try {
+            $data = self::buildInterviewCandidateRow($applicationId);
+            if (empty($data)) {
+                return [
+                    'success' => false,
+                    'message' => "Interview Application ID {$applicationId} not found in database."
+                ];
+            }
+
+            $tabName = config('GOOGLE_SHEETS_INTERVIEW_TAB') ?: Setting::get('google_sheets_interview_tab', 'Interview Candidates');
+            return self::upsertRow($data, $tabName, self::INTERVIEW_HEADERS);
+        } catch (\Throwable $e) {
+            self::log("Error syncing interview application {$applicationId}: " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => "Sync error: " . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Gather and format the 31-column interview candidate data record
+     *
+     * @param int $applicationId
+     * @return array|null
+     */
+    public static function buildInterviewCandidateRow(int $applicationId): ?array {
+        $app = \App\Models\InterviewApplication::findById($applicationId);
+        if (!$app) return null;
+
+        $refId = 'INT-' . str_pad((string)$app['id'], 5, '0', STR_PAD_LEFT);
+
+        // Summarize employment history
+        $empSummary = '';
+        if (!empty($app['employment_rows'])) {
+            $parts = [];
+            foreach ($app['employment_rows'] as $emp) {
+                $org = $emp['organisation'] ?? '';
+                $desig = $emp['designation'] ?? '';
+                $sal = $emp['salary'] ?? '';
+                $dur = $emp['duration'] ?? '';
+                $hr = $emp['hr_name_number'] ?? '';
+                $parts[] = "{$org} ({$desig}, Sal: {$sal}, Dur: {$dur}, HR: {$hr})";
+            }
+            $empSummary = implode(" | ", $parts);
+        }
+
+        $formattedSalary = !empty($app['offered_salary']) ? '₹ ' . number_format((float)$app['offered_salary'], 0) : '';
+
+        return [
+            $refId,                                                                                 // 1. Application Ref
+            !empty($app['submitted_at']) ? date('d-m-Y H:i', strtotime($app['submitted_at'])) : '', // 2. Submitted At
+            $app['hr_name'] ?? '',                                                                  // 3. HR Name (Selected)
+            $app['post_applied'] ?? '',                                                             // 4. Post Applied For
+            $app['full_name'] ?? '',                                                                // 5. Candidate Full Name
+            $app['mobile'] ?? '',                                                                   // 6. Contact Number
+            $app['email'] ?? '',                                                                    // 7. Email Address
+            ucfirst($app['experience_type'] ?? ''),                                                 // 8. Experience Type
+            ($app['experience_type'] === 'experience') ? (($app['years_in_real_estate'] !== null) ? $app['years_in_real_estate'] . ' Yrs' : '0 Yrs') : 'Fresher', // 9. Years in RE
+            ucfirst($app['vehicle_available'] ?? ''),                                               // 10. Vehicle Available
+            $app['current_location'] ?? '',                                                         // 11. Current Location
+            $app['higher_education'] ?? '',                                                         // 12. Higher Education
+            ucfirst($app['has_references'] ?? ''),                                                  // 13. Any References
+            $app['reference_details'] ?? '',                                                        // 14. Reference Details
+            $app['last_company_hr_tl'] ?? '',                                                       // 15. Last Company HR/TL
+            $app['reason_to_leave'] ?? '',                                                          // 16. Reason to Leave
+            ucfirst($app['immediate_joiner'] ?? ''),                                                // 17. Immediate Joiner
+            $empSummary,                                                                            // 18. Employment History
+            ucfirst($app['decision'] ?? 'Pending'),                                                 // 19. Decision
+            ucfirst($app['candidate_interested'] ?? ''),                                            // 20. Candidate Interested
+            $app['position_offered'] ?? '',                                                         // 21. Position Offered
+            $formattedSalary,                                                                       // 22. Offered Salary
+            !empty($app['joining_date']) ? date('d-m-Y', strtotime($app['joining_date'])) : '',     // 23. Date of Joining
+            $app['rejection_reason'] ?? '',                                                         // 24. Rejection Reason
+            $app['source_by'] ?? '',                                                                // 25. Source By
+            $app['feedback_tl_sm'] ?? '',                                                           // 26. Feedback by TL/SM
+            $app['feedback_hr'] ?? '',                                                              // 27. Feedback by HR
+            $app['feedback_final'] ?? '',                                                           // 28. Feedback Final
+            $app['module_discussed'] ?? '',                                                         // 29. Module Discussed
+            !empty($app['updated_at']) ? date('d-m-Y H:i', strtotime($app['updated_at'])) : '',    // 30. Last Updated At
+            $app['updated_by_name'] ?? ($app['updated_by'] ? 'Admin #' . $app['updated_by'] : '')  // 31. Last Updated By
+        ];
+    }
+
+    /**
+     * Upsert candidate / interview record in Google Sheets without creating duplicates
+     *
+     * @param array $row Row data
+     * @param string|null $sheetName Tab name (default 'Candidates')
+     * @param array|null $headers Header row definition
      * @return array
      */
-    public static function upsertRow(array $row): array {
+    public static function upsertRow(array $row, ?string $sheetName = null, ?array $headers = null): array {
         $candidateId = $row[0] ?? '';
         if (empty($candidateId)) {
-            return ['success' => false, 'message' => 'Candidate ID missing.'];
+            return ['success' => false, 'message' => 'Record ID missing.'];
         }
 
         $config = self::getCredentialsConfig();
+        $targetSheet = !empty($sheetName) ? $sheetName : ($config['sheet_name'] ?? 'Candidates');
+        $targetHeaders = !empty($headers) ? $headers : self::HEADERS;
 
         // 1. Try Webhook URL if configured
         if (!empty($config['webhook_url'])) {
-            return self::syncViaWebhook($config['webhook_url'], $candidateId, $row);
+            return self::syncViaWebhook($config['webhook_url'], $candidateId, $row, $targetSheet, $targetHeaders);
         }
 
         // 2. Try Google Sheets REST API v4 with Service Account
         if (!empty($config['spreadsheet_id']) && !empty($config['service_account'])) {
-            return self::syncViaGoogleApi($config, $candidateId, $row);
+            return self::syncViaGoogleApi($config, $candidateId, $row, $targetSheet, $targetHeaders);
         }
 
         // 3. Neither configured yet -> Log gracefully, do not fail
@@ -205,26 +402,26 @@ class GoogleSheetsService {
         return [
             'success'  => true,
             'skipped'  => true,
-            'message'  => "Google Sheets credentials not yet configured. Candidate data safely recorded in application database."
+            'message'  => "Google Sheets credentials not yet configured. Record safely recorded in application database."
         ];
     }
 
     /**
      * Sync via Google Sheets API v4 using Service Account JWT
      */
-    private static function syncViaGoogleApi(array $config, string $candidateId, array $row): array {
+    private static function syncViaGoogleApi(array $config, string $candidateId, array $row, string $sheetName, array $headers): array {
         $token = self::getAccessToken($config['service_account']);
         if (!$token) {
             throw new Exception("Unable to obtain Google OAuth2 access token.");
         }
 
         $spreadsheetId = $config['spreadsheet_id'];
-        $sheetName = $config['sheet_name'] ?? 'Candidates';
+        $colEnd = self::columnLetter(count($headers));
 
-        // Step 1: Ensure headers exist on the sheet
-        self::ensureHeadersExist($spreadsheetId, $sheetName, $token);
+        // Step 1: Ensure tab and headers exist on the sheet
+        self::ensureSheetAndHeadersExist($spreadsheetId, $sheetName, $headers, $token);
 
-        // Step 2: Search Column A for existing Candidate ID
+        // Step 2: Search Column A for existing ID
         $searchUrl = "https://sheets.googleapis.com/v4/spreadsheets/" . rawurlencode($spreadsheetId) . "/values/" . rawurlencode($sheetName) . "!A:A";
         $res = self::httpGet($searchUrl, $token);
         
@@ -240,7 +437,7 @@ class GoogleSheetsService {
 
         if ($rowIndex !== null && $rowIndex > 1) {
             // Update existing row
-            $updateRange = "{$sheetName}!A{$rowIndex}:Q{$rowIndex}";
+            $updateRange = "{$sheetName}!A{$rowIndex}:{$colEnd}{$rowIndex}";
             $updateUrl = "https://sheets.googleapis.com/v4/spreadsheets/" . rawurlencode($spreadsheetId) . "/values/" . rawurlencode($updateRange) . "?valueInputOption=USER_ENTERED";
             
             $body = [
@@ -250,7 +447,7 @@ class GoogleSheetsService {
             ];
             
             $putRes = self::httpPut($updateUrl, $body, $token);
-            self::log("Updated existing candidate row {$rowIndex} in Google Sheets for {$candidateId}.");
+            self::log("Updated existing row {$rowIndex} in Google Sheets '{$sheetName}' for {$candidateId}.");
             return [
                 'success' => true,
                 'action'  => 'updated',
@@ -259,20 +456,20 @@ class GoogleSheetsService {
             ];
         } else {
             // Append new row
-            $appendUrl = "https://sheets.googleapis.com/v4/spreadsheets/" . rawurlencode($spreadsheetId) . "/values/" . rawurlencode($sheetName) . "!A:Q:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS";
+            $appendUrl = "https://sheets.googleapis.com/v4/spreadsheets/" . rawurlencode($spreadsheetId) . "/values/" . rawurlencode($sheetName) . "!A:{$colEnd}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS";
             
             $body = [
-                'range'  => "{$sheetName}!A:Q",
+                'range'  => "{$sheetName}!A:{$colEnd}",
                 'majorDimension' => 'ROWS',
                 'values' => [$row]
             ];
             
             $postRes = self::httpPost($appendUrl, $body, $token);
-            self::log("Appended new candidate record to Google Sheets for {$candidateId}.");
+            self::log("Appended new record to Google Sheets '{$sheetName}' for {$candidateId}.");
             return [
                 'success' => true,
                 'action'  => 'appended',
-                'message' => "New candidate record synchronized to Google Sheets."
+                'message' => "New record synchronized to Google Sheets."
             ];
         }
     }
@@ -280,11 +477,16 @@ class GoogleSheetsService {
     /**
      * Sync via Google Apps Script Webhook endpoint
      */
-    private static function syncViaWebhook(string $url, string $candidateId, array $row): array {
+    private static function syncViaWebhook(string $url, string $candidateId, array $row, string $sheetName = 'Candidates', ?array $headers = null): array {
+        $headers = !empty($headers) ? $headers : self::HEADERS;
         $payload = json_encode([
             'action'       => 'upsert',
+            'tab'          => $sheetName,
+            'sheet_name'   => $sheetName,
+            'sheet'        => $sheetName,
+            'type'         => ($sheetName === 'Interview Candidates' ? 'interview_candidate' : 'candidate'),
             'candidate_id' => $candidateId,
-            'headers'      => self::HEADERS,
+            'headers'      => $headers,
             'row'          => $row,
             'timestamp'    => date('Y-m-d H:i:s')
         ]);
@@ -310,11 +512,11 @@ class GoogleSheetsService {
         }
 
         if ($httpCode >= 200 && $httpCode < 300) {
-            self::log("Successfully synchronized {$candidateId} via Webhook.");
+            self::log("Successfully synchronized {$candidateId} to '{$sheetName}' via Webhook.");
             return [
                 'success' => true,
                 'action'  => 'webhook',
-                'message' => "Synchronized to Google Sheets via Webhook."
+                'message' => "Synchronized to Google Sheets tab '{$sheetName}' via Webhook."
             ];
         }
 
@@ -322,22 +524,61 @@ class GoogleSheetsService {
     }
 
     /**
-     * Ensure row 1 of the spreadsheet has all 17 column headers
+     * Ensure the tab exists in the spreadsheet and row 1 has the column headers
      */
-    private static function ensureHeadersExist(string $spreadsheetId, string $sheetName, string $token): void {
-        $headersUrl = "https://sheets.googleapis.com/v4/spreadsheets/" . rawurlencode($spreadsheetId) . "/values/" . rawurlencode($sheetName) . "!A1:Q1";
+    private static function ensureSheetAndHeadersExist(string $spreadsheetId, string $sheetName, array $headers, string $token): void {
+        // 1. Verify if sheet tab exists
+        $metaUrl = "https://sheets.googleapis.com/v4/spreadsheets/" . rawurlencode($spreadsheetId) . "?fields=sheets.properties";
+        $meta = self::httpGet($metaUrl, $token);
+        $sheetExists = false;
+        if (!empty($meta['sheets'])) {
+            foreach ($meta['sheets'] as $s) {
+                if (($s['properties']['title'] ?? '') === $sheetName) {
+                    $sheetExists = true;
+                    break;
+                }
+            }
+        }
+
+        if (!$sheetExists) {
+            // Add tab to spreadsheet
+            $batchUrl = "https://sheets.googleapis.com/v4/spreadsheets/" . rawurlencode($spreadsheetId) . ":batchUpdate";
+            self::httpPost($batchUrl, [
+                'requests' => [
+                    ['addSheet' => ['properties' => ['title' => $sheetName]]]
+                ]
+            ], $token);
+            self::log("Created new sheet tab '{$sheetName}' in spreadsheet.");
+        }
+
+        // 2. Ensure headers row
+        $colEnd = self::columnLetter(count($headers));
+        $headersUrl = "https://sheets.googleapis.com/v4/spreadsheets/" . rawurlencode($spreadsheetId) . "/values/" . rawurlencode($sheetName) . "!A1:{$colEnd}1";
         $current = self::httpGet($headersUrl, $token);
 
         if (empty($current['values']) || empty($current['values'][0])) {
             $body = [
-                'range'  => "{$sheetName}!A1:Q1",
+                'range'  => "{$sheetName}!A1:{$colEnd}1",
                 'majorDimension' => 'ROWS',
-                'values' => [self::HEADERS]
+                'values' => [$headers]
             ];
-            $putUrl = "https://sheets.googleapis.com/v4/spreadsheets/" . rawurlencode($spreadsheetId) . "/values/" . rawurlencode($sheetName) . "!A1:Q1?valueInputOption=USER_ENTERED";
+            $putUrl = "https://sheets.googleapis.com/v4/spreadsheets/" . rawurlencode($spreadsheetId) . "/values/" . rawurlencode($sheetName) . "!A1:{$colEnd}1?valueInputOption=USER_ENTERED";
             self::httpPut($putUrl, $body, $token);
-            self::log("Initialized 17 column headers in Google Sheet '{$sheetName}'.");
+            self::log("Initialized " . count($headers) . " column headers in Google Sheet '{$sheetName}'.");
         }
+    }
+
+    /**
+     * Convert 1-based column index to letter (1=A, 26=Z, 27=AA, etc.)
+     */
+    public static function columnLetter(int $col): string {
+        $letter = '';
+        while ($col > 0) {
+            $mod = ($col - 1) % 26;
+            $letter = chr(65 + $mod) . $letter;
+            $col = (int)(($col - $mod) / 26);
+        }
+        return $letter ?: 'A';
     }
 
     /**

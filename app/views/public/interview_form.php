@@ -513,6 +513,8 @@
 
             <form id="interviewForm" method="POST" action="<?= url('/q/' . urlencode($slug)) ?>" novalidate>
                 <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
+                <input type="hidden" name="_csrf_token" value="<?= e($csrfToken) ?>">
+                <input type="hidden" name="signed_token" value="<?= e($signedToken ?? '') ?>">
                 <input type="hidden" name="idempotency_token" value="<?= e($idempotencyToken) ?>">
 
                 <!-- Honeypot -->

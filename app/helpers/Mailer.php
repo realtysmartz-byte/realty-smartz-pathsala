@@ -55,7 +55,7 @@ class Mailer {
 
             $mail->CharSet    = 'UTF-8';
             $mail->Encoding   = 'base64';
-            $mail->Timeout    = 15;
+            $mail->Timeout    = 5;
 
             // Sender and Reply-To
             $mail->setFrom($fromEmail, $fromName);

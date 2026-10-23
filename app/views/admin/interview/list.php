@@ -1,4 +1,6 @@
 <?php
+use App\Models\Setting;
+
 ob_start();
 $pageTitle = "Interview Candidates | Realty Smartz Pathshala";
 $viewTitle = "Interview Candidates";
@@ -148,9 +150,18 @@ $viewTitle = "Interview Candidates";
             grid-template-columns: 1fr 1fr;
         }
     }
-    @media (max-width: 600px) {
+    @media (max-width: 640px) {
         .filter-form-grid {
             grid-template-columns: 1fr;
+        }
+        .filter-btn-group {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr;
+            width: 100%;
+        }
+        .filter-btn-group button,
+        .filter-btn-group a {
+            justify-content: center;
         }
     }
     .filter-input {
@@ -160,13 +171,15 @@ $viewTitle = "Interview Candidates";
         font-family: inherit;
         padding: 0 12px;
         border: 1px solid var(--line);
-        border-radius: var(--r-sm);
+        border-radius: var(--r-md);
         background: #FFFFFF;
         color: var(--text);
         outline: none;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
     .filter-input:focus {
         border-color: var(--brand);
+        box-shadow: 0 0 0 2px var(--brand-soft);
     }
 
     /* Floating New Submissions Pill */
@@ -300,6 +313,28 @@ $viewTitle = "Interview Candidates";
 
     /* Mobile Stacked Cards */
     @media (max-width: 767.98px) {
+        .top-action-bar {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .top-right-group {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .top-right-group .btn-action-outline,
+        .top-right-group .btn-action-primary {
+            flex: 1 1 auto;
+            justify-content: center;
+        }
+        .table-responsive-wrapper {
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            margin-bottom: 16px;
+        }
         .interview-table, .interview-table thead, .interview-table tbody, .interview-table tr, .interview-table td {
             display: block;
             width: 100%;
@@ -310,17 +345,23 @@ $viewTitle = "Interview Candidates";
         .interview-table tbody tr {
             border: 1px solid var(--line);
             border-radius: var(--r-md);
-            margin: 12px;
+            margin: 0 0 14px 0;
             padding: 16px;
-            background: #FFFFFF;
+            background: var(--surface);
+            box-shadow: 0 2px 8px rgba(38, 51, 45, 0.03);
         }
         .interview-table td {
-            padding: 6px 0;
+            padding: 8px 0;
             border: none;
+            border-bottom: 1px dashed rgba(226, 221, 208, 0.7);
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 13.5px;
+        }
+        .interview-table td:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
         }
         .interview-table td::before {
             content: attr(data-label);
@@ -331,7 +372,8 @@ $viewTitle = "Interview Candidates";
         .mobile-main-header {
             border-bottom: 1px solid var(--line) !important;
             padding-bottom: 10px !important;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
+            font-size: 15px !important;
         }
     }
 
@@ -528,9 +570,9 @@ $viewTitle = "Interview Candidates";
                 <option value="filled" <?= ($filters['feedback_status'] === 'filled') ? 'selected' : '' ?>>Feedback Filled</option>
             </select>
 
-            <div style="display: flex; gap: 6px;">
+            <div class="filter-btn-group" style="display: flex; gap: 8px;">
                 <button type="submit" class="btn-action-primary" style="height: 40px; padding: 0 16px;">Filter</button>
-                <a href="<?= url('/admin/interview-candidates') ?>" class="btn-action-outline" style="height: 40px; padding: 0 12px;" title="Reset filters">Reset</a>
+                <a href="<?= url('/admin/interview-candidates') ?>" class="btn-action-outline" style="height: 40px; padding: 0 14px;" title="Reset filters">Reset</a>
             </div>
         </div>
     </form>
@@ -620,7 +662,7 @@ $viewTitle = "Interview Candidates";
 </div>
 
 <!-- Server-side Pagination -->
-<?php if ($result['total_pages'] > 1): ?>
+<?php if (!empty($result['total_pages']) && $result['total_pages'] > 1): ?>
 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; flex-wrap: wrap; gap: 12px;">
     <div style="font-size: 13.5px; color: var(--muted);">
         Showing <?= count($result['items']) ?> of <?= $result['total'] ?> interview forms
@@ -722,7 +764,7 @@ $viewTitle = "Interview Candidates";
 <script>
 let lastCursor = '<?= date('Y-m-d H:i:s') ?>';
 let lastRefreshTime = Date.now();
-let pollInterval = 10000;
+let pollInterval = 4000;
 let pollTimer = null;
 let queuedNewRows = [];
 let isTabVisible = !document.hidden;
@@ -749,7 +791,7 @@ document.addEventListener('visibilitychange', () => {
     }
 });
 
-// Polling loop (every 10s, backs off to 60s on failure)
+// Polling loop (every 4s, backs off to 30s on failure)
 function startPolling() {
     clearTimeout(pollTimer);
     pollTimer = setTimeout(async () => {
@@ -768,7 +810,7 @@ async function pollUpdates() {
         if (!res.ok) throw new Error('Poll failed');
         const json = await res.json();
         if (json.success && json.data) {
-            pollInterval = 10000; // Reset backoff
+            pollInterval = 4000; // Reset backoff
             handleLiveUpdates(json.data);
             if (json.data.server_timestamp) {
                 lastCursor = json.data.server_timestamp;

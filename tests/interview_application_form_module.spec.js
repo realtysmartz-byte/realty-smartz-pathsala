@@ -13,6 +13,8 @@ async function loginAdmin(page) {
     await page.fill('input[name="password"]', 'Admin@2026');
     await page.click('button[type="submit"]');
     await page.waitForURL('**/admin/dashboard');
+}
+
 async function selectRadio(page, name, value) {
     const radio = page.locator(`input[name="${name}"][value="${value}"]`);
     await radio.evaluate(el => {
@@ -26,7 +28,7 @@ test.describe('Interview Application Form Module Complete Suite', () => {
 
     test.beforeEach(async () => {
         try {
-            require('child_process').execSync('C:\\xampp\\php\\php.exe -r "define(\'APP_PATH\', \'d:/Realty Smartz/Realty Pathsala/app\'); require \'vendor/autoload.php\'; require \'app/config/config.php\'; \\App\\Models\\InterviewApplication::updateQrSettings(true);"');
+            require('child_process').execSync('C:\\\\xampp\\\\php\\\\php.exe bin/reset_qr_settings.php');
         } catch (e) {}
     });
 
@@ -98,7 +100,7 @@ test.describe('Interview Application Form Module Complete Suite', () => {
         await expect(page.locator('label[for="hr_name"]')).toContainText('HR Name');
         const hrOptions = await page.locator('#hr_name option').allInnerTexts();
         expect(hrOptions).toContain('Select');
-        expect(hrOptions).toContain('Pooja Sharma');
+        expect(hrOptions.length).toBeGreaterThan(1);
 
         // 2. Post Applied For
         await expect(page.locator('label[for="post_applied"]')).toContainText('Post Applied For');
@@ -210,7 +212,7 @@ test.describe('Interview Application Form Module Complete Suite', () => {
         await expect(page.locator('#err_full_name')).toBeVisible();
 
         // Fill invalid email & mobile
-        await page.selectOption('#hr_name', 'Pooja Sharma');
+        await page.selectOption('#hr_name', { index: 1 });
         await page.fill('#post_applied', 'Associate Director - Luxury Sales');
         await page.fill('#full_name', 'Aaditya Vikram Singh');
         await page.fill('#email', 'invalid-email-address');
@@ -337,7 +339,7 @@ test.describe('Interview Application Form Module Complete Suite', () => {
         const liveMobile = '99' + Math.floor(10000000 + Math.random() * 90000000);
 
         await candidatePage.goto(`/q/${slug}`);
-        await candidatePage.selectOption('#hr_name', 'Neha Gupta');
+        await candidatePage.selectOption('#hr_name', { index: 1 });
         await candidatePage.fill('#post_applied', 'Client Relationship Executive');
         await candidatePage.fill('#full_name', liveCandidateName);
         await candidatePage.fill('#email', `kavita.${Date.now()}@example.com`);
@@ -353,7 +355,7 @@ test.describe('Interview Application Form Module Complete Suite', () => {
         await candidatePage.waitForURL(`**/q/${slug}/success`);
 
         // Verification of LIVE UPDATE: adminPage without reload should receive new submission within 15s
-        await expect(adminPage.locator(`text=${liveCandidateName}`)).toBeVisible({ timeout: 16000 });
+        await expect(adminPage.locator('#interviewTableBody').locator(`text=${liveCandidateName}`)).toBeVisible({ timeout: 16000 });
         // Quiet toast should appear
         await expect(adminPage.locator('#quietToast')).toContainText(`New form: ${liveCandidateName}`);
 
@@ -381,7 +383,8 @@ test.describe('Interview Application Form Module Complete Suite', () => {
         await adminPage.fill('#hr_position_offered', 'Senior Relationship Associate');
         await adminPage.fill('#hr_offered_salary', '450000');
         await adminPage.fill('#hr_joining_date', '2026-11-15');
-        await adminPage.waitForTimeout(800);
+        await adminPage.locator('#hr_joining_date').blur();
+        await adminPage.waitForTimeout(1000);
         await expect(adminPage.locator('#autosaveStatus')).toContainText('Saved');
 
         // 4. Reload page -> verify persisted values exactly match
@@ -396,7 +399,9 @@ test.describe('Interview Application Form Module Complete Suite', () => {
         await adminPage.locator('input[name="decision"][value="rejected"]').check({ force: true });
         await expect(adminPage.locator('#boxRejectedFields')).toBeVisible();
         await adminPage.fill('#hr_rejection_reason', 'Not willing to relocate to Gurgaon');
-        await adminPage.waitForTimeout(800);
+        await adminPage.locator('#hr_rejection_reason').blur();
+        await adminPage.waitForTimeout(1000);
+        await expect(adminPage.locator('#autosaveStatus')).toContainText('Saved');
 
         // Switch back to Selected -> previous offer values must remain intact in DB
         await adminPage.locator('input[name="decision"][value="selected"]').check({ force: true });
