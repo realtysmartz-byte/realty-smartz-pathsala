@@ -1,5 +1,5 @@
 -- Realty Smartz Pathshala Complete Production Database Dump
--- Generated: 2026-10-19 15:53:43
+-- Generated: 2026-10-23 13:51:27
 -- Compatible with cPanel MySQL / MariaDB and phpMyAdmin
 
 SET FOREIGN_KEY_CHECKS = 0;
@@ -22,7 +22,15 @@ CREATE TABLE `admin_comments` (
   KEY `fk_ac_admin` (`admin_id`),
   CONSTRAINT `fk_ac_admin` FOREIGN KEY (`admin_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_ac_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table `admin_comments`
+INSERT INTO `admin_comments` (`id`, `user_id`, `admin_id`, `comment_type`, `comment_text`, `created_at`) VALUES
+  ('4', '34', '34', 'public_to_candidate', 'Candidate completed 4-step onboarding wizard and submitted documents.', '2026-10-19 17:17:19'),
+  ('5', '34', '34', 'public_to_candidate', 'Aptitude Assessment completed with score 2/15 (13.33%) - FAILED', '2026-10-19 17:17:49'),
+  ('12', '54', '54', 'public_to_candidate', 'Candidate completed 4-step onboarding wizard and submitted documents.', '2026-10-22 12:18:39'),
+  ('13', '54', '54', 'public_to_candidate', 'Aptitude Assessment completed with score 0/15 (0%) - FAILED', '2026-10-22 12:19:04'),
+  ('25', '62', '62', 'public_to_candidate', 'Aptitude Assessment completed with score 11/15 (73.33%) - PASSED', '2026-10-22 16:10:57');
 
 -- --------------------------------------------------------
 -- Table structure for `aptitude_sets`
@@ -42,11 +50,11 @@ CREATE TABLE `aptitude_sets` (
 
 -- Dumping data for table `aptitude_sets`
 INSERT INTO `aptitude_sets` (`id`, `set_code`, `name`, `description`, `times_assigned`, `is_active`, `created_at`) VALUES
-  ('1', 'Set A', 'Assessment Set A - Aptitude & Real Estate', 'Logical, Quantitative, English, Real Estate Basics, Sales & Negotiation', '12', '1', '2026-10-17 14:03:11'),
-  ('2', 'Set B', 'Assessment Set B - Aptitude & Real Estate', 'Logical, Quantitative, English, Real Estate Basics, Sales & Negotiation', '11', '1', '2026-10-17 14:03:11'),
-  ('3', 'Set C', 'Assessment Set C - Aptitude & Real Estate', 'Logical, Quantitative, English, Real Estate Basics, Sales & Negotiation', '11', '1', '2026-10-17 14:03:11'),
-  ('4', 'Set D', 'Assessment Set D - Aptitude & Real Estate', 'Logical, Quantitative, English, Real Estate Basics, Sales & Negotiation', '11', '1', '2026-10-17 14:03:11'),
-  ('5', 'Set E', 'Assessment Set E - Aptitude & Real Estate', 'Logical, Quantitative, English, Real Estate Basics, Sales & Negotiation', '11', '1', '2026-10-17 14:03:11');
+  ('1', 'Set A', 'Assessment Set A - Aptitude & Real Estate', 'Logical, Quantitative, English, Real Estate Basics, Sales & Negotiation', '14', '1', '2026-10-17 14:03:11'),
+  ('2', 'Set B', 'Assessment Set B - Aptitude & Real Estate', 'Logical, Quantitative, English, Real Estate Basics, Sales & Negotiation', '15', '1', '2026-10-17 14:03:11'),
+  ('3', 'Set C', 'Assessment Set C - Aptitude & Real Estate', 'Logical, Quantitative, English, Real Estate Basics, Sales & Negotiation', '15', '1', '2026-10-17 14:03:11'),
+  ('4', 'Set D', 'Assessment Set D - Aptitude & Real Estate', 'Logical, Quantitative, English, Real Estate Basics, Sales & Negotiation', '15', '1', '2026-10-17 14:03:11'),
+  ('5', 'Set E', 'Assessment Set E - Aptitude & Real Estate', 'Logical, Quantitative, English, Real Estate Basics, Sales & Negotiation', '15', '1', '2026-10-17 14:03:11');
 
 -- --------------------------------------------------------
 -- Table structure for `attempt_answers`
@@ -66,7 +74,40 @@ CREATE TABLE `attempt_answers` (
   KEY `fk_aa_q` (`question_id`),
   CONSTRAINT `fk_aa_attempt` FOREIGN KEY (`attempt_id`) REFERENCES `test_attempts` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_aa_q` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=272 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table `attempt_answers`
+INSERT INTO `attempt_answers` (`id`, `attempt_id`, `question_id`, `selected_option_id`, `is_marked_for_review`, `is_correct`, `marks_awarded`, `updated_at`) VALUES
+  ('61', '5', '1', NULL, '0', '0', '0.00', '2026-10-22 12:18:43'),
+  ('62', '5', '2', NULL, '0', '0', '0.00', '2026-10-22 12:18:43'),
+  ('63', '5', '3', NULL, '0', '0', '0.00', '2026-10-22 12:18:43'),
+  ('64', '5', '4', NULL, '0', '0', '0.00', '2026-10-22 12:18:43'),
+  ('65', '5', '5', NULL, '0', '0', '0.00', '2026-10-22 12:18:43'),
+  ('66', '5', '6', NULL, '0', '0', '0.00', '2026-10-22 12:18:43'),
+  ('67', '5', '7', NULL, '0', '0', '0.00', '2026-10-22 12:18:43'),
+  ('68', '5', '8', NULL, '0', '0', '0.00', '2026-10-22 12:18:43'),
+  ('69', '5', '9', NULL, '0', '0', '0.00', '2026-10-22 12:18:43'),
+  ('70', '5', '10', NULL, '0', '0', '0.00', '2026-10-22 12:18:43'),
+  ('71', '5', '11', NULL, '0', '0', '0.00', '2026-10-22 12:18:43'),
+  ('72', '5', '12', NULL, '0', '0', '0.00', '2026-10-22 12:18:43'),
+  ('73', '5', '13', NULL, '0', '0', '0.00', '2026-10-22 12:18:43'),
+  ('74', '5', '14', NULL, '0', '0', '0.00', '2026-10-22 12:18:43'),
+  ('75', '5', '15', NULL, '0', '0', '0.00', '2026-10-22 12:18:43'),
+  ('257', '19', '46', '182', '1', '1', '1.00', '2026-10-22 16:10:57'),
+  ('258', '19', '47', '186', '1', '1', '1.00', '2026-10-22 16:10:57'),
+  ('259', '19', '48', '192', '1', '0', '0.00', '2026-10-22 16:02:22'),
+  ('260', '19', '49', '194', '1', '1', '1.00', '2026-10-22 16:10:57'),
+  ('261', '19', '50', '198', '1', '1', '1.00', '2026-10-22 16:10:57'),
+  ('262', '19', '51', '202', '1', '1', '1.00', '2026-10-22 16:10:57'),
+  ('263', '19', '52', '207', '1', '0', '0.00', '2026-10-22 16:06:56'),
+  ('264', '19', '53', '212', '1', '0', '0.00', '2026-10-22 16:07:54'),
+  ('265', '19', '54', '214', '1', '1', '1.00', '2026-10-22 16:10:57'),
+  ('266', '19', '55', '218', '1', '1', '1.00', '2026-10-22 16:10:57'),
+  ('267', '19', '56', '222', '1', '1', '1.00', '2026-10-22 16:10:57'),
+  ('268', '19', '57', '226', '1', '1', '1.00', '2026-10-22 16:10:57'),
+  ('269', '19', '58', '232', '1', '0', '0.00', '2026-10-22 16:10:10'),
+  ('270', '19', '59', '234', '1', '1', '1.00', '2026-10-22 16:10:57'),
+  ('271', '19', '60', '238', '1', '1', '1.00', '2026-10-22 16:10:57');
 
 -- --------------------------------------------------------
 -- Table structure for `audit_logs`
@@ -87,7 +128,469 @@ CREATE TABLE `audit_logs` (
   KEY `idx_audit_user` (`user_id`),
   KEY `idx_audit_action` (`action`),
   KEY `idx_audit_entity` (`entity_type`,`entity_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=593 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table `audit_logs`
+INSERT INTO `audit_logs` (`id`, `user_id`, `action`, `entity_type`, `entity_id`, `ip_address`, `user_agent`, `old_values`, `new_values`, `created_at`) VALUES
+  ('1', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:07:37'),
+  ('2', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:07:54'),
+  ('3', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:07:56'),
+  ('4', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:07:59'),
+  ('5', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:08:01'),
+  ('6', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:08:04'),
+  ('7', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:08:07'),
+  ('8', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:08:09'),
+  ('9', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:08:11'),
+  ('10', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:08:14'),
+  ('11', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:08:17'),
+  ('12', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:08:21'),
+  ('13', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:08:24'),
+  ('14', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:09:40'),
+  ('15', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:11:09'),
+  ('16', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:11:12'),
+  ('17', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:11:15'),
+  ('18', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:11:19'),
+  ('19', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:11:24'),
+  ('20', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:11:28'),
+  ('21', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:11:32'),
+  ('22', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:11:35'),
+  ('23', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:11:38'),
+  ('24', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:11:41'),
+  ('25', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:11:43'),
+  ('26', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:11:46'),
+  ('27', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:11:56'),
+  ('28', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:12:05'),
+  ('29', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:12:16'),
+  ('30', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:13:10'),
+  ('31', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:13:12'),
+  ('32', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:13:15'),
+  ('33', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:13:17'),
+  ('34', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:13:20'),
+  ('35', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:13:22'),
+  ('36', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:13:25'),
+  ('37', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:13:27'),
+  ('38', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:13:29'),
+  ('39', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:13:35'),
+  ('40', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:13:40'),
+  ('41', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:13:42'),
+  ('42', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:13:45'),
+  ('43', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:13:47'),
+  ('44', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:18:17'),
+  ('45', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:18:20'),
+  ('46', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:18:22'),
+  ('47', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:18:25'),
+  ('48', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:18:28'),
+  ('49', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:18:31'),
+  ('50', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:18:33'),
+  ('51', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:18:36'),
+  ('52', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:18:38'),
+  ('53', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:18:41'),
+  ('54', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:18:43'),
+  ('55', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:18:47'),
+  ('56', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:18:50'),
+  ('57', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:18:52'),
+  ('58', '34', 'candidate_registered', 'users', '34', '150.242.64.103', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"email\":\"abhishekboora2001@gmail.com\",\"name\":\"Abhishek\",\"mobile\":\"9306098396\"}', '2026-10-19 16:34:35'),
+  ('59', '34', 'email_verified', 'users', '34', '150.242.64.103', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"method\":\"otp\"}', '2026-10-19 16:35:17'),
+  ('60', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:49:22'),
+  ('61', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:49:24'),
+  ('62', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:49:26'),
+  ('63', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:49:29'),
+  ('64', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:49:32'),
+  ('65', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:49:34'),
+  ('66', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:49:37'),
+  ('67', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:49:39'),
+  ('68', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:49:42'),
+  ('69', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:49:44'),
+  ('70', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:49:47'),
+  ('71', '1', 'update_candidate', 'users', '34', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"full_name\":\"Abhishek\",\"joining_date\":\"2026-11-01\",\"ip\":\"127.0.0.1\"}', '2026-10-19 16:49:49'),
+  ('72', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:49:50'),
+  ('73', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:49:52'),
+  ('74', '1', 'update_candidate', 'users', '34', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"full_name\":\"Abhishek\",\"joining_date\":\"2026-12-15\",\"ip\":\"127.0.0.1\"}', '2026-10-19 16:49:55'),
+  ('75', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:49:56'),
+  ('76', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:50:05'),
+  ('77', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:50:13'),
+  ('78', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:51:14'),
+  ('79', '1', 'create_guest_test_link', 'guest_test_links', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"user_id\":null,\"guest_email\":\"\",\"expires_at\":\"2026-10-21 16:51:15\",\"ip\":\"127.0.0.1\"}', '2026-10-19 16:51:16'),
+  ('85', '1', 'revoke_guest_test_link', 'guest_test_links', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:51:27'),
+  ('86', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:52:18'),
+  ('87', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:52:23'),
+  ('88', '1', 'download_full_file_pdf', 'users', '35', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"filename\":\"Vikram_Malhotra-35-file.pdf\",\"ip\":\"127.0.0.1\"}', '2026-10-19 16:52:27'),
+  ('89', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:52:52'),
+  ('90', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:52:55'),
+  ('91', '1', 'download_full_file_pdf', 'users', '35', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"filename\":\"Vikram_Malhotra-35-file.pdf\",\"ip\":\"127.0.0.1\"}', '2026-10-19 16:52:59'),
+  ('92', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:53:11'),
+  ('93', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:53:13'),
+  ('94', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:53:15'),
+  ('95', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:53:18'),
+  ('96', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:53:21'),
+  ('97', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:53:23'),
+  ('98', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:53:26'),
+  ('99', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:53:28'),
+  ('100', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:53:30'),
+  ('101', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:53:33'),
+  ('102', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:53:35'),
+  ('103', '1', 'update_candidate', 'users', '35', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"full_name\":\"Vikram Malhotra\",\"joining_date\":\"2026-11-01\",\"ip\":\"127.0.0.1\"}', '2026-10-19 16:53:38'),
+  ('104', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:53:39'),
+  ('105', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:53:41'),
+  ('106', '1', 'update_candidate', 'users', '35', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"full_name\":\"Vikram Malhotra\",\"joining_date\":\"2026-12-15\",\"ip\":\"127.0.0.1\"}', '2026-10-19 16:53:44'),
+  ('107', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:53:45'),
+  ('108', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:53:54'),
+  ('109', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:53:58'),
+  ('110', '1', 'download_full_file_pdf', 'users', '35', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"filename\":\"Vikram_Malhotra-35-file.pdf\",\"ip\":\"127.0.0.1\"}', '2026-10-19 16:54:01'),
+  ('111', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:54:02'),
+  ('112', '1', 'create_guest_test_link', 'guest_test_links', '2', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"user_id\":null,\"guest_email\":\"\",\"expires_at\":\"2026-10-21 16:54:03\",\"ip\":\"127.0.0.1\"}', '2026-10-19 16:54:04'),
+  ('118', '1', 'revoke_guest_test_link', 'guest_test_links', '2', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 16:54:15'),
+  ('119', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:00:47'),
+  ('120', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:00:49'),
+  ('121', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:00:52'),
+  ('122', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:00:54'),
+  ('123', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:00:57'),
+  ('124', NULL, 'login_failed', 'users', '35', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"email\":\"vikram.guest@example.com\"}', '2026-10-19 17:05:47'),
+  ('125', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:07:12'),
+  ('126', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:07:15'),
+  ('127', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:07:17'),
+  ('128', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:07:20'),
+  ('129', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:07:23'),
+  ('130', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:07:25'),
+  ('131', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:07:28'),
+  ('132', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:07:31'),
+  ('133', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:07:33'),
+  ('134', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:07:36'),
+  ('135', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:07:38'),
+  ('136', '1', 'update_candidate', 'users', '35', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"full_name\":\"Vikram Malhotra\",\"joining_date\":\"2026-11-01\",\"ip\":\"127.0.0.1\"}', '2026-10-19 17:07:40'),
+  ('137', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:07:41'),
+  ('138', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:07:44'),
+  ('139', '1', 'update_candidate', 'users', '35', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"full_name\":\"Vikram Malhotra\",\"joining_date\":\"2026-12-15\",\"ip\":\"127.0.0.1\"}', '2026-10-19 17:07:47'),
+  ('140', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:07:48'),
+  ('141', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:07:56'),
+  ('142', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:08:00'),
+  ('143', '1', 'download_full_file_pdf', 'users', '35', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"filename\":\"Vikram_Malhotra-35-file.pdf\",\"ip\":\"127.0.0.1\"}', '2026-10-19 17:08:04'),
+  ('144', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:08:05'),
+  ('145', '1', 'create_guest_test_link', 'guest_test_links', '3', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"user_id\":null,\"guest_email\":\"\",\"expires_at\":\"2026-10-21 17:08:06\",\"ip\":\"127.0.0.1\"}', '2026-10-19 17:08:07'),
+  ('151', '1', 'revoke_guest_test_link', 'guest_test_links', '3', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:08:18'),
+  ('152', '34', 'document_uploaded', 'documents', '1', '150.242.64.103', 'Mozilla/5.0 (Linux; Android 17; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.39 Mobile Safari/537.36', NULL, '{\"type\":\"aadhaar_front\",\"version\":1,\"size\":257455}', '2026-10-19 17:15:56'),
+  ('153', '34', 'document_uploaded', 'documents', '2', '150.242.64.103', 'Mozilla/5.0 (Linux; Android 17; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.39 Mobile Safari/537.36', NULL, '{\"type\":\"aadhaar_back\",\"version\":1,\"size\":257455}', '2026-10-19 17:16:00'),
+  ('154', '34', 'document_uploaded', 'documents', '3', '150.242.64.103', 'Mozilla/5.0 (Linux; Android 17; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.39 Mobile Safari/537.36', NULL, '{\"type\":\"pan_card\",\"version\":1,\"size\":257455}', '2026-10-19 17:16:44'),
+  ('155', '34', 'status_updated', 'users', '34', '150.242.64.103', 'Mozilla/5.0 (Linux; Android 17; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.39 Mobile Safari/537.36', '{\"status\":\"email_verified\"}', '{\"status\":\"documents_submitted\",\"comments\":\"Candidate completed 4-step onboarding wizard and submitted documents.\"}', '2026-10-19 17:17:19'),
+  ('156', '34', 'onboarding_submitted', 'profiles', '1', '150.242.64.103', 'Mozilla/5.0 (Linux; Android 17; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.39 Mobile Safari/537.36', NULL, '{\"signature_type\":\"typed\",\"timestamp\":\"2026-10-19 17:17:19\"}', '2026-10-19 17:17:19'),
+  ('157', '34', 'test_started', 'test_attempts', '4', '150.242.64.103', 'Mozilla/5.0 (Linux; Android 17; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.39 Mobile Safari/537.36', NULL, '{\"user_id\":34,\"test_id\":1,\"set_id\":2,\"set_code\":\"Set B\"}', '2026-10-19 17:17:22'),
+  ('158', '34', 'status_updated', 'users', '34', '150.242.64.103', 'Mozilla/5.0 (Linux; Android 17; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.39 Mobile Safari/537.36', '{\"status\":\"documents_submitted\"}', '{\"status\":\"test_completed\",\"comments\":\"Aptitude Assessment completed with score 2\\/15 (13.33%) - FAILED\"}', '2026-10-19 17:17:49'),
+  ('159', '34', 'test_finalized', 'test_attempts', '4', '150.242.64.103', 'Mozilla/5.0 (Linux; Android 17; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.39 Mobile Safari/537.36', NULL, '{\"score\":2,\"percentage\":13.33,\"passed\":0}', '2026-10-19 17:17:49'),
+  ('160', '34', 'admin_login_failed', 'users', '1', '150.242.64.103', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"email\":\"admin@realtysmartzpathshala.in\",\"ip\":\"150.242.64.103\"}', '2026-10-19 17:22:22'),
+  ('161', '1', 'admin_login_success', 'users', '1', '150.242.64.103', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"150.242.64.103\"}', '2026-10-19 17:22:30'),
+  ('162', '1', 'logout', 'users', '1', '150.242.64.103', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, NULL, '2026-10-19 17:27:26'),
+  ('163', '1', 'admin_login_success', 'users', '1', '150.242.64.103', 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.6.1 Mobile/15E148 Safari/604.1', NULL, '{\"ip\":\"150.242.64.103\"}', '2026-10-19 17:31:11'),
+  ('164', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:32:33'),
+  ('165', '1', 'update_candidate', 'users', '35', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"full_name\":\"Vikram Malhotra\",\"joining_date\":\"2026-11-01\",\"ip\":\"127.0.0.1\"}', '2026-10-19 17:32:35'),
+  ('166', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:32:36'),
+  ('167', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:32:38'),
+  ('168', '1', 'update_candidate', 'users', '35', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"full_name\":\"Vikram Malhotra\",\"joining_date\":\"2026-12-15\",\"ip\":\"127.0.0.1\"}', '2026-10-19 17:32:41'),
+  ('169', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:32:42'),
+  ('170', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:34:07'),
+  ('171', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:35:46'),
+  ('172', '1', 'candidate_archived', 'users', '35', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"archived\":1}', '2026-10-19 17:35:48'),
+  ('173', '1', 'archive_candidate', 'users', '35', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:35:48'),
+  ('174', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:36:17'),
+  ('175', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:36:39'),
+  ('176', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:36:59'),
+  ('177', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:42:37'),
+  ('178', '1', 'candidate_archived', 'users', '34', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"archived\":1}', '2026-10-19 17:42:39'),
+  ('179', '1', 'archive_candidate', 'users', '34', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 17:42:39'),
+  ('246', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 18:22:39'),
+  ('247', '1', 'candidate_archived', 'users', '53', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"archived\":1}', '2026-10-19 18:22:42'),
+  ('248', '1', 'archive_candidate', 'users', '53', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-19 18:22:42'),
+  ('249', '54', 'candidate_registered', 'users', '54', '103.240.194.107', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"email\":\"yogatatvam@gmail.com\",\"name\":\"Smart Finance Chhavi Mittal\",\"mobile\":\"8800992566\"}', '2026-10-22 12:14:52'),
+  ('250', '54', 'email_verified', 'users', '54', '103.240.194.107', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"method\":\"otp\"}', '2026-10-22 12:15:37'),
+  ('251', '54', 'document_uploaded', 'documents', '24', '103.240.194.107', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"type\":\"aadhaar_front\",\"version\":1,\"size\":293524}', '2026-10-22 12:17:41'),
+  ('252', '54', 'document_uploaded', 'documents', '25', '103.240.194.107', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"type\":\"aadhaar_back\",\"version\":1,\"size\":293524}', '2026-10-22 12:17:50'),
+  ('253', '54', 'document_uploaded', 'documents', '26', '103.240.194.107', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"type\":\"pan_card\",\"version\":1,\"size\":167556}', '2026-10-22 12:18:01'),
+  ('254', '54', 'status_updated', 'users', '54', '103.240.194.107', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', '{\"status\":\"email_verified\"}', '{\"status\":\"documents_submitted\",\"comments\":\"Candidate completed 4-step onboarding wizard and submitted documents.\"}', '2026-10-22 12:18:39'),
+  ('255', '54', 'onboarding_submitted', 'profiles', '21', '103.240.194.107', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"signature_type\":\"typed\",\"timestamp\":\"2026-10-22 12:18:39\"}', '2026-10-22 12:18:39'),
+  ('256', '54', 'test_started', 'test_attempts', '5', '103.240.194.107', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"user_id\":54,\"test_id\":1,\"set_id\":1,\"set_code\":\"Set A\"}', '2026-10-22 12:18:43'),
+  ('257', '54', 'status_updated', 'users', '54', '103.240.194.107', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', '{\"status\":\"documents_submitted\"}', '{\"status\":\"test_completed\",\"comments\":\"Aptitude Assessment completed with score 0\\/15 (0%) - FAILED\"}', '2026-10-22 12:19:04'),
+  ('258', '54', 'test_finalized', 'test_attempts', '5', '103.240.194.107', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"score\":0,\"percentage\":0,\"passed\":0}', '2026-10-22 12:19:04'),
+  ('259', NULL, 'admin_login_failed', 'users', '1', '103.240.194.107', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"email\":\"admin@realtysmartzpathshala.in\",\"ip\":\"103.240.194.107\"}', '2026-10-22 12:26:02'),
+  ('260', '1', 'admin_login_success', 'users', '1', '103.240.194.107', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"103.240.194.107\"}', '2026-10-22 12:26:15'),
+  ('261', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:16:43'),
+  ('262', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:16:46'),
+  ('263', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:16:49'),
+  ('264', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:16:51'),
+  ('265', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:16:54'),
+  ('266', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:16:57'),
+  ('267', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:17:00'),
+  ('268', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:17:02'),
+  ('269', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:17:04'),
+  ('270', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:17:07'),
+  ('271', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:17:10'),
+  ('272', '1', 'identity_revealed', 'users', '54', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"field\":\"aadhaar\",\"revealed_by\":\"admin@realtysmartzpathshala.in\",\"ip\":\"127.0.0.1\"}', '2026-10-22 13:17:13'),
+  ('273', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:17:18'),
+  ('274', '1', 'download_full_file_pdf', 'users', '54', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"filename\":\"Smart_Finance_Chhavi_Mittal-54-file.pdf\",\"ip\":\"127.0.0.1\"}', '2026-10-22 13:17:23'),
+  ('275', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:17:24'),
+  ('276', '1', 'create_guest_test_link', 'guest_test_links', '4', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"user_id\":null,\"guest_email\":\"\",\"expires_at\":\"2026-10-24 13:17:26\",\"ip\":\"127.0.0.1\"}', '2026-10-22 13:17:26'),
+  ('279', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:23:25'),
+  ('280', '1', 'create_guest_test_link', 'guest_test_links', '6', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"user_id\":null,\"guest_email\":\"\",\"expires_at\":\"2026-10-24 13:23:27\",\"ip\":\"127.0.0.1\"}', '2026-10-22 13:23:27'),
+  ('286', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:28:44'),
+  ('287', '1', 'create_guest_test_link', 'guest_test_links', '7', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"user_id\":null,\"guest_email\":\"\",\"expires_at\":\"2026-10-24 13:28:47\",\"ip\":\"127.0.0.1\"}', '2026-10-22 13:28:47'),
+  ('293', '1', 'revoke_guest_test_link', 'guest_test_links', '7', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:29:01'),
+  ('294', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:29:38'),
+  ('295', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:29:41'),
+  ('296', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:29:44'),
+  ('297', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:29:48'),
+  ('298', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:29:52'),
+  ('299', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:29:56'),
+  ('300', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:29:59'),
+  ('301', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:30:02'),
+  ('302', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:30:06'),
+  ('303', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:30:09'),
+  ('304', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:30:12'),
+  ('305', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:30:16'),
+  ('306', '1', 'download_full_file_pdf', 'users', '35', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"filename\":\"Vikram_Malhotra-35-file.pdf\",\"ip\":\"127.0.0.1\"}', '2026-10-22 13:30:21'),
+  ('307', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:30:23'),
+  ('308', '1', 'create_guest_test_link', 'guest_test_links', '8', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"user_id\":null,\"guest_email\":\"\",\"expires_at\":\"2026-10-24 13:30:25\",\"ip\":\"127.0.0.1\"}', '2026-10-22 13:30:25'),
+  ('314', '1', 'revoke_guest_test_link', 'guest_test_links', '8', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:30:38'),
+  ('319', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:43:31'),
+  ('324', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:44:48'),
+  ('325', '1', 'converted_to_onboarding', 'users', '56', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"admin_id\":1,\"converted_at\":\"2026-10-22 13:44:50\"}', '2026-10-22 13:44:49'),
+  ('330', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:47:07'),
+  ('331', '1', 'converted_to_onboarding', 'users', '57', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"admin_id\":1,\"converted_at\":\"2026-10-22 13:47:09\"}', '2026-10-22 13:47:09'),
+  ('336', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 13:49:55'),
+  ('337', '1', 'converted_to_onboarding', 'users', '58', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"admin_id\":1,\"converted_at\":\"2026-10-22 13:49:57\"}', '2026-10-22 13:49:57'),
+  ('343', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 14:44:38'),
+  ('344', '1', 'converted_to_onboarding', 'users', '59', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"admin_id\":1,\"converted_at\":\"2026-10-22 14:44:41\"}', '2026-10-22 14:44:40'),
+  ('345', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 14:45:06'),
+  ('346', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 14:45:10'),
+  ('347', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 14:45:15'),
+  ('348', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 14:45:20'),
+  ('349', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 14:45:24'),
+  ('350', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 14:45:28'),
+  ('351', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 14:45:31'),
+  ('352', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 14:45:34'),
+  ('353', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 14:45:37'),
+  ('354', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 14:45:41'),
+  ('359', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 14:45:53'),
+  ('360', '1', 'converted_to_onboarding', 'users', '60', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"admin_id\":1,\"converted_at\":\"2026-10-22 14:45:55\"}', '2026-10-22 14:45:55'),
+  ('361', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 14:45:58'),
+  ('362', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 14:46:03'),
+  ('363', '1', 'download_full_file_pdf', 'users', '60', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"filename\":\"Rohan_Test_Verma-60-file.pdf\",\"ip\":\"127.0.0.1\"}', '2026-10-22 14:46:07'),
+  ('364', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 14:46:08'),
+  ('365', '1', 'create_guest_test_link', 'guest_test_links', '9', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"user_id\":null,\"guest_email\":\"\",\"expires_at\":\"2026-10-24 14:46:10\",\"ip\":\"127.0.0.1\"}', '2026-10-22 14:46:10'),
+  ('371', '1', 'revoke_guest_test_link', 'guest_test_links', '9', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 14:46:24'),
+  ('372', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 15:09:22'),
+  ('373', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 15:09:27'),
+  ('374', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 15:09:32'),
+  ('375', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 15:09:38'),
+  ('376', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 15:09:43'),
+  ('382', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 15:10:15'),
+  ('383', '1', 'converted_to_onboarding', 'users', '61', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"admin_id\":1,\"converted_at\":\"2026-10-22 15:10:22\"}', '2026-10-22 15:10:21'),
+  ('384', NULL, 'admin_login_failed', 'users', '1', '103.240.195.117', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"email\":\"admin@realtysmartzpathshala.in\",\"ip\":\"103.240.195.117\"}', '2026-10-22 15:17:45'),
+  ('385', '1', 'admin_login_success', 'users', '1', '103.240.195.117', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"103.240.195.117\"}', '2026-10-22 15:17:54'),
+  ('386', '62', 'candidate_registered', 'users', '62', '103.240.195.117', 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Mobile Safari/537.36', NULL, '{\"email\":\"ai.mittal51@gmail.com\",\"name\":\"ANKITA MITTAL\",\"mobile\":\"9266826371\"}', '2026-10-22 16:00:50'),
+  ('387', '62', 'test_started', 'test_attempts', '19', '103.240.195.117', 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Mobile Safari/537.36', NULL, '{\"user_id\":62,\"test_id\":1,\"set_id\":4,\"set_code\":\"Set D\"}', '2026-10-22 16:00:56'),
+  ('388', '1', 'admin_login_success', 'users', '1', '103.240.194.107', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"103.240.194.107\"}', '2026-10-22 16:06:44'),
+  ('389', '62', 'anti_cheat_warning', 'test_attempts', '19', '103.240.195.117', 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Mobile Safari/537.36', NULL, '{\"type\":\"tab_switch\",\"counts\":{\"tab_switch_count\":\"1\",\"fullscreen_exit_count\":\"0\"}}', '2026-10-22 16:10:37'),
+  ('390', '62', 'status_updated', 'users', '62', '103.240.195.117', 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Mobile Safari/537.36', '{\"status\":\"registered\"}', '{\"status\":\"test_completed\",\"comments\":\"Aptitude Assessment completed with score 11\\/15 (73.33%) - PASSED\"}', '2026-10-22 16:10:57'),
+  ('391', '62', 'test_finalized', 'test_attempts', '19', '103.240.195.117', 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Mobile Safari/537.36', NULL, '{\"score\":11,\"percentage\":73.33,\"passed\":1}', '2026-10-22 16:10:58'),
+  ('392', '1', 'interview_field_update', 'interview_applications', '1', '127.0.0.1', '', NULL, '{\"field\":\"source_by\",\"new_value\":\"Direct Walk-in\",\"version\":2}', '2026-10-22 17:17:10'),
+  ('393', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 17:18:59'),
+  ('394', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 17:19:08'),
+  ('395', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 17:19:56'),
+  ('396', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 17:20:10'),
+  ('397', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":false}', '2026-10-22 17:20:11'),
+  ('398', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 17:20:20'),
+  ('399', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 17:23:44'),
+  ('400', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 17:23:53'),
+  ('401', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 17:24:55'),
+  ('402', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 17:25:57'),
+  ('403', '1', 'admin_login_success', 'users', '1', '103.240.194.107', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"103.240.194.107\"}', '2026-10-22 17:27:36'),
+  ('404', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 17:32:30'),
+  ('405', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 17:32:34'),
+  ('406', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 17:32:39'),
+  ('407', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":false}', '2026-10-22 17:32:40'),
+  ('408', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":true}', '2026-10-22 17:32:41'),
+  ('409', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 17:32:43'),
+  ('410', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 17:35:17'),
+  ('411', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 17:35:21'),
+  ('412', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 17:35:28'),
+  ('413', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":false}', '2026-10-22 17:35:30'),
+  ('414', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":true}', '2026-10-22 17:35:31'),
+  ('415', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 17:35:33'),
+  ('416', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 17:42:50'),
+  ('417', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 17:42:55'),
+  ('418', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 17:43:58'),
+  ('419', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":false}', '2026-10-22 17:43:59'),
+  ('420', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":true}', '2026-10-22 17:44:00'),
+  ('421', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 17:44:03'),
+  ('422', '1', 'admin_login_success', 'users', '1', '103.240.194.107', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"103.240.194.107\"}', '2026-10-22 18:18:21'),
+  ('423', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 18:34:50'),
+  ('424', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 18:34:56'),
+  ('425', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 18:35:59'),
+  ('426', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":false}', '2026-10-22 18:36:00'),
+  ('427', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":true}', '2026-10-22 18:36:01'),
+  ('428', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 18:36:03'),
+  ('429', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 18:41:21'),
+  ('430', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 18:42:22'),
+  ('431', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 18:44:46'),
+  ('432', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 18:45:39'),
+  ('433', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 18:46:23'),
+  ('434', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 18:51:42'),
+  ('435', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 18:52:07'),
+  ('436', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 18:52:09'),
+  ('437', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 18:52:14'),
+  ('438', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":false}', '2026-10-22 18:52:15'),
+  ('439', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":true}', '2026-10-22 18:52:16'),
+  ('440', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 18:52:17'),
+  ('441', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 18:55:03'),
+  ('442', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 18:55:06'),
+  ('443', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 18:55:10'),
+  ('444', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":false}', '2026-10-22 18:55:11'),
+  ('445', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":true}', '2026-10-22 18:55:12'),
+  ('446', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 18:55:13'),
+  ('447', '1', 'interview_field_update', 'interview_applications', '5', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"field\":\"feedback_hr\",\"new_value\":\"Excellent communication skills and strong presentation.\",\"version\":2}', '2026-10-22 18:55:28'),
+  ('448', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 18:59:55'),
+  ('449', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 18:59:58'),
+  ('450', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 19:00:04'),
+  ('451', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":false}', '2026-10-22 19:00:05'),
+  ('452', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":true}', '2026-10-22 19:00:06'),
+  ('453', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-22 19:00:08'),
+  ('454', '1', 'interview_field_update', 'interview_applications', '7', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"feedback_hr\",\"old_value\":null}', '{\"field\":\"feedback_hr\",\"new_value\":\"Excellent communication skills and strong presentation.\",\"version\":2}', '2026-10-22 19:00:23'),
+  ('455', '1', 'interview_field_update', 'interview_applications', '7', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"pending\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":3}', '2026-10-22 19:00:24'),
+  ('456', '1', 'interview_field_update', 'interview_applications', '7', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"candidate_interested\",\"old_value\":null}', '{\"field\":\"candidate_interested\",\"new_value\":\"yes\",\"version\":4}', '2026-10-22 19:00:26'),
+  ('457', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 10:26:42'),
+  ('458', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 10:26:49'),
+  ('459', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 10:27:03'),
+  ('460', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 10:27:58'),
+  ('461', '1', 'interview_field_update', 'interview_applications', '9', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"feedback_hr\",\"old_value\":null}', '{\"field\":\"feedback_hr\",\"new_value\":\"Excellent communication skills and strong presentation.\",\"version\":2}', '2026-10-23 10:28:16'),
+  ('462', '1', 'interview_field_update', 'interview_applications', '9', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"pending\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":3}', '2026-10-23 10:28:17'),
+  ('463', '1', 'interview_field_update', 'interview_applications', '9', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"candidate_interested\",\"old_value\":null}', '{\"field\":\"candidate_interested\",\"new_value\":\"yes\",\"version\":4}', '2026-10-23 10:28:19'),
+  ('464', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 10:32:39'),
+  ('465', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":false}', '2026-10-23 10:32:41'),
+  ('466', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":true}', '2026-10-23 10:32:43'),
+  ('467', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 10:33:10'),
+  ('468', '1', 'interview_field_update', 'interview_applications', '10', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"feedback_hr\",\"old_value\":null}', '{\"field\":\"feedback_hr\",\"new_value\":\"Excellent communication skills and strong presentation.\",\"version\":2}', '2026-10-23 10:33:27'),
+  ('469', '1', 'interview_field_update', 'interview_applications', '10', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"pending\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":3}', '2026-10-23 10:33:27'),
+  ('470', '1', 'interview_field_update', 'interview_applications', '10', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"candidate_interested\",\"old_value\":null}', '{\"field\":\"candidate_interested\",\"new_value\":\"yes\",\"version\":4}', '2026-10-23 10:33:29'),
+  ('471', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 10:38:14'),
+  ('472', '1', 'interview_field_update', 'interview_applications', '11', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"feedback_hr\",\"old_value\":null}', '{\"field\":\"feedback_hr\",\"new_value\":\"Excellent communication skills and strong presentation.\",\"version\":2}', '2026-10-23 10:38:38'),
+  ('473', '1', 'interview_field_update', 'interview_applications', '11', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"pending\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":3}', '2026-10-23 10:38:39'),
+  ('474', '1', 'interview_field_update', 'interview_applications', '11', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"candidate_interested\",\"old_value\":null}', '{\"field\":\"candidate_interested\",\"new_value\":\"yes\",\"version\":4}', '2026-10-23 10:38:40'),
+  ('475', '1', 'interview_field_update', 'interview_applications', '11', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"position_offered\",\"old_value\":null}', '{\"field\":\"position_offered\",\"new_value\":\"Senior Relationship Associate\",\"version\":5}', '2026-10-23 10:38:41'),
+  ('476', '1', 'interview_field_update', 'interview_applications', '11', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"offered_salary\",\"old_value\":null}', '{\"field\":\"offered_salary\",\"new_value\":450000,\"version\":6}', '2026-10-23 10:38:41'),
+  ('477', '1', 'interview_field_update', 'interview_applications', '11', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"joining_date\",\"old_value\":null}', '{\"field\":\"joining_date\",\"new_value\":\"2026-11-15\",\"version\":7}', '2026-10-23 10:38:42'),
+  ('478', '1', 'interview_field_update', 'interview_applications', '11', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"selected\"}', '{\"field\":\"decision\",\"new_value\":\"rejected\",\"version\":8}', '2026-10-23 10:38:43'),
+  ('479', '1', 'interview_field_update', 'interview_applications', '11', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"rejection_reason\",\"old_value\":null}', '{\"field\":\"rejection_reason\",\"new_value\":\"Not willing to relocate to Gurgaon\",\"version\":9}', '2026-10-23 10:38:44'),
+  ('480', '1', 'interview_field_update', 'interview_applications', '11', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"rejected\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":10}', '2026-10-23 10:38:45'),
+  ('481', '1', 'download_interview_pdf', 'interview_applications', '11', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"filename\":\"Interview_Form_Kavita_Live_Test_390_11.pdf\",\"ip\":\"127.0.0.1\"}', '2026-10-23 10:38:50'),
+  ('482', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 10:42:17'),
+  ('483', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 10:42:27'),
+  ('484', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 10:42:54'),
+  ('485', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":false}', '2026-10-23 10:42:57'),
+  ('486', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":true}', '2026-10-23 10:42:59'),
+  ('487', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 10:43:02'),
+  ('488', '1', 'interview_field_update', 'interview_applications', '13', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"feedback_hr\",\"old_value\":null}', '{\"field\":\"feedback_hr\",\"new_value\":\"Excellent communication skills and strong presentation.\",\"version\":2}', '2026-10-23 10:43:22'),
+  ('489', '1', 'interview_field_update', 'interview_applications', '13', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"pending\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":3}', '2026-10-23 10:43:24'),
+  ('490', '1', 'interview_field_update', 'interview_applications', '13', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"candidate_interested\",\"old_value\":null}', '{\"field\":\"candidate_interested\",\"new_value\":\"yes\",\"version\":4}', '2026-10-23 10:43:26'),
+  ('491', '1', 'interview_field_update', 'interview_applications', '13', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"position_offered\",\"old_value\":null}', '{\"field\":\"position_offered\",\"new_value\":\"Senior Relationship Associate\",\"version\":5}', '2026-10-23 10:43:27'),
+  ('492', '1', 'interview_field_update', 'interview_applications', '13', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"offered_salary\",\"old_value\":null}', '{\"field\":\"offered_salary\",\"new_value\":450000,\"version\":6}', '2026-10-23 10:43:28'),
+  ('493', '1', 'interview_field_update', 'interview_applications', '13', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"joining_date\",\"old_value\":null}', '{\"field\":\"joining_date\",\"new_value\":\"2026-11-15\",\"version\":7}', '2026-10-23 10:43:28'),
+  ('494', '1', 'interview_field_update', 'interview_applications', '13', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"selected\"}', '{\"field\":\"decision\",\"new_value\":\"rejected\",\"version\":8}', '2026-10-23 10:43:31'),
+  ('495', '1', 'interview_field_update', 'interview_applications', '13', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"rejection_reason\",\"old_value\":null}', '{\"field\":\"rejection_reason\",\"new_value\":\"Not willing to relocate to Gurgaon\",\"version\":9}', '2026-10-23 10:43:32'),
+  ('496', '1', 'interview_field_update', 'interview_applications', '13', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"rejected\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":10}', '2026-10-23 10:43:34'),
+  ('497', '1', 'download_interview_pdf', 'interview_applications', '13', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"filename\":\"Interview_Form_Kavita_Live_Test_416_13.pdf\",\"ip\":\"127.0.0.1\"}', '2026-10-23 10:43:38'),
+  ('498', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 11:48:46'),
+  ('499', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 11:48:49'),
+  ('500', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 11:48:55'),
+  ('501', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":false}', '2026-10-23 11:48:56'),
+  ('502', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":true}', '2026-10-23 11:48:57'),
+  ('503', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 11:48:59'),
+  ('504', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 12:15:47'),
+  ('505', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 12:15:50'),
+  ('506', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 12:15:55'),
+  ('507', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":false}', '2026-10-23 12:15:57'),
+  ('508', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":true}', '2026-10-23 12:15:58'),
+  ('509', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 12:16:00'),
+  ('510', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 12:24:25'),
+  ('511', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 12:24:28'),
+  ('512', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 12:24:55'),
+  ('513', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":false}', '2026-10-23 12:24:56'),
+  ('514', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":true}', '2026-10-23 12:24:57'),
+  ('515', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 12:24:58'),
+  ('516', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 12:27:06'),
+  ('517', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 12:32:13'),
+  ('518', '1', 'interview_field_update', 'interview_applications', '20', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"feedback_hr\",\"old_value\":null}', '{\"field\":\"feedback_hr\",\"new_value\":\"Excellent communication skills and strong presentation.\",\"version\":2}', '2026-10-23 12:32:22'),
+  ('519', '1', 'interview_field_update', 'interview_applications', '19', '127.0.0.1', '', '{\"field\":\"feedback_hr\",\"old_value\":null}', '{\"field\":\"feedback_hr\",\"new_value\":\"Test feedback from scratch\",\"version\":2}', '2026-10-23 12:35:10'),
+  ('520', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 12:39:09'),
+  ('521', '1', 'interview_field_update', 'interview_applications', '21', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"feedback_hr\",\"old_value\":null}', '{\"field\":\"feedback_hr\",\"new_value\":\"Excellent communication skills and strong presentation.\",\"version\":2}', '2026-10-23 12:39:19'),
+  ('522', '1', 'interview_field_update', 'interview_applications', '21', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"pending\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":3}', '2026-10-23 12:39:20'),
+  ('523', '1', 'interview_field_update', 'interview_applications', '21', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"candidate_interested\",\"old_value\":null}', '{\"field\":\"candidate_interested\",\"new_value\":\"yes\",\"version\":4}', '2026-10-23 12:39:21'),
+  ('524', '1', 'interview_field_update', 'interview_applications', '21', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"position_offered\",\"old_value\":null}', '{\"field\":\"position_offered\",\"new_value\":\"Senior Relationship Associate\",\"version\":5}', '2026-10-23 12:39:22'),
+  ('525', '1', 'interview_field_update', 'interview_applications', '21', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"offered_salary\",\"old_value\":null}', '{\"field\":\"offered_salary\",\"new_value\":450000,\"version\":6}', '2026-10-23 12:39:22'),
+  ('526', '1', 'interview_field_update', 'interview_applications', '21', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"joining_date\",\"old_value\":null}', '{\"field\":\"joining_date\",\"new_value\":\"2026-11-15\",\"version\":7}', '2026-10-23 12:39:23'),
+  ('527', '1', 'interview_field_update', 'interview_applications', '21', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"selected\"}', '{\"field\":\"decision\",\"new_value\":\"rejected\",\"version\":8}', '2026-10-23 12:39:25'),
+  ('528', '1', 'interview_field_update', 'interview_applications', '21', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"rejection_reason\",\"old_value\":null}', '{\"field\":\"rejection_reason\",\"new_value\":\"Not willing to relocate to Gurgaon\",\"version\":9}', '2026-10-23 12:39:26'),
+  ('529', '1', 'interview_field_update', 'interview_applications', '21', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"rejected\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":10}', '2026-10-23 12:39:27'),
+  ('530', '1', 'download_interview_pdf', 'interview_applications', '21', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"filename\":\"Interview_Form_Kavita_Live_Test_354_21.pdf\",\"ip\":\"127.0.0.1\"}', '2026-10-23 12:39:29'),
+  ('531', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 12:39:47'),
+  ('532', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 12:39:53'),
+  ('533', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 12:39:57'),
+  ('534', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":false}', '2026-10-23 12:39:58'),
+  ('535', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":true}', '2026-10-23 12:39:59'),
+  ('536', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 12:40:01'),
+  ('537', '1', 'interview_field_update', 'interview_applications', '23', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"feedback_hr\",\"old_value\":null}', '{\"field\":\"feedback_hr\",\"new_value\":\"Excellent communication skills and strong presentation.\",\"version\":2}', '2026-10-23 12:40:10'),
+  ('538', '1', 'interview_field_update', 'interview_applications', '23', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"pending\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":3}', '2026-10-23 12:40:11'),
+  ('539', '1', 'interview_field_update', 'interview_applications', '23', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"candidate_interested\",\"old_value\":null}', '{\"field\":\"candidate_interested\",\"new_value\":\"yes\",\"version\":4}', '2026-10-23 12:40:12'),
+  ('540', '1', 'interview_field_update', 'interview_applications', '23', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"position_offered\",\"old_value\":null}', '{\"field\":\"position_offered\",\"new_value\":\"Senior Relationship Associate\",\"version\":5}', '2026-10-23 12:40:13'),
+  ('541', '1', 'interview_field_update', 'interview_applications', '23', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"offered_salary\",\"old_value\":null}', '{\"field\":\"offered_salary\",\"new_value\":450000,\"version\":6}', '2026-10-23 12:40:13'),
+  ('542', '1', 'interview_field_update', 'interview_applications', '23', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"joining_date\",\"old_value\":null}', '{\"field\":\"joining_date\",\"new_value\":\"2026-11-15\",\"version\":7}', '2026-10-23 12:40:14'),
+  ('543', '1', 'interview_field_update', 'interview_applications', '23', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"selected\"}', '{\"field\":\"decision\",\"new_value\":\"rejected\",\"version\":8}', '2026-10-23 12:40:15'),
+  ('544', '1', 'interview_field_update', 'interview_applications', '23', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"rejection_reason\",\"old_value\":null}', '{\"field\":\"rejection_reason\",\"new_value\":\"Not willing to relocate to Gurgaon\",\"version\":9}', '2026-10-23 12:40:16'),
+  ('545', '1', 'interview_field_update', 'interview_applications', '23', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"rejected\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":10}', '2026-10-23 12:40:16'),
+  ('546', '1', 'download_interview_pdf', 'interview_applications', '23', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"filename\":\"Interview_Form_Kavita_Live_Test_268_23.pdf\",\"ip\":\"127.0.0.1\"}', '2026-10-23 12:40:17'),
+  ('547', NULL, 'admin_login_failed', 'users', '1', '103.240.236.244', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"email\":\"admin@realtysmartzpathshala.in\",\"ip\":\"103.240.236.244\"}', '2026-10-23 12:47:33'),
+  ('548', '1', 'admin_login_success', 'users', '1', '103.240.236.244', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"103.240.236.244\"}', '2026-10-23 12:47:46'),
+  ('549', '1', 'interview_field_update', 'interview_applications', '25', '103.240.236.244', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"pending\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":2}', '2026-10-23 12:55:22'),
+  ('550', '1', 'interview_field_update', 'interview_applications', '25', '103.240.236.244', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"selected\"}', '{\"field\":\"decision\",\"new_value\":\"rejected\",\"version\":3}', '2026-10-23 12:55:32'),
+  ('551', '1', 'interview_field_update', 'interview_applications', '25', '103.240.236.244', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"rejected\"}', '{\"field\":\"decision\",\"new_value\":\"pending\",\"version\":4}', '2026-10-23 12:55:36'),
+  ('552', '1', 'interview_field_update', 'interview_applications', '24', '103.240.236.244', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"pending\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":2}', '2026-10-23 12:56:29'),
+  ('553', '1', 'interview_field_update', 'interview_applications', '24', '103.240.236.244', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', '{\"field\":\"candidate_interested\",\"old_value\":null}', '{\"field\":\"candidate_interested\",\"new_value\":\"yes\",\"version\":3}', '2026-10-23 12:56:34'),
+  ('554', '1', 'interview_field_update', 'interview_applications', '24', '103.240.236.244', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', '{\"field\":\"position_offered\",\"old_value\":null}', '{\"field\":\"position_offered\",\"new_value\":\"fdfsccff\",\"version\":4}', '2026-10-23 12:56:37'),
+  ('555', '1', 'interview_field_update', 'interview_applications', '24', '103.240.236.244', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', '{\"field\":\"offered_salary\",\"old_value\":null}', '{\"field\":\"offered_salary\",\"new_value\":222222,\"version\":5}', '2026-10-23 12:56:43'),
+  ('556', '1', 'interview_field_update', 'interview_applications', '24', '103.240.236.244', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', '{\"field\":\"offered_salary\",\"old_value\":\"222222.00\"}', '{\"field\":\"offered_salary\",\"new_value\":222222,\"version\":6}', '2026-10-23 12:56:45'),
+  ('557', '1', 'interview_field_update', 'interview_applications', '24', '103.240.236.244', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', '{\"field\":\"joining_date\",\"old_value\":null}', '{\"field\":\"joining_date\",\"new_value\":\"2026-10-27\",\"version\":7}', '2026-10-23 12:56:49'),
+  ('558', '1', 'interview_field_update', 'interview_applications', '24', '103.240.236.244', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"selected\"}', '{\"field\":\"decision\",\"new_value\":\"pending\",\"version\":8}', '2026-10-23 12:57:17'),
+  ('559', '1', 'interview_field_update', 'interview_applications', '24', '103.240.236.244', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"pending\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":9}', '2026-10-23 12:57:19'),
+  ('560', '1', 'interview_field_update', 'interview_applications', '24', '103.240.236.244', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"selected\"}', '{\"field\":\"decision\",\"new_value\":\"rejected\",\"version\":10}', '2026-10-23 12:57:21'),
+  ('561', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 13:22:50'),
+  ('562', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 13:22:55'),
+  ('563', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 13:23:02'),
+  ('564', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":false}', '2026-10-23 13:23:03'),
+  ('565', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":true}', '2026-10-23 13:23:04'),
+  ('566', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 13:23:07'),
+  ('567', '1', 'interview_field_update', 'interview_applications', '27', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"feedback_hr\",\"old_value\":null}', '{\"field\":\"feedback_hr\",\"new_value\":\"Excellent communication skills and strong presentation.\",\"version\":2}', '2026-10-23 13:23:17'),
+  ('568', '1', 'interview_field_update', 'interview_applications', '27', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"pending\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":3}', '2026-10-23 13:23:19'),
+  ('569', '1', 'interview_field_update', 'interview_applications', '27', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"candidate_interested\",\"old_value\":null}', '{\"field\":\"candidate_interested\",\"new_value\":\"yes\",\"version\":4}', '2026-10-23 13:23:20'),
+  ('570', '1', 'interview_field_update', 'interview_applications', '27', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"position_offered\",\"old_value\":null}', '{\"field\":\"position_offered\",\"new_value\":\"Senior Relationship Associate\",\"version\":5}', '2026-10-23 13:23:20'),
+  ('571', '1', 'interview_field_update', 'interview_applications', '27', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"offered_salary\",\"old_value\":null}', '{\"field\":\"offered_salary\",\"new_value\":450000,\"version\":6}', '2026-10-23 13:23:21'),
+  ('572', '1', 'interview_field_update', 'interview_applications', '27', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"joining_date\",\"old_value\":null}', '{\"field\":\"joining_date\",\"new_value\":\"2026-11-15\",\"version\":7}', '2026-10-23 13:23:22'),
+  ('573', '1', 'interview_field_update', 'interview_applications', '27', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"selected\"}', '{\"field\":\"decision\",\"new_value\":\"rejected\",\"version\":8}', '2026-10-23 13:23:23'),
+  ('574', '1', 'interview_field_update', 'interview_applications', '27', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"rejection_reason\",\"old_value\":null}', '{\"field\":\"rejection_reason\",\"new_value\":\"Not willing to relocate to Gurgaon\",\"version\":9}', '2026-10-23 13:23:24'),
+  ('575', '1', 'interview_field_update', 'interview_applications', '27', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"rejected\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":10}', '2026-10-23 13:23:25'),
+  ('576', '1', 'download_interview_pdf', 'interview_applications', '27', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"filename\":\"Interview_Form_Kavita_Live_Test_318_27.pdf\",\"ip\":\"127.0.0.1\"}', '2026-10-23 13:23:26'),
+  ('577', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 13:38:54'),
+  ('578', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 13:38:59'),
+  ('579', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 13:39:05'),
+  ('580', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":false}', '2026-10-23 13:39:07'),
+  ('581', '1', 'qr_toggle_accepting', 'qr_settings', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"accepting\":true}', '2026-10-23 13:39:08'),
+  ('582', '1', 'admin_login_success', 'users', '1', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"ip\":\"127.0.0.1\"}', '2026-10-23 13:39:11'),
+  ('583', '1', 'interview_field_update', 'interview_applications', '29', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"feedback_hr\",\"old_value\":null}', '{\"field\":\"feedback_hr\",\"new_value\":\"Excellent communication skills and strong presentation.\",\"version\":2}', '2026-10-23 13:39:21'),
+  ('584', '1', 'interview_field_update', 'interview_applications', '29', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"pending\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":3}', '2026-10-23 13:39:22'),
+  ('585', '1', 'interview_field_update', 'interview_applications', '29', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"candidate_interested\",\"old_value\":null}', '{\"field\":\"candidate_interested\",\"new_value\":\"yes\",\"version\":4}', '2026-10-23 13:39:23'),
+  ('586', '1', 'interview_field_update', 'interview_applications', '29', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"position_offered\",\"old_value\":null}', '{\"field\":\"position_offered\",\"new_value\":\"Senior Relationship Associate\",\"version\":5}', '2026-10-23 13:39:24'),
+  ('587', '1', 'interview_field_update', 'interview_applications', '29', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"offered_salary\",\"old_value\":null}', '{\"field\":\"offered_salary\",\"new_value\":450000,\"version\":6}', '2026-10-23 13:39:24'),
+  ('588', '1', 'interview_field_update', 'interview_applications', '29', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"joining_date\",\"old_value\":null}', '{\"field\":\"joining_date\",\"new_value\":\"2026-11-15\",\"version\":7}', '2026-10-23 13:39:25'),
+  ('589', '1', 'interview_field_update', 'interview_applications', '29', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"selected\"}', '{\"field\":\"decision\",\"new_value\":\"rejected\",\"version\":8}', '2026-10-23 13:39:27'),
+  ('590', '1', 'interview_field_update', 'interview_applications', '29', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"rejection_reason\",\"old_value\":null}', '{\"field\":\"rejection_reason\",\"new_value\":\"Not willing to relocate to Gurgaon\",\"version\":9}', '2026-10-23 13:39:28'),
+  ('591', '1', 'interview_field_update', 'interview_applications', '29', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', '{\"field\":\"decision\",\"old_value\":\"rejected\"}', '{\"field\":\"decision\",\"new_value\":\"selected\",\"version\":10}', '2026-10-23 13:39:29'),
+  ('592', '1', 'download_interview_pdf', 'interview_applications', '29', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36', NULL, '{\"filename\":\"Interview_Form_Kavita_Live_Test_913_29.pdf\",\"ip\":\"127.0.0.1\"}', '2026-10-23 13:39:30');
 
 -- --------------------------------------------------------
 -- Table structure for `bank_details`
@@ -209,7 +712,16 @@ CREATE TABLE `documents` (
   KEY `idx_docs_type` (`document_type`),
   KEY `idx_docs_status` (`status`),
   CONSTRAINT `fk_docs_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table `documents`
+INSERT INTO `documents` (`id`, `user_id`, `document_type`, `original_name`, `stored_name`, `file_path`, `mime_type`, `file_size_before`, `file_size_after`, `version`, `status`, `rejection_reason`, `is_archived`, `archived_at`, `uploaded_at`) VALUES
+  ('1', '34', 'aadhaar_front', 'CI_CD Pipeline_ Faster, Safer Delivery.png', '34_aadhaar_front_9d9c608e915d56d48869.jpg', '/home/realtys1/pathshala_app/storage/uploads/34_aadhaar_front_9d9c608e915d56d48869.jpg', 'image/jpeg', '1807458', '257455', '1', 'pending', NULL, '0', NULL, '2026-10-19 17:15:56'),
+  ('2', '34', 'aadhaar_back', 'CI_CD Pipeline_ Faster, Safer Delivery.png', '34_aadhaar_back_e140d1fa3b23cdc36ac2.jpg', '/home/realtys1/pathshala_app/storage/uploads/34_aadhaar_back_e140d1fa3b23cdc36ac2.jpg', 'image/jpeg', '1807458', '257455', '1', 'pending', NULL, '0', NULL, '2026-10-19 17:16:00'),
+  ('3', '34', 'pan_card', 'CI_CD Pipeline_ Faster, Safer Delivery.png', '34_pan_card_8adf8f399a2dcb49fc5a.jpg', '/home/realtys1/pathshala_app/storage/uploads/34_pan_card_8adf8f399a2dcb49fc5a.jpg', 'image/jpeg', '1807458', '257455', '1', 'pending', NULL, '0', NULL, '2026-10-19 17:16:44'),
+  ('24', '54', 'aadhaar_front', 'Adhar card Chhavi Mittal.jpeg', '54_aadhaar_front_0ff68da892f356212b3d.jpg', '/home/realtys1/pathshala_app/storage/uploads/54_aadhaar_front_0ff68da892f356212b3d.jpg', 'image/jpeg', '353187', '293524', '1', 'pending', NULL, '0', NULL, '2026-10-22 12:17:41'),
+  ('25', '54', 'aadhaar_back', 'Adhar card Chhavi Mittal.jpeg', '54_aadhaar_back_c9eb968fa96ec5b02efb.jpg', '/home/realtys1/pathshala_app/storage/uploads/54_aadhaar_back_c9eb968fa96ec5b02efb.jpg', 'image/jpeg', '353187', '293524', '1', 'pending', NULL, '0', NULL, '2026-10-22 12:17:50'),
+  ('26', '54', 'pan_card', 'Adhar Amit Arora.pdf', '54_pan_card_d1c09655a3fd29621b27.pdf', '/home/realtys1/pathshala_app/storage/uploads/54_pan_card_d1c09655a3fd29621b27.pdf', 'application/pdf', '167556', '167556', '1', 'pending', NULL, '0', NULL, '2026-10-22 12:18:01');
 
 -- --------------------------------------------------------
 -- Table structure for `education`
@@ -247,7 +759,7 @@ CREATE TABLE `email_verifications` (
   KEY `idx_ev_token` (`token`),
   KEY `idx_ev_otp` (`otp`),
   CONSTRAINT `fk_ev_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 -- Table structure for `emergency_contacts`
@@ -266,7 +778,12 @@ CREATE TABLE `emergency_contacts` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_id` (`user_id`),
   CONSTRAINT `fk_emg_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table `emergency_contacts`
+INSERT INTO `emergency_contacts` (`id`, `user_id`, `contact_name`, `relationship`, `mobile`, `alternate_mobile`, `address`, `created_at`, `updated_at`) VALUES
+  ('1', '34', 'Geeta Singh', 'Father', '9876966879', NULL, NULL, '2026-10-19 17:17:01', '2026-10-19 17:17:05'),
+  ('18', '54', 'rames', 'Father', '8908864334', NULL, NULL, '2026-10-22 12:18:29', '2026-10-22 12:18:30');
 
 -- --------------------------------------------------------
 -- Table structure for `enquiries`
@@ -358,6 +875,113 @@ CREATE TABLE `guest_test_links` (
   KEY `idx_guest_user` (`user_id`),
   KEY `idx_guest_status` (`status`),
   KEY `idx_guest_email` (`guest_email`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+-- Table structure for `interview_applications`
+-- --------------------------------------------------------
+DROP TABLE IF EXISTS `interview_applications`;
+CREATE TABLE `interview_applications` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `hr_name` varchar(100) NOT NULL,
+  `post_applied` varchar(150) NOT NULL,
+  `full_name` varchar(150) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `mobile` varchar(20) NOT NULL,
+  `experience_type` enum('experience','fresher') NOT NULL DEFAULT 'fresher',
+  `years_in_real_estate` decimal(4,1) DEFAULT NULL,
+  `vehicle_available` enum('yes','no') NOT NULL DEFAULT 'no',
+  `current_location` varchar(255) NOT NULL,
+  `higher_education` varchar(255) NOT NULL,
+  `has_references` enum('yes','no') NOT NULL DEFAULT 'no',
+  `reference_details` text DEFAULT NULL,
+  `last_company_hr_tl` varchar(255) DEFAULT NULL,
+  `reason_to_leave` text DEFAULT NULL,
+  `immediate_joiner` enum('yes','no') NOT NULL DEFAULT 'yes',
+  `consent_at` datetime NOT NULL,
+  `submitted_at` datetime NOT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` text DEFAULT NULL,
+  `source_by` varchar(150) DEFAULT NULL,
+  `feedback_tl_sm` text DEFAULT NULL,
+  `feedback_hr` text DEFAULT NULL,
+  `feedback_final` text DEFAULT NULL,
+  `module_discussed` text DEFAULT NULL,
+  `position_offered` varchar(150) DEFAULT NULL,
+  `decision` enum('pending','selected','rejected') NOT NULL DEFAULT 'pending',
+  `decision_at` datetime DEFAULT NULL,
+  `decision_by` int(10) unsigned DEFAULT NULL,
+  `candidate_interested` enum('yes','no') DEFAULT NULL,
+  `offered_salary` decimal(12,2) DEFAULT NULL,
+  `joining_date` date DEFAULT NULL,
+  `rejection_reason` text DEFAULT NULL,
+  `version` int(10) unsigned NOT NULL DEFAULT 1,
+  `first_viewed_at` datetime DEFAULT NULL,
+  `first_viewed_by` int(10) unsigned DEFAULT NULL,
+  `updated_by` int(10) unsigned DEFAULT NULL,
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `is_archived` tinyint(1) NOT NULL DEFAULT 0,
+  `archived_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_ia_decision` (`decision`),
+  KEY `idx_ia_submitted_at` (`submitted_at`),
+  KEY `idx_ia_updated_at` (`updated_at`),
+  KEY `idx_ia_mobile` (`mobile`),
+  KEY `idx_ia_email` (`email`),
+  KEY `idx_ia_first_viewed` (`first_viewed_at`),
+  KEY `idx_ia_archived` (`is_archived`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+-- Table structure for `interview_email_log`
+-- --------------------------------------------------------
+DROP TABLE IF EXISTS `interview_email_log`;
+CREATE TABLE `interview_email_log` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `application_id` bigint(20) unsigned NOT NULL,
+  `type` varchar(64) NOT NULL,
+  `to_email` varchar(150) NOT NULL,
+  `status` enum('pending','sent','failed') NOT NULL DEFAULT 'pending',
+  `error` text DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `sent_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_iel_app_type` (`application_id`,`type`),
+  KEY `idx_iel_created` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+-- Table structure for `interview_employment_rows`
+-- --------------------------------------------------------
+DROP TABLE IF EXISTS `interview_employment_rows`;
+CREATE TABLE `interview_employment_rows` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `application_id` bigint(20) unsigned NOT NULL,
+  `sort_order` int(11) NOT NULL DEFAULT 0,
+  `organisation` varchar(255) DEFAULT NULL,
+  `designation` varchar(150) DEFAULT NULL,
+  `salary` varchar(100) DEFAULT NULL,
+  `hr_name_number` varchar(255) DEFAULT NULL,
+  `duration` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_ier_app_id` (`application_id`),
+  CONSTRAINT `fk_ier_app_id` FOREIGN KEY (`application_id`) REFERENCES `interview_applications` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+-- Table structure for `interview_field_versions`
+-- --------------------------------------------------------
+DROP TABLE IF EXISTS `interview_field_versions`;
+CREATE TABLE `interview_field_versions` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `application_id` bigint(20) unsigned NOT NULL,
+  `field` varchar(64) NOT NULL,
+  `value` longtext DEFAULT NULL,
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_by` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_ifv_app_field` (`application_id`,`field`),
+  KEY `idx_ifv_updated_at` (`updated_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -374,7 +998,7 @@ CREATE TABLE `login_attempts` (
   `locked_until` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_la_ip_email` (`ip_address`,`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 -- Table structure for `migrations`
@@ -804,7 +1428,13 @@ CREATE TABLE `profiles` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_id` (`user_id`),
   CONSTRAINT `fk_profile_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table `profiles`
+INSERT INTO `profiles` (`id`, `user_id`, `father_name`, `whatsapp`, `mother_name`, `dob`, `gender`, `marital_status`, `blood_group`, `nationality`, `photo_path`, `address`, `permanent_address`, `current_address`, `same_as_permanent`, `city`, `state`, `pincode`, `aadhaar_enc`, `aadhaar_encrypted`, `aadhaar_last4`, `pan_enc`, `pan_last4`, `pan_number`, `passport_number`, `social_links`, `declaration_accepted`, `declaration_date`, `joining_date`, `signature_type`, `signature_data`, `completion_percentage`, `is_locked`, `created_at`, `updated_at`) VALUES
+  ('1', '34', 'Boora', '9306098396', NULL, '2026-10-07', 'male', NULL, NULL, 'Indian', NULL, 'sector 688 gurguramn', 'sector 688 gurguramn', 'sector 688 gurguramn', '0', 'Gurugram', 'Haryana', '234213', 'Avuqm2e6XRzVaKZj0GAnl4zEKU9L9y9WFE8oaDrNAL7zCh5UcO9RErJL1iuVdpiG12lsHdtS1Qufnqw6KcPn4Q==', 'Avuqm2e6XRzVaKZj0GAnl4zEKU9L9y9WFE8oaDrNAL7zCh5UcO9RErJL1iuVdpiG12lsHdtS1Qufnqw6KcPn4Q==', '3882', 'HijXX7Fu0jhqEC1uAbdPVR9uASuHdW04g1JuVYVv/P7cOy9xBhy1/fCyuc3QmuyoMROITx6xvYkBmEffzvgRDw==', '234F', 'ABCDE1234F', NULL, '{\"linkedin\":\"\",\"instagram\":\"\",\"facebook\":\"\",\"twitter\":\"\",\"youtube\":\"\",\"portfolio\":\"\"}', '1', '2026-10-19', '2026-12-15', 'typed', 'Abhishek', '100', '1', '2026-10-19 16:34:35', '2026-10-19 17:17:19'),
+  ('21', '54', 'Smart Finance Chhavi Mittal', '8800992566', NULL, '2002-06-29', 'female', NULL, NULL, 'Indian', NULL, '11th Floor, Spaze Palazo, Sector 69\r\nGolf Course Extension Road', '11th Floor, Spaze Palazo, Sector 69\r\nGolf Course Extension Road', '11th Floor, Spaze Palazo, Sector 69\r\nGolf Course Extension Road', '0', 'GURUGRAM', 'Haryana', '122001', 'l8dDZTux2WuJLTykeh3sKryina/3KAFXTTa2R+HAzOlU77tTlgP/JQ8lNYWAsAfTBmiP9MIOzzj61DtfnRHzJQ==', 'l8dDZTux2WuJLTykeh3sKryina/3KAFXTTa2R+HAzOlU77tTlgP/JQ8lNYWAsAfTBmiP9MIOzzj61DtfnRHzJQ==', '8909', 'ykRpKt/Li+DuJLuzSQ5U0shPPIc1ART6k7ZR0DpiKahJ/Os/1zV0RcxL/7s2KOULR98LuuqAt6uWCX1Z5E1ElA==', '604R', 'ALOPM8604R', NULL, '{\"linkedin\":\"\",\"instagram\":\"\",\"facebook\":\"\",\"twitter\":\"\",\"youtube\":\"\",\"portfolio\":\"\"}', '1', '2026-10-22', NULL, 'typed', 'Smart Finance Chhavi Mittal', '100', '1', '2026-10-22 12:14:52', '2026-10-22 12:18:39'),
+  ('29', '62', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Indian', NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL, NULL, NULL, '0', '0', '2026-10-22 16:00:50', '2026-10-22 16:00:50');
 
 -- --------------------------------------------------------
 -- Table structure for `project_images`
@@ -859,6 +1489,27 @@ INSERT INTO `projects` (`id`, `title`, `slug`, `category`, `location`, `price_ra
   ('8', 'Dubai Luxury Projects', 'dubai-luxury-residences-uae', 'intl', 'Downtown & Business Bay, UAE', 'AED 1.2M+ (₹2.7 Cr+)', 'Waterfront Apartments & Sky Villas', 'High-ROI offshore investment portfolio with 0% income tax, 10-year Golden Visa eligibility, and rental yields averaging 8-10% tax-free.', '[\"10-Year UAE Golden Visa eligibility\", \"Tax-free rental yields up to 10%\", \"Private beach & marina promenade\", \"Flexible 80/20 post-handover payment plan\"]', '/assets/img/projects/dubai.jpg', '1', '1', '0', '8', '2026-10-17 12:24:20'),
   ('9', 'M3M Capital', 'm3m-capital-dwarka-expressway', 'luxury', 'Sector 113, Dwarka Expressway', '₹2.80 Cr+', 'Golf-Themed Luxury 3.5 & 4.5 BHK', '0 km from Delhi border, overlooking 60-meter wide arterial boulevards with private golf putting greens, sky club, and valet concierge.', '[\"Zero km from Delhi border\", \"Golf-inspired landscaped gardens\", \"Huge 75,000 sq.ft luxury clubhouse\", \"Multi-tier security protocol\"]', '/assets/img/projects/m3m.jpg', '0', '1', '0', '9', '2026-10-17 12:24:20'),
   ('10', 'Danube Properties Dubai', 'danube-properties-maritime-city', 'intl', 'Maritime City & JLT, Dubai', 'AED 950K+ (₹2.1 Cr+)', 'Fully Furnished Designer Waterfront Suites', 'Fully furnished luxury studio to 3 BHK suites with over 40 resort-grade amenities and Danube\'s hallmark 1% per month payment plan.', '[\"Famous 1% per month payment plan\", \"Doctor on call & private infinity pool in apartment\", \"100% freehold foreign ownership\", \"Handover with Italian designer furnishings\"]', '/assets/img/projects/danube.jpg', '0', '1', '0', '10', '2026-10-17 12:24:20');
+
+-- --------------------------------------------------------
+-- Table structure for `qr_settings`
+-- --------------------------------------------------------
+DROP TABLE IF EXISTS `qr_settings`;
+CREATE TABLE `qr_settings` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `type` varchar(64) NOT NULL,
+  `slug` varchar(64) NOT NULL,
+  `accepting_responses` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `type` (`type`),
+  UNIQUE KEY `slug` (`slug`),
+  KEY `idx_qrs_type` (`type`),
+  KEY `idx_qrs_slug` (`slug`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table `qr_settings`
+INSERT INTO `qr_settings` (`id`, `type`, `slug`, `accepting_responses`, `created_at`) VALUES
+  ('1', 'interview_form', 'rsp_interview_7f9c2d1b4e8a', '1', '2026-10-22 16:53:59');
 
 -- --------------------------------------------------------
 -- Table structure for `questions`
@@ -972,7 +1623,7 @@ CREATE TABLE `settings` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `setting_key` (`setting_key`)
-) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `settings`
 INSERT INTO `settings` (`id`, `setting_key`, `setting_value`, `setting_group`, `updated_at`) VALUES
@@ -1015,7 +1666,18 @@ INSERT INTO `settings` (`id`, `setting_key`, `setting_value`, `setting_group`, `
   ('42', 'stat_placement_rate', '98%', 'general', '2026-10-18 18:18:53'),
   ('43', 'stat_years_active', '10+ Years', 'general', '2026-10-18 18:18:53'),
   ('44', 'stat_avg_deal', '2.4 Cr', 'general', '2026-10-18 18:18:53'),
-  ('45', 'preloader_text', 'Preparing Your Success Path...', 'general', '2026-10-18 18:18:53');
+  ('45', 'preloader_text', 'Preparing Your Success Path...', 'general', '2026-10-18 18:18:53'),
+  ('58', 'google_sheets_webhook_url', 'https://script.google.com/macros/s/AKfycbx2I952kgfzCJtftZIj8v64uk8wmzdiTlc5_Bk8QLAF7rMuYArpOKqaw8XdIEChEZ9fMQ/exec', 'general', '2026-10-22 15:07:21'),
+  ('59', 'interview_email_hr_new_form', '1', 'interview', '2026-10-22 16:53:59'),
+  ('60', 'interview_email_hr_recipients', 'hr@realtysmartzpathshala.in', 'interview', '2026-10-22 16:53:59'),
+  ('61', 'interview_email_candidate_selected', '0', 'interview', '2026-10-22 16:53:59'),
+  ('62', 'interview_email_selected_subject', 'Offer of Employment | Realty Smartz Pathshala', 'interview', '2026-10-22 16:53:59'),
+  ('63', 'interview_email_selected_body', 'Dear {name},\n\nWe are pleased to inform you that following your interview, you have been selected for the position of {position} at Realty Smartz Pathshala.\n\nYour tentative date of joining is {joining_date}.\n\nOur HR department will contact you shortly with further details and joining documentation.\n\nWarm regards,\nHR Department\nRealty Smartz Pathshala', 'interview', '2026-10-22 16:53:59'),
+  ('64', 'interview_email_candidate_rejected', '0', 'interview', '2026-10-22 16:53:59'),
+  ('65', 'interview_email_rejected_subject', 'Application Update | Realty Smartz Pathshala', 'interview', '2026-10-22 16:53:59'),
+  ('66', 'interview_email_rejected_body', 'Dear {name},\n\nThank you for taking the time to attend the interview with Realty Smartz Pathshala.\n\nWhile your background and qualifications are commendable, we have decided to move forward with other candidates whose profiles more closely match our current operational requirements.\n\nWe genuinely appreciate your interest in our organization and wish you every success in your future career endeavors.\n\nWarm regards,\nHR Department\nRealty Smartz Pathshala', 'interview', '2026-10-22 16:53:59'),
+  ('67', 'google_sheets_sheet_name', 'candidates', 'general', '2026-10-23 13:20:03'),
+  ('68', 'google_sheets_interview_tab', 'Interview Candidate', 'general', '2026-10-23 13:20:03');
 
 -- --------------------------------------------------------
 -- Table structure for `status_history`
@@ -1032,7 +1694,15 @@ CREATE TABLE `status_history` (
   PRIMARY KEY (`id`),
   KEY `idx_sh_user` (`user_id`),
   CONSTRAINT `fk_sh_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table `status_history`
+INSERT INTO `status_history` (`id`, `user_id`, `old_status`, `new_status`, `comments`, `changed_by`, `created_at`) VALUES
+  ('4', '34', 'email_verified', 'documents_submitted', 'Candidate completed 4-step onboarding wizard and submitted documents.', '34', '2026-10-19 17:17:19'),
+  ('5', '34', 'documents_submitted', 'test_completed', 'Aptitude Assessment completed with score 2/15 (13.33%) - FAILED', '34', '2026-10-19 17:17:49'),
+  ('12', '54', 'email_verified', 'documents_submitted', 'Candidate completed 4-step onboarding wizard and submitted documents.', '54', '2026-10-22 12:18:39'),
+  ('13', '54', 'documents_submitted', 'test_completed', 'Aptitude Assessment completed with score 0/15 (0%) - FAILED', '54', '2026-10-22 12:19:04'),
+  ('25', '62', 'registered', 'test_completed', 'Aptitude Assessment completed with score 11/15 (73.33%) - PASSED', '62', '2026-10-22 16:10:57');
 
 -- --------------------------------------------------------
 -- Table structure for `test_attempts`
@@ -1069,7 +1739,12 @@ CREATE TABLE `test_attempts` (
   KEY `idx_guest_link` (`guest_test_link_id`),
   CONSTRAINT `fk_ta_test` FOREIGN KEY (`test_id`) REFERENCES `tests` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_ta_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table `test_attempts`
+INSERT INTO `test_attempts` (`id`, `test_id`, `set_id`, `user_id`, `guest_test_link_id`, `attempt_no`, `started_at`, `deadline_at`, `submitted_at`, `expires_at`, `completed_at`, `total_questions`, `total_answered`, `total_correct`, `total_wrong`, `score`, `percentage`, `passed`, `tab_switch_count`, `fullscreen_exit_count`, `status`, `allow_reattempt`, `reattempt_allowed_by`, `created_at`) VALUES
+  ('5', '1', '1', '54', NULL, '1', '2026-10-22 12:18:43', '2026-10-22 12:28:43', '2026-10-22 12:19:04', '2026-10-22 12:28:43', '2026-10-22 12:19:04', '15', '0', '0', '0', '0.00', '0.00', '0', '0', '0', 'completed', '0', NULL, '2026-10-22 12:18:43'),
+  ('19', '1', '4', '62', NULL, '1', '2026-10-22 16:00:56', '2026-10-22 16:10:56', '2026-10-22 16:10:57', '2026-10-22 16:10:56', '2026-10-22 16:10:57', '15', '15', '11', '4', '11.00', '73.33', '1', '1', '0', 'completed', '0', NULL, '2026-10-22 16:00:56');
 
 -- --------------------------------------------------------
 -- Table structure for `test_categories`
@@ -1133,6 +1808,8 @@ CREATE TABLE `users` (
   `joining_date` date DEFAULT NULL,
   `password_hash` varchar(255) NOT NULL,
   `role` enum('candidate','super_admin','hr_manager','reviewer') NOT NULL DEFAULT 'candidate',
+  `candidate_type` enum('onboarding','aptitude_only') NOT NULL DEFAULT 'onboarding',
+  `source` varchar(50) NOT NULL DEFAULT 'direct',
   `is_guest` tinyint(1) NOT NULL DEFAULT 0,
   `status` enum('active','registered','email_verified','profile_completed','documents_submitted','test_pending','test_completed','under_review','approved','changes_requested','rejected') NOT NULL DEFAULT 'registered',
   `email_verified` tinyint(1) NOT NULL DEFAULT 1,
@@ -1151,14 +1828,18 @@ CREATE TABLE `users` (
   KEY `idx_users_email` (`email`),
   KEY `idx_users_role` (`role`),
   KEY `idx_users_status` (`status`),
-  KEY `idx_users_archived` (`is_archived`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  KEY `idx_users_archived` (`is_archived`),
+  KEY `idx_users_candidate_type` (`candidate_type`)
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `users`
-INSERT INTO `users` (`id`, `full_name`, `father_name`, `email`, `mobile`, `whatsapp`, `joining_date`, `password_hash`, `role`, `is_guest`, `status`, `email_verified`, `email_verified_at`, `remember_token`, `is_locked`, `locked_until`, `failed_login_attempts`, `is_archived`, `archived_at`, `archived_by`, `created_at`, `updated_at`) VALUES
-  ('1', 'Super Admin', NULL, 'admin@realtysmartzpathshala.in', '+919876543210', NULL, NULL, '$2y$10$.dwZJA0wNa3zvJXnawqZROtJa7inJKguyA7d6c9bKaM0U64Spumaa', 'super_admin', '0', 'active', '1', '2026-10-17 12:24:19', NULL, '0', NULL, '0', '0', NULL, NULL, '2026-10-17 12:24:19', '2026-10-18 18:21:55'),
-  ('2', 'HR Manager', NULL, 'hr@realtysmartzpathshala.in', '+919876543211', NULL, NULL, '$2y$10$7in11AzJaJ35YMziftsFZugUW8ELNs5ev1Zr7dHEfAHSoKlPJex8u', 'hr_manager', '0', 'approved', '1', '2026-10-17 12:24:19', NULL, '0', NULL, '0', '0', NULL, NULL, '2026-10-17 12:24:19', '2026-10-17 12:24:19'),
-  ('3', 'Reviewer Officer', NULL, 'reviewer@realtysmartzpathshala.in', '+919876543212', NULL, NULL, '$2y$10$7in11AzJaJ35YMziftsFZugUW8ELNs5ev1Zr7dHEfAHSoKlPJex8u', 'reviewer', '0', 'approved', '1', '2026-10-17 12:24:19', NULL, '0', NULL, '0', '0', NULL, NULL, '2026-10-17 12:24:19', '2026-10-17 12:24:19');
+INSERT INTO `users` (`id`, `full_name`, `father_name`, `email`, `mobile`, `whatsapp`, `joining_date`, `password_hash`, `role`, `candidate_type`, `source`, `is_guest`, `status`, `email_verified`, `email_verified_at`, `remember_token`, `is_locked`, `locked_until`, `failed_login_attempts`, `is_archived`, `archived_at`, `archived_by`, `created_at`, `updated_at`) VALUES
+  ('1', 'Super Admin', NULL, 'admin@realtysmartzpathshala.in', '+919876543210', NULL, NULL, '$2y$10$r8j0nFMN8FTQVLUN2AKbg.giMKuQ1tYMo09bjRhHeFj3wNqynkhoa', 'super_admin', 'onboarding', 'direct', '0', 'active', '1', '2026-10-17 12:24:19', NULL, '0', NULL, '0', '0', NULL, NULL, '2026-10-17 12:24:19', '2026-10-22 18:34:50'),
+  ('2', 'HR Manager', NULL, 'hr@realtysmartzpathshala.in', '+919876543211', NULL, NULL, '$2y$10$7in11AzJaJ35YMziftsFZugUW8ELNs5ev1Zr7dHEfAHSoKlPJex8u', 'hr_manager', 'onboarding', 'direct', '0', 'approved', '1', '2026-10-17 12:24:19', NULL, '0', NULL, '0', '0', NULL, NULL, '2026-10-17 12:24:19', '2026-10-17 12:24:19'),
+  ('3', 'Reviewer Officer', NULL, 'reviewer@realtysmartzpathshala.in', '+919876543212', NULL, NULL, '$2y$10$7in11AzJaJ35YMziftsFZugUW8ELNs5ev1Zr7dHEfAHSoKlPJex8u', 'reviewer', 'onboarding', 'direct', '0', 'approved', '1', '2026-10-17 12:24:19', NULL, '0', NULL, '0', '0', NULL, NULL, '2026-10-17 12:24:19', '2026-10-17 12:24:19'),
+  ('34', 'Abhishek', 'Boora', 'abhishekboora2001@gmail.com', '9306098396', '9306098396', '2026-12-15', '$2y$11$99gkd1BJf/6i7uPrMNYtzOe8rmJCi5vo6HMTh1iXD6eTr1Ult14Ly', 'candidate', 'onboarding', 'direct', '0', 'registered', '1', '2026-10-19 16:35:17', NULL, '0', NULL, '0', '0', NULL, NULL, '2026-10-22 15:21:01', '2026-10-22 15:57:49'),
+  ('54', 'Smart Finance Chhavi Mittal', 'Smart Finance Chhavi Mittal', 'yogatatvam@gmail.com', '8800992566', '8800992566', NULL, '$2y$11$5nxXzjbLy3mgsGBq8mURKejmQIDYoioWdTOIsSKAzx8jz4Eon0ATO', 'candidate', 'onboarding', 'direct', '0', 'test_completed', '1', '2026-10-22 12:15:37', NULL, '0', NULL, '0', '0', NULL, NULL, '2026-10-22 12:14:52', '2026-10-22 12:19:04'),
+  ('62', 'ANKITA MITTAL', NULL, 'ai.mittal51@gmail.com', '9266826371', NULL, NULL, '$2y$11$aZXBqXtrZnlnkrA8dHjXGeQ2WVej3At/KLANJuhGE2vpwopQWCqD2', 'candidate', 'aptitude_only', 'qr_aptitude', '0', 'test_completed', '1', '2026-10-22 16:00:50', NULL, '0', NULL, '0', '0', NULL, NULL, '2026-10-22 16:00:50', '2026-10-22 16:10:57');
 
 -- --------------------------------------------------------
 -- Table structure for `videos`

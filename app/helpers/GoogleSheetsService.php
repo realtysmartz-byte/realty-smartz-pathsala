@@ -294,7 +294,7 @@ class GoogleSheetsService {
                 ];
             }
 
-            $tabName = config('GOOGLE_SHEETS_INTERVIEW_TAB') ?: Setting::get('google_sheets_interview_tab', 'Interview Candidates');
+            $tabName = config('GOOGLE_SHEETS_INTERVIEW_TAB') ?: Setting::get('google_sheets_interview_tab', 'Interview Candidate');
             return self::upsertRow($data, $tabName, self::INTERVIEW_HEADERS);
         } catch (\Throwable $e) {
             self::log("Error syncing interview application {$applicationId}: " . $e->getMessage());
@@ -498,7 +498,8 @@ class GoogleSheetsService {
             CURLOPT_POSTFIELDS     => $payload,
             CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
             CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_TIMEOUT        => 10,
+            CURLOPT_HTTP_VERSION   => CURL_HTTP_VERSION_1_1,
+            CURLOPT_TIMEOUT        => 15,
             CURLOPT_SSL_VERIFYPEER => true
         ]);
 
@@ -509,6 +510,17 @@ class GoogleSheetsService {
 
         if ($err) {
             throw new Exception("Webhook curl error: " . $err);
+        }
+
+        // Detect Google Apps Script HTML error or missing doPost
+        if (stripos($response, 'Script function not found') !== false || stripos($response, '<title>Error</title>') !== false || stripos($response, 'errorMessage') !== false) {
+            $snippet = strip_tags(substr($response, 0, 300));
+            throw new Exception("Google Apps Script error: doPost function is missing or not deployed. ({$snippet})");
+        }
+
+        $json = json_decode((string)$response, true);
+        if ($json && isset($json['status']) && $json['status'] === 'error') {
+            throw new Exception("Google Sheets Webhook error: " . ($json['message'] ?? 'Unknown script error'));
         }
 
         if ($httpCode >= 200 && $httpCode < 300) {

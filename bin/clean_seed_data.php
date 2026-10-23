@@ -38,7 +38,11 @@ $tablesToClear = [
     'login_attempts',
     'password_resets',
     'notifications',
-    'enquiries'
+    'enquiries',
+    'interview_applications',
+    'interview_employment_rows',
+    'interview_field_versions',
+    'interview_email_log'
 ];
 
 foreach ($tablesToClear as $table) {
