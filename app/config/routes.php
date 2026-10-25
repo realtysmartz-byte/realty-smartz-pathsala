@@ -202,6 +202,7 @@ Router::get('/admin/candidates/export-csv', [AdminController::class, 'exportExce
 Router::get('/admin/interview-candidates', [InterviewController::class, 'index'], ['admin']);
 Router::get('/admin/interview-candidates/export', [InterviewController::class, 'export'], ['admin']);
 Router::get('/admin/interview-candidates/{id}', [InterviewController::class, 'detail'], ['admin']);
+Router::post('/admin/interview-candidates/{id}/save-feedback', [InterviewController::class, 'saveFeedback'], ['admin', 'csrf']);
 Router::get('/admin/interview-candidates/{id}/pdf', [InterviewController::class, 'downloadPdf'], ['admin']);
 Router::post('/admin/interview-candidates/{id}/archive', [InterviewController::class, 'archive'], ['admin', 'csrf']);
 Router::post('/admin/interview-candidates/{id}/restore', [InterviewController::class, 'restore'], ['admin', 'csrf']);

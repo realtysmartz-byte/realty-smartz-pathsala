@@ -199,6 +199,10 @@ class TelegramService {
         $html .= "⏳ <b>Experience:</b> {$expType}{$yearsExp}\n";
 
         if (strtolower($app['experience_type'] ?? '') === 'experience') {
+            if (!empty($app['employment_rows'][0]['salary'])) {
+                $sal = $esc($app['employment_rows'][0]['salary']);
+                $html .= "💰 <b>Last Salary:</b> {$sal}\n";
+            }
             if ($lastCo !== 'N/A' && !empty($lastCo)) {
                 $html .= "🏢 <b>Last Co. & TL:</b> {$lastCo}\n";
             }

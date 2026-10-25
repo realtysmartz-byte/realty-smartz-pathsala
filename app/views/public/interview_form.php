@@ -342,6 +342,78 @@
             background-color: var(--danger-soft);
         }
 
+        /* Salary input group with ₹ prefix and Per Month / LPA selector */
+        .salary-group {
+            display: flex;
+            align-items: stretch;
+            width: 100%;
+            min-width: 195px;
+            height: 40px;
+            border: 1px solid var(--line);
+            border-radius: var(--r-sm);
+            background: #FFFFFF;
+            overflow: hidden;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .salary-group:focus-within {
+            border-color: var(--brand);
+            box-shadow: 0 0 0 2px rgba(31, 92, 74, 0.12);
+        }
+
+        .salary-symbol {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 10px;
+            background: var(--surface-2);
+            color: var(--brand);
+            font-weight: 700;
+            font-size: 14px;
+            border-right: 1px solid var(--line);
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .emp-table .salary-group input.salary-input {
+            flex: 1 1 auto;
+            min-width: 60px;
+            height: 100%;
+            border: none !important;
+            border-radius: 0 !important;
+            padding: 0 8px;
+            font-size: 13.5px;
+            box-shadow: none !important;
+            background: transparent;
+        }
+
+        .emp-table .salary-group input.salary-input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        .salary-period-select {
+            flex: 0 0 auto;
+            width: 102px;
+            height: 100%;
+            border: none;
+            border-left: 1px solid var(--line);
+            border-radius: 0;
+            background: var(--surface-2);
+            color: var(--text);
+            font-size: 12.5px;
+            font-weight: 600;
+            padding: 0 6px;
+            cursor: pointer;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .salary-period-select:focus {
+            background: #FFFFFF;
+            outline: none;
+        }
+
         /* Under 768px: Employment rows become stacked cards with NO horizontal scroll */
         @media (max-width: 767.98px) {
             .emp-table-wrapper {
@@ -387,6 +459,9 @@
                 font-size: 13.5px;
                 font-weight: 700;
                 color: var(--brand);
+            }
+            .salary-group {
+                min-width: 0;
             }
         }
 
@@ -624,7 +699,7 @@
                                 <tr>
                                     <th>Name of the Organisation (from current/last to first)</th>
                                     <th>Designation</th>
-                                    <th>Salary</th>
+                                    <th style="min-width: 195px;">Salary (₹)</th>
                                     <th>HR Name &amp; Number</th>
                                     <th>Duration</th>
                                     <th style="width: 44px;"></th>
@@ -651,8 +726,24 @@
                                         <input type="text" name="employment_rows[<?= $i ?>][designation]" placeholder="Designation" maxlength="255" value="<?= e($oldInput['employment_rows'][$i]['designation'] ?? '') ?>">
                                     </td>
                                     <td>
-                                        <span class="emp-card-field-label">Salary</span>
-                                        <input type="text" name="employment_rows[<?= $i ?>][salary]" placeholder="Salary" maxlength="100" value="<?= e($oldInput['employment_rows'][$i]['salary'] ?? '') ?>">
+                                        <span class="emp-card-field-label">Salary (₹)</span>
+                                        <?php 
+                                            $rawSalary = (string)($oldInput['employment_rows'][$i]['salary'] ?? '');
+                                            $salPeriod = (string)($oldInput['employment_rows'][$i]['salary_period'] ?? '');
+                                            if (empty($salPeriod)) {
+                                                $salPeriod = (stripos($rawSalary, 'lpa') !== false) ? 'LPA' : 'Per Month';
+                                            }
+                                            $salAmount = trim(preg_replace('/^(₹|\s)+/u', '', $rawSalary));
+                                            $salAmount = trim(preg_replace('/\s*(per month|\/ month|lpa|pa)\s*$/i', '', $salAmount));
+                                        ?>
+                                        <div class="salary-group">
+                                            <span class="salary-symbol">₹</span>
+                                            <input type="text" name="employment_rows[<?= $i ?>][salary]" class="salary-input" placeholder="e.g. 35,000 or 4.5" maxlength="50" value="<?= e($salAmount) ?>">
+                                            <select name="employment_rows[<?= $i ?>][salary_period]" class="salary-period-select" aria-label="Salary Period">
+                                                <option value="Per Month" <?= $salPeriod === 'Per Month' ? 'selected' : '' ?>>Per Month</option>
+                                                <option value="LPA" <?= $salPeriod === 'LPA' ? 'selected' : '' ?>>LPA</option>
+                                            </select>
+                                        </div>
                                     </td>
                                     <td>
                                         <span class="emp-card-field-label">HR Name &amp; Number</span>
@@ -869,6 +960,7 @@
                     if (rsn) rsn.value = '';
                     // Clear employment rows
                     document.querySelectorAll('#empTableBody input').forEach(inp => inp.value = '');
+                    document.querySelectorAll('#empTableBody select').forEach(sel => sel.value = 'Per Month');
                 }
             }
 
@@ -1129,8 +1221,15 @@
                     <input type="text" name="employment_rows[${nextIndex}][designation]" placeholder="Designation" maxlength="255">
                 </td>
                 <td>
-                    <span class="emp-card-field-label">Salary</span>
-                    <input type="text" name="employment_rows[${nextIndex}][salary]" placeholder="Salary" maxlength="100">
+                    <span class="emp-card-field-label">Salary (₹)</span>
+                    <div class="salary-group">
+                        <span class="salary-symbol">₹</span>
+                        <input type="text" name="employment_rows[${nextIndex}][salary]" class="salary-input" placeholder="e.g. 35,000 or 4.5" maxlength="50">
+                        <select name="employment_rows[${nextIndex}][salary_period]" class="salary-period-select" aria-label="Salary Period">
+                            <option value="Per Month">Per Month</option>
+                            <option value="LPA">LPA</option>
+                        </select>
+                    </div>
                 </td>
                 <td>
                     <span class="emp-card-field-label">HR Name &amp; Number</span>
@@ -1163,7 +1262,7 @@
                     r.setAttribute('data-index', idx);
                     const title = r.querySelector('.emp-row-title');
                     if (title) title.textContent = `Organisation #${idx + 1}`;
-                    r.querySelectorAll('input').forEach(inp => {
+                    r.querySelectorAll('input, select').forEach(inp => {
                         inp.name = inp.name.replace(/\[\d+\]/, `[${idx}]`);
                     });
                 });

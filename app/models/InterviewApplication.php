@@ -443,16 +443,6 @@ class InterviewApplication {
                 \App\Helpers\GoogleSheetsService::log("Google Sheets sync failed on interview updateField ({$id}): " . $e->getMessage());
             }
 
-            // Check automation emails if decision changed (asynchronously)
-            if ($field === 'decision') {
-                $fullApp = self::findById($id);
-                if ($value === 'selected') {
-                    self::sendAutomationEmailsAsync($id, 'selected', $fullApp);
-                } elseif ($value === 'rejected') {
-                    self::sendAutomationEmailsAsync($id, 'rejected', $fullApp);
-                }
-            }
-
             // Get admin name
             $adminUser = User::findById($adminId);
             $adminName = $adminUser['full_name'] ?? 'Admin';
@@ -462,6 +452,164 @@ class InterviewApplication {
                 'success'           => true,
                 'version'           => $newVersion,
                 'last_updated_text' => $lastUpdatedText
+            ];
+
+        } catch (\Throwable $e) {
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * Save all HR feedback fields at once, and dispatch candidate email when requested
+     */
+    public static function saveHrFeedback(int $id, array $data, int $adminId, bool $sendEmail = true): array {
+        $db = Database::getConnection();
+
+        // Fetch current record
+        $stmt = $db->prepare("SELECT ia.*, u.full_name as updated_by_name
+            FROM `interview_applications` ia
+            LEFT JOIN `users` u ON ia.updated_by = u.id
+            WHERE ia.id = :id LIMIT 1");
+        $stmt->execute([':id' => $id]);
+        $current = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$current) {
+            return ['success' => false, 'error' => 'Application record not found.'];
+        }
+
+        // Sanitize and normalize inputs
+        $rawDecision = strtolower(trim((string)($data['decision'] ?? 'pending')));
+        $decision = in_array($rawDecision, ['pending', 'selected', 'rejected'], true) ? $rawDecision : 'pending';
+
+        $rawInterested = strtolower(trim((string)($data['candidate_interested'] ?? '')));
+        $candidateInterested = in_array($rawInterested, ['yes', 'no'], true) ? $rawInterested : null;
+
+        $positionOffered = trim(strip_tags((string)($data['position_offered'] ?? '')));
+
+        $rawSalary = trim((string)($data['offered_salary'] ?? ''));
+        $cleanSalary = preg_replace('/[^\d.]/', '', $rawSalary);
+        $offeredSalary = is_numeric($cleanSalary) ? max(0.00, round((float)$cleanSalary, 2)) : null;
+
+        $rawJoiningDate = trim((string)($data['joining_date'] ?? ''));
+        $joiningDate = (!empty($rawJoiningDate) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $rawJoiningDate)) ? $rawJoiningDate : null;
+
+        $rejectionReason = trim(strip_tags((string)($data['rejection_reason'] ?? '')));
+        $sourceBy = trim(strip_tags((string)($data['source_by'] ?? '')));
+        $feedbackTlSm = trim(strip_tags((string)($data['feedback_tl_sm'] ?? '')));
+        $feedbackHr = trim(strip_tags((string)($data['feedback_hr'] ?? '')));
+        $feedbackFinal = trim(strip_tags((string)($data['feedback_final'] ?? '')));
+        $moduleDiscussed = trim(strip_tags((string)($data['module_discussed'] ?? '')));
+
+        $fieldsToUpdate = [
+            'decision'             => $decision,
+            'candidate_interested' => $candidateInterested,
+            'position_offered'     => $positionOffered,
+            'offered_salary'       => $offeredSalary,
+            'joining_date'         => $joiningDate,
+            'rejection_reason'     => $rejectionReason,
+            'source_by'            => $sourceBy,
+            'feedback_tl_sm'       => $feedbackTlSm,
+            'feedback_hr'          => $feedbackHr,
+            'feedback_final'       => $feedbackFinal,
+            'module_discussed'     => $moduleDiscussed,
+        ];
+
+        $newVersion = (int)$current['version'] + 1;
+
+        $db->beginTransaction();
+        try {
+            $setParts = [];
+            $params = [
+                ':id'      => $id,
+                ':aid'     => $adminId,
+                ':new_ver' => $newVersion,
+            ];
+
+            foreach ($fieldsToUpdate as $col => $val) {
+                $setParts[] = "`{$col}` = :{$col}";
+                $params[":{$col}"] = $val;
+
+                // Track changes in field versions table
+                $oldVal = $current[$col] ?? null;
+                if ((string)$oldVal !== (string)$val) {
+                    $stmtVer = $db->prepare("INSERT INTO `interview_field_versions` 
+                        (`application_id`, `field`, `value`, `updated_at`, `updated_by`)
+                        VALUES (:aid, :field, :val, NOW(), :admin_id)");
+                    $stmtVer->execute([
+                        ':aid'      => $id,
+                        ':field'    => $col,
+                        ':val'      => (string)($val ?? ''),
+                        ':admin_id' => $adminId
+                    ]);
+                }
+            }
+
+            $extraDecisionSql = "";
+            if ($decision !== 'pending' && ($current['decision'] !== $decision || empty($current['decision_at']))) {
+                $extraDecisionSql = ", `decision_at` = NOW(), `decision_by` = :dec_aid";
+                $params[':dec_aid'] = $adminId;
+            }
+
+            $sql = "UPDATE `interview_applications` SET 
+                " . implode(", ", $setParts) . ",
+                `version` = :new_ver,
+                `updated_by` = :aid,
+                `updated_at` = NOW()
+                {$extraDecisionSql}
+                WHERE `id` = :id";
+
+            $stmtUpd = $db->prepare($sql);
+            $stmtUpd->execute($params);
+
+            // Audit Log
+            AuditLog::log('interview_hr_feedback_saved', 'interview_applications', $id, null, [
+                'decision'   => $decision,
+                'version'    => $newVersion,
+                'send_email' => $sendEmail
+            ], $adminId);
+
+            $db->commit();
+
+            // Realtime Sync to Google Sheets
+            try {
+                \App\Helpers\GoogleSheetsService::syncInterviewApplicationAsync($id);
+            } catch (\Throwable $e) {
+                \App\Helpers\GoogleSheetsService::log("Google Sheets sync failed on saveHrFeedback ({$id}): " . $e->getMessage());
+            }
+
+            // Fetch refreshed application data
+            $updatedApp = self::findById($id);
+
+            // Dispatch automated email ONLY NOW after details are fully filled and saved!
+            $emailSent = false;
+            if ($sendEmail && in_array($decision, ['selected', 'rejected'], true)) {
+                try {
+                    self::sendAutomationEmails($id, $decision, $updatedApp, true /* force */);
+                    $emailSent = true;
+                } catch (\Throwable $e) {
+                    error_log("Failed sending {$decision} email to candidate {$id}: " . $e->getMessage());
+                }
+            }
+
+            $adminUser = User::findById($adminId);
+            $adminName = $adminUser['full_name'] ?? 'Admin';
+            $lastUpdatedText = "Last updated by " . e($adminName) . " on " . date('d M Y, h:i A');
+
+            $msg = 'HR details & feedback saved successfully.';
+            if ($emailSent) {
+                $msg .= ' Candidate has been notified via email.';
+            }
+
+            return [
+                'success'           => true,
+                'message'           => $msg,
+                'version'           => $newVersion,
+                'last_updated_text' => $lastUpdatedText,
+                'email_sent'        => $emailSent,
+                'app'               => $updatedApp
             ];
 
         } catch (\Throwable $e) {
@@ -581,13 +729,13 @@ class InterviewApplication {
     /**
      * Automated transactional email sender with 24-hour deduplication
      */
-    public static function sendAutomationEmails(int $applicationId, string $triggerType, array $appData): void {
+    public static function sendAutomationEmails(int $applicationId, string $triggerType, array $appData, bool $force = false): void {
         $db = Database::getConnection();
 
         // 1. New Form HR Alert
         if ($triggerType === 'new_form') {
             $enabled = (int) Setting::get('interview_email_hr_new_form', 1);
-            if (!$enabled) return;
+            if (!$enabled && !$force) return;
 
             $recipientsRaw = Setting::get('interview_email_hr_recipients', 'hr@realtysmartzpathshala.in');
             $recipients = array_filter(array_map('trim', explode(',', $recipientsRaw)));
@@ -650,14 +798,16 @@ HTML;
         // 2. Candidate Decision: Selected
         if ($triggerType === 'selected') {
             $enabled = (int) Setting::get('interview_email_candidate_selected', 0);
-            if (!$enabled) return;
+            if (!$enabled && !$force) return;
 
-            // 24-Hour Deduplication
-            $dupStmt = $db->prepare("SELECT COUNT(*) FROM `interview_email_log` 
-                WHERE `application_id` = :aid AND `type` = 'candidate_selected' AND `status` = 'sent' AND `created_at` >= DATE_SUB(NOW(), INTERVAL 24 HOUR)");
-            $dupStmt->execute([':aid' => $applicationId]);
-            if ((int)$dupStmt->fetchColumn() > 0) {
-                return;
+            // 24-Hour Deduplication (bypass if force)
+            if (!$force) {
+                $dupStmt = $db->prepare("SELECT COUNT(*) FROM `interview_email_log` 
+                    WHERE `application_id` = :aid AND `type` = 'candidate_selected' AND `status` = 'sent' AND `created_at` >= DATE_SUB(NOW(), INTERVAL 24 HOUR)");
+                $dupStmt->execute([':aid' => $applicationId]);
+                if ((int)$dupStmt->fetchColumn() > 0) {
+                    return;
+                }
             }
 
             $candidateEmail = $appData['email'] ?? '';
@@ -693,14 +843,16 @@ HTML;
         // 3. Candidate Decision: Rejected
         if ($triggerType === 'rejected') {
             $enabled = (int) Setting::get('interview_email_candidate_rejected', 0);
-            if (!$enabled) return;
+            if (!$enabled && !$force) return;
 
-            // 24-Hour Deduplication
-            $dupStmt = $db->prepare("SELECT COUNT(*) FROM `interview_email_log` 
-                WHERE `application_id` = :aid AND `type` = 'candidate_rejected' AND `status` = 'sent' AND `created_at` >= DATE_SUB(NOW(), INTERVAL 24 HOUR)");
-            $dupStmt->execute([':aid' => $applicationId]);
-            if ((int)$dupStmt->fetchColumn() > 0) {
-                return;
+            // 24-Hour Deduplication (bypass if force)
+            if (!$force) {
+                $dupStmt = $db->prepare("SELECT COUNT(*) FROM `interview_email_log` 
+                    WHERE `application_id` = :aid AND `type` = 'candidate_rejected' AND `status` = 'sent' AND `created_at` >= DATE_SUB(NOW(), INTERVAL 24 HOUR)");
+                $dupStmt->execute([':aid' => $applicationId]);
+                if ((int)$dupStmt->fetchColumn() > 0) {
+                    return;
+                }
             }
 
             $candidateEmail = $appData['email'] ?? '';

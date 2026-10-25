@@ -229,7 +229,26 @@ class InterviewController {
                 if (!is_array($r)) continue;
                 $org = trim(strip_tags((string)($r['organisation'] ?? '')));
                 $desig = trim(strip_tags((string)($r['designation'] ?? '')));
-                $sal = trim(strip_tags((string)($r['salary'] ?? '')));
+                
+                $rawSal = trim(strip_tags((string)($r['salary'] ?? $r['salary_amount'] ?? '')));
+                $salPeriod = trim(strip_tags((string)($r['salary_period'] ?? $r['salary_type'] ?? 'Per Month')));
+                if (!in_array($salPeriod, ['Per Month', 'LPA'], true)) {
+                    $salPeriod = 'Per Month';
+                }
+
+                $sal = '';
+                if (!empty($rawSal)) {
+                    $cleanAmount = preg_replace('/^(₹|\s)+/u', '', $rawSal);
+                    $cleanAmount = trim((string)$cleanAmount);
+                    if (preg_match('/\b(lpa|lac|lakh|per annum|pa)\b/i', $cleanAmount)) {
+                        $sal = '₹ ' . $cleanAmount;
+                    } elseif (preg_match('/\b(per month|month|\/mo|\/m|pm)\b/i', $cleanAmount)) {
+                        $sal = '₹ ' . $cleanAmount;
+                    } else {
+                        $sal = '₹ ' . $cleanAmount . ' ' . $salPeriod;
+                    }
+                }
+
                 $hrNum = trim(strip_tags((string)($r['hr_name_number'] ?? '')));
                 $dur = trim(strip_tags((string)($r['duration'] ?? '')));
 
@@ -507,6 +526,59 @@ class InterviewController {
         $viewTitle = "Interview Candidate Details";
 
         require APP_PATH . '/views/admin/interview/detail.php';
+    }
+
+    /**
+     * Save all HR feedback fields manually, and dispatch candidate email when requested
+     * (/admin/interview-candidates/{id}/save-feedback)
+     */
+    public function saveFeedback(int $id): void {
+        $user = auth();
+        if (!$user || !in_array($user['role'], ['super_admin', 'hr_manager', 'reviewer'], true)) {
+            if ($this->isJsonRequest()) {
+                response_json(['success' => false, 'error' => 'Unauthorized'], 401);
+                return;
+            }
+            redirect('/admin/login');
+            return;
+        }
+
+        if ($user['role'] === 'reviewer') {
+            if ($this->isJsonRequest()) {
+                response_json(['success' => false, 'error' => 'Reviewer accounts are read-only.'], 403);
+                return;
+            }
+            flash('error', 'Reviewer accounts are read-only.');
+            redirect('/admin/interview-candidates/' . $id);
+            return;
+        }
+
+        $input = $_POST;
+        if (empty($input) && $this->isJsonRequest()) {
+            $rawJson = file_get_contents('php://input');
+            $input = !empty($rawJson) ? (json_decode($rawJson, true) ?? []) : [];
+        }
+
+        $sendEmail = !empty($input['send_candidate_email']);
+        $res = InterviewApplication::saveHrFeedback($id, $input, (int)$user['id'], $sendEmail);
+
+        if ($this->isJsonRequest()) {
+            response_json($res, $res['success'] ? 200 : 422);
+            return;
+        }
+
+        if ($res['success']) {
+            flash('success', $res['message']);
+        } else {
+            flash('error', $res['error'] ?? 'Failed to save feedback.');
+        }
+        redirect('/admin/interview-candidates/' . $id);
+    }
+
+    private function isJsonRequest(): bool {
+        $header = $_SERVER['HTTP_ACCEPT'] ?? '';
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+        return (stripos($header, 'application/json') !== false || stripos($contentType, 'application/json') !== false);
     }
 
     /**
