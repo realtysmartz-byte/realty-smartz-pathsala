@@ -598,7 +598,28 @@
                     <input type="text" name="hp_field" tabindex="-1" autocomplete="off">
                 </div>
 
-                <!-- 1. HR Name (dropdown, required, fixed list from hr_names.php) -->
+                <!-- 1. Full Name (text, required) -->
+                <div class="field-group" id="group_full_name">
+                    <label for="full_name" class="field-label">Full Name <span class="req" aria-hidden="true">*</span></label>
+                    <input type="text" id="full_name" name="full_name" class="form-control" maxlength="100" required aria-required="true" value="<?= e($oldInput['full_name'] ?? '') ?>">
+                    <div class="field-error" id="err_full_name"><?= e($errors['full_name'] ?? 'Full Name is required.') ?></div>
+                </div>
+
+                <!-- 2. Contact Number (required, 10-digit Indian mobile starting 6-9, numeric keypad) -->
+                <div class="field-group" id="group_mobile">
+                    <label for="mobile" class="field-label">Contact Number <span class="req" aria-hidden="true">*</span></label>
+                    <input type="tel" id="mobile" name="mobile" class="form-control" inputmode="numeric" pattern="[6-9][0-9]{9}" maxlength="14" placeholder="10-digit mobile number" required aria-required="true" value="<?= e($oldInput['mobile'] ?? '') ?>">
+                    <div class="field-error" id="err_mobile"><?= e($errors['mobile'] ?? 'Valid 10-digit mobile number starting with 6-9 is required.') ?></div>
+                </div>
+
+                <!-- 3. Mail ID (email, required) -->
+                <div class="field-group" id="group_email">
+                    <label for="email" class="field-label">Mail ID <span class="req" aria-hidden="true">*</span></label>
+                    <input type="email" id="email" name="email" class="form-control" maxlength="255" required aria-required="true" value="<?= e($oldInput['email'] ?? '') ?>">
+                    <div class="field-error" id="err_email"><?= e($errors['email'] ?? 'A valid Mail ID is required.') ?></div>
+                </div>
+
+                <!-- 4. HR Name (dropdown, required, fixed list from hr_names.php) -->
                 <div class="field-group" id="group_hr_name">
                     <label for="hr_name" class="field-label">HR Name <span class="req" aria-hidden="true">*</span></label>
                     <select id="hr_name" name="hr_name" class="form-control" required aria-required="true">
@@ -610,14 +631,14 @@
                     <div class="field-error" id="err_hr_name"><?= e($errors['hr_name'] ?? 'Please select an HR Name.') ?></div>
                 </div>
 
-                <!-- 2. Post Applied For (text, required) -->
+                <!-- 5. Post Applied For (text, required) -->
                 <div class="field-group" id="group_post_applied">
                     <label for="post_applied" class="field-label">Post Applied For <span class="req" aria-hidden="true">*</span></label>
                     <input type="text" id="post_applied" name="post_applied" class="form-control" maxlength="255" required aria-required="true" value="<?= e($oldInput['post_applied'] ?? '') ?>">
                     <div class="field-error" id="err_post_applied"><?= e($errors['post_applied'] ?? 'Post Applied For is required.') ?></div>
                 </div>
 
-                <!-- 3. Experience / Fresher (RADIO group, required) -->
+                <!-- 6. Experience / Fresher (RADIO group, required) -->
                 <div class="field-group" id="group_experience_type">
                     <fieldset class="radio-fieldset" aria-required="true">
                         <legend class="field-label">Experience / Fresher <span class="req" aria-hidden="true">*</span></legend>
@@ -637,14 +658,14 @@
                     <div class="field-error" id="err_experience_type"><?= e($errors['experience_type'] ?? 'Please select Experience or Fresher.') ?></div>
                 </div>
 
-                <!-- 3a. Years in Real Estate (number, step 0.5, min 0; shown and required only when Experience is selected) -->
+                <!-- 6a. Years in Real Estate (number, step 0.5, min 0; shown and required only when Experience is selected) -->
                 <div class="field-group" id="group_years_in_real_estate" style="display: none;">
                     <label for="years_in_real_estate" class="field-label">Years in Real Estate <span class="req" aria-hidden="true">*</span></label>
                     <input type="number" id="years_in_real_estate" name="years_in_real_estate" class="form-control" step="0.5" min="0" placeholder="e.g. 2.5" value="<?= e($oldInput['years_in_real_estate'] ?? '') ?>">
                     <div class="field-error" id="err_years_in_real_estate"><?= e($errors['years_in_real_estate'] ?? 'Years in Real Estate is required (min 0).') ?></div>
                 </div>
 
-                <!-- 3b. Employment history (only when Experience is selected; Company Name mandatory) -->
+                <!-- 6b. Employment history (only when Experience is selected; Company Name mandatory) -->
                 <div class="field-group" id="group_employment_history" style="display: none;">
                     <label class="field-label">Employment history <span class="req" aria-hidden="true">*</span></label>
                     <div class="emp-table-wrapper">
@@ -724,27 +745,6 @@
                         <span>Add row</span>
                     </button>
                     <div class="field-error" id="err_employment_history"><?= e($errors['employment_history'] ?? 'Company / Organisation name is mandatory when Experience is selected.') ?></div>
-                </div>
-
-                <!-- 4. Full Name (text, required) -->
-                <div class="field-group" id="group_full_name">
-                    <label for="full_name" class="field-label">Full Name <span class="req" aria-hidden="true">*</span></label>
-                    <input type="text" id="full_name" name="full_name" class="form-control" maxlength="100" required aria-required="true" value="<?= e($oldInput['full_name'] ?? '') ?>">
-                    <div class="field-error" id="err_full_name"><?= e($errors['full_name'] ?? 'Full Name is required.') ?></div>
-                </div>
-
-                <!-- 5. Mail ID (email, required) -->
-                <div class="field-group" id="group_email">
-                    <label for="email" class="field-label">Mail ID <span class="req" aria-hidden="true">*</span></label>
-                    <input type="email" id="email" name="email" class="form-control" maxlength="255" required aria-required="true" value="<?= e($oldInput['email'] ?? '') ?>">
-                    <div class="field-error" id="err_email"><?= e($errors['email'] ?? 'A valid Mail ID is required.') ?></div>
-                </div>
-
-                <!-- 6. Contact Number (required, 10-digit Indian mobile starting 6-9, numeric keypad) -->
-                <div class="field-group" id="group_mobile">
-                    <label for="mobile" class="field-label">Contact Number <span class="req" aria-hidden="true">*</span></label>
-                    <input type="tel" id="mobile" name="mobile" class="form-control" inputmode="numeric" pattern="[6-9][0-9]{9}" maxlength="14" placeholder="10-digit mobile number" required aria-required="true" value="<?= e($oldInput['mobile'] ?? '') ?>">
-                    <div class="field-error" id="err_mobile"><?= e($errors['mobile'] ?? 'Valid 10-digit mobile number starting with 6-9 is required.') ?></div>
                 </div>
 
                 <!-- 7. Have you applied for: Commercial or Residential (Radio group, required) -->
@@ -1074,21 +1074,30 @@
                 let firstInvalid = null;
                 let isFormValid = true;
 
-                // 1. Validate HR Name
+                // 1. Validate Full Name, Contact Number, Email
+                ['full_name', 'mobile', 'email'].forEach(name => {
+                    const inp = document.getElementById(name);
+                    if (!validateField(inp)) {
+                        isFormValid = false;
+                        if (!firstInvalid) firstInvalid = inp;
+                    }
+                });
+
+                // 2. Validate HR Name
                 const hrSelect = document.getElementById('hr_name');
                 if (!validateField(hrSelect)) {
                     isFormValid = false;
                     if (!firstInvalid) firstInvalid = hrSelect;
                 }
 
-                // 2. Validate Post Applied For
+                // 3. Validate Post Applied For
                 const postInp = document.getElementById('post_applied');
                 if (!validateField(postInp)) {
                     isFormValid = false;
                     if (!firstInvalid) firstInvalid = postInp;
                 }
 
-                // 3. Validate Experience / Fresher radio
+                // 4. Validate Experience / Fresher radio
                 const expChecked = form.querySelector('input[name="experience_type"]:checked');
                 const errExp = document.getElementById('err_experience_type');
                 if (!expChecked) {
@@ -1121,15 +1130,6 @@
                         }
                     }
                 }
-
-                // 4. Validate Full Name, Email, Contact Number
-                ['full_name', 'email', 'mobile'].forEach(name => {
-                    const inp = document.getElementById(name);
-                    if (!validateField(inp)) {
-                        isFormValid = false;
-                        if (!firstInvalid) firstInvalid = inp;
-                    }
-                });
 
                 // 5. Validate Applied For Segment (Commercial / Residential)
                 const appliedTypeChecked = form.querySelector('input[name="applied_for_type"]:checked');
