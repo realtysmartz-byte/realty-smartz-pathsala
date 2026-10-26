@@ -265,9 +265,9 @@ class InterviewController {
                 if ($sortOrder > 6) break;
             }
 
-            // At least the first row is required when Experience
-            if (empty($employmentRows) || empty($employmentRows[0]['organisation']) || empty($employmentRows[0]['designation'])) {
-                $errors['employment_history'] = "Please provide at least your current or last organisation in Employment history.";
+            // Company / Organisation name is strictly mandatory when Experience is selected
+            if (empty($employmentRows) || empty($employmentRows[0]['organisation'])) {
+                $errors['employment_history'] = "Company / Organisation name is mandatory when Experience is selected.";
             }
         }
 
@@ -831,7 +831,7 @@ class InterviewController {
         }
 
         if ($format === 'svg') {
-            $svg = QrCodeHelper::getSvg($targetUrl, 6, 4, '#1F5C4A');
+            $svg = QrCodeHelper::getSvg($targetUrl);
             header('Content-Type: image/svg+xml');
             header('Content-Disposition: attachment; filename="Realty_Smartz_Interview_Form_QR.svg"');
             header('Content-Length: ' . strlen($svg));
@@ -840,7 +840,7 @@ class InterviewController {
         }
 
         // High resolution PNG with solid white background and 4-module quiet zone (scannable by all devices)
-        $png = QrCodeHelper::getPng($targetUrl, 16, 4, '#1F5C4A');
+        $png = QrCodeHelper::getPng($targetUrl);
         header('Content-Type: image/png');
         header('Content-Disposition: attachment; filename="Realty_Smartz_Interview_Form_QR.png"');
         header('Content-Length: ' . strlen($png));

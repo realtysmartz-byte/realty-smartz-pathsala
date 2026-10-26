@@ -189,6 +189,7 @@ class TelegramService {
         $html .= "📋 <b>Ref ID:</b> <code>{$ref}</code>\n";
         $html .= "👤 <b>Candidate Name:</b> <b>{$name}</b>\n";
         $html .= "💼 <b>Post Applied For:</b> {$post}\n";
+        $html .= "⏳ <b>Experience Status:</b> <b>{$expType}</b>{$yearsExp}\n";
         $html .= "🏬 <b>Applied Segment:</b> <b>{$segment}</b>\n";
         $html .= "📞 <b>Mobile:</b> <code>{$mobile}</code>\n";
         $html .= "✉️ <b>Email:</b> {$email}\n";
@@ -196,15 +197,24 @@ class TelegramService {
         $html .= "🎓 <b>Education:</b> {$education}\n";
         $html .= "📍 <b>Location:</b> {$location}\n";
         $html .= "🚗 <b>Vehicle:</b> {$vehicle}\n";
-        $html .= "⏳ <b>Experience:</b> {$expType}{$yearsExp}\n";
 
         if (strtolower($app['experience_type'] ?? '') === 'experience') {
+            $companyName = !empty($app['employment_rows'][0]['organisation']) ? $esc($app['employment_rows'][0]['organisation']) : ($lastCo !== 'N/A' ? $lastCo : '');
+            if (!empty($companyName)) {
+                $html .= "🏢 <b>Company Name:</b> <b>{$companyName}</b>\n";
+            }
+            if (!empty($app['employment_rows'][0]['designation'])) {
+                $html .= "🏷️ <b>Designation:</b> " . $esc($app['employment_rows'][0]['designation']) . "\n";
+            }
             if (!empty($app['employment_rows'][0]['salary'])) {
                 $sal = $esc($app['employment_rows'][0]['salary']);
                 $html .= "💰 <b>Last Salary:</b> {$sal}\n";
             }
-            if ($lastCo !== 'N/A' && !empty($lastCo)) {
-                $html .= "🏢 <b>Last Co. & TL:</b> {$lastCo}\n";
+            if (!empty($app['employment_rows'][0]['duration'])) {
+                $html .= "⏱️ <b>Duration:</b> " . $esc($app['employment_rows'][0]['duration']) . "\n";
+            }
+            if ($lastCo !== 'N/A' && !empty($lastCo) && $lastCo !== $companyName) {
+                $html .= "👥 <b>Last Co. HR & TL:</b> {$lastCo}\n";
             }
             if ($leaveReason !== 'N/A' && !empty($leaveReason)) {
                 $html .= "🚪 <b>Reason to Leave:</b> {$leaveReason}\n";

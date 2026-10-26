@@ -739,6 +739,10 @@ class AdminController {
         $stmtCheckP->execute([':uid' => $id]);
         $hasProfile = $stmtCheckP->fetch();
 
+        $emgName = trim($_POST['emergency_name'] ?? ($_POST['emergency_contact_name'] ?? ''));
+        $emgRel = trim($_POST['emergency_rel'] ?? ($_POST['emergency_relationship'] ?? ''));
+        $emgPhone = trim($_POST['emergency_phone'] ?? ($_POST['emergency_mobile'] ?? ''));
+
         if ($hasProfile) {
             $stmtUpdProf = $db->prepare("UPDATE `profiles` SET
                 `father_name` = :fatname,
@@ -747,6 +751,8 @@ class AdminController {
                 `dob` = :dob,
                 `gender` = :gender,
                 `address` = :addr,
+                `current_address` = :addr2,
+                `permanent_address` = :addr3,
                 `city` = :city,
                 `state` = :state,
                 `pincode` = :pin,
@@ -759,6 +765,8 @@ class AdminController {
                 ':dob' => $dob,
                 ':gender' => $gender,
                 ':addr' => $address ?: null,
+                ':addr2' => $address ?: null,
+                ':addr3' => $address ?: null,
                 ':city' => $city ?: null,
                 ':state' => $state ?: null,
                 ':pin' => $pincode ?: null,
@@ -766,8 +774,8 @@ class AdminController {
             ]);
         } else {
             $stmtInsProf = $db->prepare("INSERT INTO `profiles`
-                (`user_id`, `father_name`, `whatsapp`, `joining_date`, `dob`, `gender`, `address`, `city`, `state`, `pincode`, `completion_percentage`, `created_at`)
-                VALUES (:uid, :fatname, :wa, :jdate, :dob, :gender, :addr, :city, :state, :pin, 50, NOW())");
+                (`user_id`, `father_name`, `whatsapp`, `joining_date`, `dob`, `gender`, `address`, `current_address`, `permanent_address`, `city`, `state`, `pincode`, `completion_percentage`, `created_at`)
+                VALUES (:uid, :fatname, :wa, :jdate, :dob, :gender, :addr, :addr2, :addr3, :city, :state, :pin, 50, NOW())");
             $stmtInsProf->execute([
                 ':uid' => $id,
                 ':fatname' => $fatherName ?: null,
@@ -776,9 +784,32 @@ class AdminController {
                 ':dob' => $dob,
                 ':gender' => $gender,
                 ':addr' => $address ?: null,
+                ':addr2' => $address ?: null,
+                ':addr3' => $address ?: null,
                 ':city' => $city ?: null,
                 ':state' => $state ?: null,
                 ':pin' => $pincode ?: null
+            ]);
+        }
+
+        // Sync emergency contact if provided
+        if (!empty($emgName) || !empty($emgPhone)) {
+            $stmtEmg = $db->prepare("INSERT INTO `emergency_contacts` 
+                (`user_id`, `contact_name`, `relationship`, `mobile`, `created_at`, `updated_at`)
+                VALUES (:uid, :cname, :crel, :cmob, NOW(), NOW())
+                ON DUPLICATE KEY UPDATE 
+                `contact_name` = :cname2,
+                `relationship` = :crel2,
+                `mobile` = :cmob2,
+                `updated_at` = NOW()");
+            $stmtEmg->execute([
+                ':uid' => $id,
+                ':cname' => $emgName,
+                ':crel' => $emgRel ?: 'Contact',
+                ':cmob' => $emgPhone,
+                ':cname2' => $emgName,
+                ':crel2' => $emgRel ?: 'Contact',
+                ':cmob2' => $emgPhone
             ]);
         }
 
@@ -800,7 +831,16 @@ class AdminController {
                     'mobile' => $mobile,
                     'whatsapp' => $whatsapp,
                     'joining_date' => $joiningDate,
-                    'joining_date_formatted' => $joiningDate ? date('d M Y', strtotime($joiningDate)) : 'Not set'
+                    'joining_date_formatted' => $joiningDate ? date('d M Y', strtotime($joiningDate)) : 'Not set',
+                    'dob' => $dob,
+                    'gender' => $gender,
+                    'address' => $address,
+                    'city' => $city,
+                    'state' => $state,
+                    'pincode' => $pincode,
+                    'emergency_name' => $emgName,
+                    'emergency_rel' => $emgRel,
+                    'emergency_phone' => $emgPhone
                 ]
             ]);
             return;
@@ -1599,9 +1639,9 @@ class AdminController {
         $interviewQr = \App\Models\InterviewApplication::getQrSettings();
         $interviewUrl = \App\Helpers\QrCodeHelper::getBaseUrl() . '/interview-candidate';
 
-        $onboardingSvg = \App\Helpers\QrCodeHelper::getSvg($onboardingUrl, 6, 4, '#1F5C4A');
-        $aptitudeSvg = \App\Helpers\QrCodeHelper::getSvg($aptitudeUrl, 6, 4, '#1F5C4A');
-        $interviewSvg = \App\Helpers\QrCodeHelper::getSvg($interviewUrl, 6, 4, '#1F5C4A');
+        $onboardingSvg = \App\Helpers\QrCodeHelper::getSvg($onboardingUrl);
+        $aptitudeSvg = \App\Helpers\QrCodeHelper::getSvg($aptitudeUrl);
+        $interviewSvg = \App\Helpers\QrCodeHelper::getSvg($interviewUrl);
 
         $viewTitle = "QR Codes";
         $pageTitle = "QR Code Management | Realty Smartz Pathshala";
@@ -1621,13 +1661,30 @@ class AdminController {
             return;
         }
 
-        $targetUrl = ($type === 'aptitude') 
+        $isSvg = str_ends_with($type, '-svg');
+        $baseType = $isSvg ? str_replace('-svg', '', $type) : $type;
+
+        $targetUrl = ($baseType === 'aptitude') 
             ? \App\Helpers\QrCodeHelper::getAptitudeUrl() 
             : \App\Helpers\QrCodeHelper::getOnboardingUrl();
 
-        $filename = ($type === 'aptitude') ? 'Realty_Smartz_Aptitude_QR.png' : 'Realty_Smartz_Onboarding_QR.png';
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
 
-        $pngData = \App\Helpers\QrCodeHelper::getPng($targetUrl, 16, 4, '#1F5C4A');
+        if ($isSvg) {
+            $filename = ($baseType === 'aptitude') ? 'Realty_Smartz_Aptitude_QR.svg' : 'Realty_Smartz_Onboarding_QR.svg';
+            $svgData = \App\Helpers\QrCodeHelper::getSvg($targetUrl);
+            header('Content-Type: image/svg+xml');
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+            header('Content-Length: ' . strlen($svgData));
+            header('Cache-Control: public, max-age=86400');
+            echo $svgData;
+            exit;
+        }
+
+        $filename = ($baseType === 'aptitude') ? 'Realty_Smartz_Aptitude_QR.png' : 'Realty_Smartz_Onboarding_QR.png';
+        $pngData = \App\Helpers\QrCodeHelper::getPng($targetUrl);
 
         while (ob_get_level()) {
             ob_end_clean();

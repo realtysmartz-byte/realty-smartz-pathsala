@@ -617,53 +617,7 @@
                     <div class="field-error" id="err_post_applied"><?= e($errors['post_applied'] ?? 'Post Applied For is required.') ?></div>
                 </div>
 
-                <!-- 2b. Have you applied for: Commercial or Residential (Radio group, required) -->
-                <div class="field-group" id="group_applied_for_type">
-                    <fieldset class="radio-fieldset" aria-required="true">
-                        <legend class="field-label">Have you applied for <span class="req" aria-hidden="true">*</span></legend>
-                        <div class="radio-pills">
-                            <label class="radio-pill-label">
-                                <input type="radio" name="applied_for_type" value="Commercial" <?= (!isset($oldInput['applied_for_type']) || strtolower($oldInput['applied_for_type']) === 'commercial') ? 'checked' : '' ?> required>
-                                <span class="radio-dot" aria-hidden="true"></span>
-                                <span>Commercial</span>
-                            </label>
-                            <label class="radio-pill-label">
-                                <input type="radio" name="applied_for_type" value="Residential" <?= (isset($oldInput['applied_for_type']) && strtolower($oldInput['applied_for_type']) === 'residential') ? 'checked' : '' ?> required>
-                                <span class="radio-dot" aria-hidden="true"></span>
-                                <span>Residential</span>
-                            </label>
-                            <label class="radio-pill-label">
-                                <input type="radio" name="applied_for_type" value="Both" <?= (isset($oldInput['applied_for_type']) && strtolower($oldInput['applied_for_type']) === 'both') ? 'checked' : '' ?> required>
-                                <span class="radio-dot" aria-hidden="true"></span>
-                                <span>Both</span>
-                            </label>
-                        </div>
-                    </fieldset>
-                    <div class="field-error" id="err_applied_for_type"><?= e($errors['applied_for_type'] ?? 'Please select Commercial or Residential.') ?></div>
-                </div>
-
-                <!-- 3. Full Name (text, required) -->
-                <div class="field-group" id="group_full_name">
-                    <label for="full_name" class="field-label">Full Name <span class="req" aria-hidden="true">*</span></label>
-                    <input type="text" id="full_name" name="full_name" class="form-control" maxlength="100" required aria-required="true" value="<?= e($oldInput['full_name'] ?? '') ?>">
-                    <div class="field-error" id="err_full_name"><?= e($errors['full_name'] ?? 'Full Name is required.') ?></div>
-                </div>
-
-                <!-- 4. Mail ID (email, required) -->
-                <div class="field-group" id="group_email">
-                    <label for="email" class="field-label">Mail ID <span class="req" aria-hidden="true">*</span></label>
-                    <input type="email" id="email" name="email" class="form-control" maxlength="255" required aria-required="true" value="<?= e($oldInput['email'] ?? '') ?>">
-                    <div class="field-error" id="err_email"><?= e($errors['email'] ?? 'A valid Mail ID is required.') ?></div>
-                </div>
-
-                <!-- 5. Contact Number (required, 10-digit Indian mobile starting 6-9, numeric keypad) -->
-                <div class="field-group" id="group_mobile">
-                    <label for="mobile" class="field-label">Contact Number <span class="req" aria-hidden="true">*</span></label>
-                    <input type="tel" id="mobile" name="mobile" class="form-control" inputmode="numeric" pattern="[6-9][0-9]{9}" maxlength="14" placeholder="10-digit mobile number" required aria-required="true" value="<?= e($oldInput['mobile'] ?? '') ?>">
-                    <div class="field-error" id="err_mobile"><?= e($errors['mobile'] ?? 'Valid 10-digit mobile number starting with 6-9 is required.') ?></div>
-                </div>
-
-                <!-- 6. Experience / Fresher (RADIO group, required) -->
+                <!-- 3. Experience / Fresher (RADIO group, required) -->
                 <div class="field-group" id="group_experience_type">
                     <fieldset class="radio-fieldset" aria-required="true">
                         <legend class="field-label">Experience / Fresher <span class="req" aria-hidden="true">*</span></legend>
@@ -683,21 +637,21 @@
                     <div class="field-error" id="err_experience_type"><?= e($errors['experience_type'] ?? 'Please select Experience or Fresher.') ?></div>
                 </div>
 
-                <!-- 7. Years in Real Estate (number, step 0.5, min 0; shown and required only when Experience is selected) -->
+                <!-- 3a. Years in Real Estate (number, step 0.5, min 0; shown and required only when Experience is selected) -->
                 <div class="field-group" id="group_years_in_real_estate" style="display: none;">
                     <label for="years_in_real_estate" class="field-label">Years in Real Estate <span class="req" aria-hidden="true">*</span></label>
                     <input type="number" id="years_in_real_estate" name="years_in_real_estate" class="form-control" step="0.5" min="0" placeholder="e.g. 2.5" value="<?= e($oldInput['years_in_real_estate'] ?? '') ?>">
                     <div class="field-error" id="err_years_in_real_estate"><?= e($errors['years_in_real_estate'] ?? 'Years in Real Estate is required (min 0).') ?></div>
                 </div>
 
-                <!-- 8. Employment history (only when Experience is selected) -->
+                <!-- 3b. Employment history (only when Experience is selected; Company Name mandatory) -->
                 <div class="field-group" id="group_employment_history" style="display: none;">
                     <label class="field-label">Employment history <span class="req" aria-hidden="true">*</span></label>
                     <div class="emp-table-wrapper">
                         <table class="emp-table" id="empTable" aria-label="Employment history">
                             <thead>
                                 <tr>
-                                    <th>Name of the Organisation (from current/last to first)</th>
+                                    <th>Company / Organisation Name <span class="req" aria-hidden="true">*</span></th>
                                     <th>Designation</th>
                                     <th style="min-width: 195px;">Salary (₹)</th>
                                     <th>HR Name &amp; Number</th>
@@ -718,8 +672,8 @@
                                                 </button>
                                             <?php endif; ?>
                                         </div>
-                                        <span class="emp-card-field-label">Name of the Organisation</span>
-                                        <input type="text" name="employment_rows[<?= $i ?>][organisation]" placeholder="Organisation name" maxlength="255" value="<?= e($oldInput['employment_rows'][$i]['organisation'] ?? '') ?>">
+                                        <span class="emp-card-field-label">Company / Organisation Name <?= ($i === 0) ? '<span class="req">*</span>' : '' ?></span>
+                                        <input type="text" name="employment_rows[<?= $i ?>][organisation]" id="emp_org_<?= $i ?>" placeholder="e.g. ABC Realtech Pvt Ltd" maxlength="255" value="<?= e($oldInput['employment_rows'][$i]['organisation'] ?? '') ?>" <?= ($i === 0) ? 'data-required="true"' : '' ?>>
                                     </td>
                                     <td>
                                         <span class="emp-card-field-label">Designation</span>
@@ -769,7 +723,53 @@
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                         <span>Add row</span>
                     </button>
-                    <div class="field-error" id="err_employment_history"><?= e($errors['employment_history'] ?? 'Please fill at least the first organisation row.') ?></div>
+                    <div class="field-error" id="err_employment_history"><?= e($errors['employment_history'] ?? 'Company / Organisation name is mandatory when Experience is selected.') ?></div>
+                </div>
+
+                <!-- 4. Full Name (text, required) -->
+                <div class="field-group" id="group_full_name">
+                    <label for="full_name" class="field-label">Full Name <span class="req" aria-hidden="true">*</span></label>
+                    <input type="text" id="full_name" name="full_name" class="form-control" maxlength="100" required aria-required="true" value="<?= e($oldInput['full_name'] ?? '') ?>">
+                    <div class="field-error" id="err_full_name"><?= e($errors['full_name'] ?? 'Full Name is required.') ?></div>
+                </div>
+
+                <!-- 5. Mail ID (email, required) -->
+                <div class="field-group" id="group_email">
+                    <label for="email" class="field-label">Mail ID <span class="req" aria-hidden="true">*</span></label>
+                    <input type="email" id="email" name="email" class="form-control" maxlength="255" required aria-required="true" value="<?= e($oldInput['email'] ?? '') ?>">
+                    <div class="field-error" id="err_email"><?= e($errors['email'] ?? 'A valid Mail ID is required.') ?></div>
+                </div>
+
+                <!-- 6. Contact Number (required, 10-digit Indian mobile starting 6-9, numeric keypad) -->
+                <div class="field-group" id="group_mobile">
+                    <label for="mobile" class="field-label">Contact Number <span class="req" aria-hidden="true">*</span></label>
+                    <input type="tel" id="mobile" name="mobile" class="form-control" inputmode="numeric" pattern="[6-9][0-9]{9}" maxlength="14" placeholder="10-digit mobile number" required aria-required="true" value="<?= e($oldInput['mobile'] ?? '') ?>">
+                    <div class="field-error" id="err_mobile"><?= e($errors['mobile'] ?? 'Valid 10-digit mobile number starting with 6-9 is required.') ?></div>
+                </div>
+
+                <!-- 7. Have you applied for: Commercial or Residential (Radio group, required) -->
+                <div class="field-group" id="group_applied_for_type">
+                    <fieldset class="radio-fieldset" aria-required="true">
+                        <legend class="field-label">Have you applied for <span class="req" aria-hidden="true">*</span></legend>
+                        <div class="radio-pills">
+                            <label class="radio-pill-label">
+                                <input type="radio" name="applied_for_type" value="Commercial" <?= (!isset($oldInput['applied_for_type']) || strtolower($oldInput['applied_for_type']) === 'commercial') ? 'checked' : '' ?> required>
+                                <span class="radio-dot" aria-hidden="true"></span>
+                                <span>Commercial</span>
+                            </label>
+                            <label class="radio-pill-label">
+                                <input type="radio" name="applied_for_type" value="Residential" <?= (isset($oldInput['applied_for_type']) && strtolower($oldInput['applied_for_type']) === 'residential') ? 'checked' : '' ?> required>
+                                <span class="radio-dot" aria-hidden="true"></span>
+                                <span>Residential</span>
+                            </label>
+                            <label class="radio-pill-label">
+                                <input type="radio" name="applied_for_type" value="Both" <?= (isset($oldInput['applied_for_type']) && strtolower($oldInput['applied_for_type']) === 'both') ? 'checked' : '' ?> required>
+                                <span class="radio-dot" aria-hidden="true"></span>
+                                <span>Both</span>
+                            </label>
+                        </div>
+                    </fieldset>
+                    <div class="field-error" id="err_applied_for_type"><?= e($errors['applied_for_type'] ?? 'Please select Commercial or Residential.') ?></div>
                 </div>
 
                 <!-- 9. Vehicle Available: RADIO, required: "Yes", "No" -->
@@ -959,8 +959,13 @@
                     const rsn = document.getElementById('reason_to_leave');
                     if (rsn) rsn.value = '';
                     // Clear employment rows
-                    document.querySelectorAll('#empTableBody input').forEach(inp => inp.value = '');
+                    document.querySelectorAll('#empTableBody input').forEach(inp => {
+                        inp.value = '';
+                        inp.classList.remove('is-invalid');
+                    });
                     document.querySelectorAll('#empTableBody select').forEach(sel => sel.value = 'Per Month');
+                    const errEmp = document.getElementById('err_employment_history');
+                    if (errEmp) errEmp.classList.remove('show');
                 }
             }
 
@@ -1013,7 +1018,10 @@
 
             function validateField(el) {
                 const id = el.id || el.name;
-                const errDiv = document.getElementById('err_' + id);
+                let errDiv = document.getElementById('err_' + id);
+                if (el.name === 'employment_rows[0][organisation]') {
+                    errDiv = document.getElementById('err_employment_history');
+                }
                 let valid = true;
                 let message = '';
 
@@ -1021,6 +1029,9 @@
                     if (!el.value) { valid = false; message = 'Please select an HR Name.'; }
                 } else if (el.name === 'post_applied') {
                     if (!el.value.trim()) { valid = false; message = 'Post Applied For is required.'; }
+                } else if (el.name === 'employment_rows[0][organisation]') {
+                    const isExp = form.querySelector('input[name="experience_type"]:checked')?.value === 'experience';
+                    if (isExp && !el.value.trim()) { valid = false; message = 'Company / Organisation name is mandatory when Experience is selected.'; }
                 } else if (el.name === 'full_name') {
                     if (!el.value.trim()) { valid = false; message = 'Full Name is required.'; }
                 } else if (el.name === 'email') {
@@ -1063,34 +1074,21 @@
                 let firstInvalid = null;
                 let isFormValid = true;
 
-                // Validate HR Name
+                // 1. Validate HR Name
                 const hrSelect = document.getElementById('hr_name');
                 if (!validateField(hrSelect)) {
                     isFormValid = false;
                     if (!firstInvalid) firstInvalid = hrSelect;
                 }
 
-                // Validate text fields
-                ['post_applied', 'full_name', 'email', 'mobile'].forEach(name => {
-                    const inp = document.getElementById(name);
-                    if (!validateField(inp)) {
-                        isFormValid = false;
-                        if (!firstInvalid) firstInvalid = inp;
-                    }
-                });
-
-                // Validate Applied For Segment
-                const appliedTypeChecked = form.querySelector('input[name="applied_for_type"]:checked');
-                const errAppliedType = document.getElementById('err_applied_for_type');
-                if (!appliedTypeChecked) {
+                // 2. Validate Post Applied For
+                const postInp = document.getElementById('post_applied');
+                if (!validateField(postInp)) {
                     isFormValid = false;
-                    errAppliedType.classList.add('show');
-                    if (!firstInvalid) firstInvalid = document.getElementById('group_applied_for_type');
-                } else {
-                    errAppliedType.classList.remove('show');
+                    if (!firstInvalid) firstInvalid = postInp;
                 }
 
-                // Validate Experience radio
+                // 3. Validate Experience / Fresher radio
                 const expChecked = form.querySelector('input[name="experience_type"]:checked');
                 const errExp = document.getElementById('err_experience_type');
                 if (!expChecked) {
@@ -1106,21 +1104,45 @@
                             if (!firstInvalid) firstInvalid = yearsInp;
                         }
 
-                        // Validate employment first row
+                        // Validate Company / Organisation Name (Mandatory for experienced candidates)
                         const firstOrg = document.querySelector('input[name="employment_rows[0][organisation]"]');
-                        const firstDesig = document.querySelector('input[name="employment_rows[0][designation]"]');
                         const errEmp = document.getElementById('err_employment_history');
-                        if (!firstOrg?.value.trim() || !firstDesig?.value.trim()) {
+                        if (!firstOrg || !firstOrg.value.trim()) {
                             isFormValid = false;
-                            errEmp.classList.add('show');
+                            if (errEmp) {
+                                errEmp.textContent = 'Company / Organisation name is mandatory when Experience is selected.';
+                                errEmp.classList.add('show');
+                            }
+                            if (firstOrg) firstOrg.classList.add('is-invalid');
                             if (!firstInvalid) firstInvalid = firstOrg || document.getElementById('group_employment_history');
                         } else {
-                            errEmp.classList.remove('show');
+                            if (errEmp) errEmp.classList.remove('show');
+                            if (firstOrg) firstOrg.classList.remove('is-invalid');
                         }
                     }
                 }
 
-                // Validate Vehicle Available
+                // 4. Validate Full Name, Email, Contact Number
+                ['full_name', 'email', 'mobile'].forEach(name => {
+                    const inp = document.getElementById(name);
+                    if (!validateField(inp)) {
+                        isFormValid = false;
+                        if (!firstInvalid) firstInvalid = inp;
+                    }
+                });
+
+                // 5. Validate Applied For Segment (Commercial / Residential)
+                const appliedTypeChecked = form.querySelector('input[name="applied_for_type"]:checked');
+                const errAppliedType = document.getElementById('err_applied_for_type');
+                if (!appliedTypeChecked) {
+                    isFormValid = false;
+                    errAppliedType.classList.add('show');
+                    if (!firstInvalid) firstInvalid = document.getElementById('group_applied_for_type');
+                } else {
+                    errAppliedType.classList.remove('show');
+                }
+
+                // 6. Validate Vehicle Available
                 const vehChecked = form.querySelector('input[name="vehicle_available"]:checked');
                 const errVeh = document.getElementById('err_vehicle_available');
                 if (!vehChecked) {
@@ -1131,7 +1153,7 @@
                     errVeh.classList.remove('show');
                 }
 
-                // Current Location & Higher Education
+                // 7. Current Location & Higher Education
                 ['current_location', 'higher_education'].forEach(name => {
                     const inp = document.getElementById(name);
                     if (!validateField(inp)) {
@@ -1140,7 +1162,7 @@
                     }
                 });
 
-                // Any References
+                // 8. Any References
                 const refChecked = form.querySelector('input[name="has_references"]:checked');
                 const errRef = document.getElementById('err_has_references');
                 if (!refChecked) {
@@ -1158,7 +1180,7 @@
                     }
                 }
 
-                // Immediate Joiner
+                // 9. Immediate Joiner
                 const immChecked = form.querySelector('input[name="immediate_joiner"]:checked');
                 const errImm = document.getElementById('err_immediate_joiner');
                 if (!immChecked) {
@@ -1169,7 +1191,7 @@
                     errImm.classList.remove('show');
                 }
 
-                // Consent
+                // 10. Consent
                 const consentInp = document.getElementById('consent');
                 if (!validateField(consentInp)) {
                     isFormValid = false;
@@ -1213,8 +1235,8 @@
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                         </button>
                     </div>
-                    <span class="emp-card-field-label">Name of the Organisation</span>
-                    <input type="text" name="employment_rows[${nextIndex}][organisation]" placeholder="Organisation name" maxlength="255">
+                    <span class="emp-card-field-label">Company / Organisation Name</span>
+                    <input type="text" name="employment_rows[${nextIndex}][organisation]" placeholder="e.g. ABC Realtech Pvt Ltd" maxlength="255">
                 </td>
                 <td>
                     <span class="emp-card-field-label">Designation</span>

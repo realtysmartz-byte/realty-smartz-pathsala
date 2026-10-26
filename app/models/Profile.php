@@ -539,13 +539,26 @@ class Profile {
         $hasSocialLink = !empty(trim((string)($socialData['linkedin'] ?? ''))) || !empty(trim((string)($socialData['instagram'] ?? '')));
         $hasSocial = $hasBasic && $hasSocialLink;
 
-        // Step 3: Documents & KYC (Aadhaar & PAN numbers + uploaded proofs + emergency contact)
+        // Step 3: Documents & KYC (Aadhaar, PAN, Marksheet + uploaded proofs + emergency contact + exp letter if experienced)
         $hasAadhaar = !empty($p['aadhaar_last4']) || !empty($p['aadhaar_enc']) || !empty($p['aadhaar_encrypted']);
         $hasPan = !empty($p['pan_last4']) || !empty($p['pan_enc']) || !empty($p['pan_number']);
-        $hasAadhaarDoc = !empty($docs['aadhaar']) || !empty($docs['aadhaar_front']);
-        $hasPanDoc = !empty($docs['pan_card']);
+        $hasAadhaarDoc = !empty($docs['aadhaar']) || !empty($docs['aadhaar_front']) || !empty($docs['aadhaar_card']);
+        $hasPanDoc = !empty($docs['pan_card']) || !empty($docs['pan']);
+        $hasMarksheetDoc = !empty($docs['marksheet']);
         $hasEmergency = !empty($emg['contact_name']) && !empty($emg['mobile']);
-        $hasDocs = $hasBasic && $hasAadhaar && $hasPan && $hasAadhaarDoc && $hasPanDoc && $hasEmergency;
+
+        $isExp = false;
+        if (!empty($data['experience'])) {
+            foreach ($data['experience'] as $expRow) {
+                if (empty($expRow['is_fresher']) && (!empty($expRow['company']) || !empty($expRow['designation']))) {
+                    $isExp = true;
+                    break;
+                }
+            }
+        }
+        $hasExpDoc = !$isExp || !empty($docs['relieving_letter']) || !empty($docs['experience_letter']) || !empty($docs['offer_letter']);
+
+        $hasDocs = $hasBasic && $hasAadhaar && $hasPan && $hasAadhaarDoc && $hasPanDoc && $hasMarksheetDoc && $hasEmergency && $hasExpDoc;
 
         // Step 4: Final Declaration & Signature
         $hasSubmitted = !empty($p['declaration_accepted']) || !empty($p['is_locked']);
@@ -703,6 +716,22 @@ class Profile {
         $stmt = $db->prepare($sql);
         $stmt->execute($params);
 
+        // Experience Type (Fresher vs Experienced)
+        $expType = trim($data['experience_type'] ?? '');
+        if ($expType === 'fresher' || $expType === 'experienced') {
+            $isFresher = ($expType === 'fresher') ? 1 : 0;
+            $stmtExpCheck = $db->prepare("SELECT id FROM `experience` WHERE `user_id` = :uid LIMIT 1");
+            $stmtExpCheck->execute([':uid' => $userId]);
+            $existingExp = $stmtExpCheck->fetch();
+            if ($existingExp) {
+                $stmtExpUpd = $db->prepare("UPDATE `experience` SET `is_fresher` = :fresher, `updated_at` = NOW() WHERE `id` = :id");
+                $stmtExpUpd->execute([':fresher' => $isFresher, ':id' => $existingExp['id']]);
+            } else {
+                $stmtExpIns = $db->prepare("INSERT INTO `experience` (`user_id`, `is_fresher`, `created_at`, `updated_at`) VALUES (:uid, :fresher, NOW(), NOW())");
+                $stmtExpIns->execute([':uid' => $userId, ':fresher' => $isFresher]);
+            }
+        }
+
         // Emergency Contacts
         $c1Name = trim($data['emergency_name_1'] ?? ($data['emergency_contact_name'] ?? ''));
         $c1Rel = trim($data['emergency_rel_1'] ?? ($data['emergency_relationship'] ?? ''));
@@ -758,15 +787,39 @@ class Profile {
             return ['success' => false, 'error' => 'Please provide a valid 10-character PAN number.'];
         }
 
-        // Check document uploads: Aadhaar and PAN uploads required
-        $hasAadhaarDoc = !empty($docs['aadhaar']) || !empty($docs['aadhaar_front']);
-        $hasPanDoc = !empty($docs['pan_card']);
+        // Check document uploads: Aadhaar, PAN, and Marksheet are mandatory
+        $hasAadhaarDoc = !empty($docs['aadhaar']) || !empty($docs['aadhaar_front']) || !empty($docs['aadhaar_card']);
+        $hasPanDoc = !empty($docs['pan_card']) || !empty($docs['pan']);
+        $hasMarksheetDoc = !empty($docs['marksheet']);
 
         if (!$hasAadhaarDoc) {
             return ['success' => false, 'error' => 'Please upload your Aadhaar Card (front side or combined document).'];
         }
         if (!$hasPanDoc) {
             return ['success' => false, 'error' => 'Please upload your PAN Card document.'];
+        }
+        if (!$hasMarksheetDoc) {
+            return ['success' => false, 'error' => 'Please upload your Highest Qualification Degree or Marksheet (mandatory).'];
+        }
+
+        // Check experience requirement: if candidate is experienced, experience letter / relieving cert is mandatory
+        $isExperienced = false;
+        if (!empty($data['experience_type']) && $data['experience_type'] === 'experienced') {
+            $isExperienced = true;
+        } elseif (!empty($full['experience'])) {
+            foreach ($full['experience'] as $exp) {
+                if (empty($exp['is_fresher']) && (!empty($exp['company']) || !empty($exp['designation']))) {
+                    $isExperienced = true;
+                    break;
+                }
+            }
+        }
+
+        if ($isExperienced) {
+            $hasExpDoc = !empty($docs['relieving_letter']) || !empty($docs['experience_letter']) || !empty($docs['offer_letter']);
+            if (!$hasExpDoc) {
+                return ['success' => false, 'error' => 'Please upload your Relieving Certificate or Experience Letter from your previous employer (mandatory for experienced candidates).'];
+            }
         }
 
         if (empty($data['declaration_accepted'])) {

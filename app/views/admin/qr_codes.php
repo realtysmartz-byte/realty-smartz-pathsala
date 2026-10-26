@@ -90,30 +90,49 @@ $viewTitle = "QR Codes";
     .qr-preview-box {
         background: #FFFFFF;
         border: 1px solid var(--line);
-        border-radius: var(--r-md);
-        padding: 24px;
+        border-radius: var(--r-lg);
+        padding: 24px 20px 20px;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         margin-bottom: 20px;
-        min-height: 240px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
     }
     .qr-svg-wrapper {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 180px;
-        height: 180px;
+        width: 220px;
+        height: 220px;
+        background: #FFFFFF;
+        padding: 10px;
+        border-radius: var(--r-md);
+        border: 1px solid #E5E7EB;
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.02);
     }
     .qr-svg-wrapper svg {
         width: 100%;
         height: 100%;
+        display: block;
+    }
+    .qr-scan-pill {
+        margin-top: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #065F46;
+        background: #ECFDF5;
+        border: 1px solid #A7F3D0;
+        padding: 3px 10px;
+        border-radius: var(--r-full);
     }
     .qr-target-url {
-        margin-top: 14px;
+        margin-top: 10px;
         font-family: monospace;
-        font-size: 12.5px;
+        font-size: 12px;
         color: var(--muted);
         background: var(--surface-2);
         padding: 6px 12px;
@@ -195,6 +214,11 @@ $viewTitle = "QR Codes";
             padding: 24px !important;
             box-shadow: none !important;
         }
+        .qr-svg-wrapper {
+            width: 250px !important;
+            height: 250px !important;
+            margin: 0 auto 12px !important;
+        }
         .print-only-header {
             display: block !important;
             text-align: center;
@@ -216,7 +240,7 @@ $viewTitle = "QR Codes";
 <div class="qr-header">
     <div class="qr-title-group">
         <h2>QR Code Management</h2>
-        <p>Official QR codes for candidate onboarding and walk-in aptitude assessments.</p>
+        <p>Universal high-contrast QR codes for candidate onboarding, aptitude tests, and interview forms. Guaranteed scannable via any Phone Camera &amp; Google Lens.</p>
     </div>
     <div>
         <button type="button" class="btn-print" onclick="window.print()" aria-label="Print reception desk flyers">
@@ -238,15 +262,25 @@ $viewTitle = "QR Codes";
                 <div class="qr-svg-wrapper">
                     <?= $onboardingSvg ?>
                 </div>
+                <div class="qr-scan-pill">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Camera &amp; Google Lens Ready</span>
+                </div>
                 <div class="qr-target-url" id="onboardingUrlText"><?= e($onboardingUrl) ?></div>
             </div>
         </div>
 
         <div class="qr-actions">
-            <a href="<?= url('/admin/qr-codes/download/onboarding') ?>" class="qr-btn-primary" aria-label="Download Onboarding QR Code PNG">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                <span>Download PNG (High-Res)</span>
-            </a>
+            <div class="qr-btn-group-row">
+                <a href="<?= url('/admin/qr-codes/download/onboarding') ?>" class="qr-btn-primary" aria-label="Download Onboarding QR Code PNG">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                    <span>Download PNG</span>
+                </a>
+                <a href="<?= url('/admin/qr-codes/download/onboarding-svg') ?>" class="qr-btn-primary" style="background:var(--brand-soft); color:var(--brand); border:1px solid var(--brand);" aria-label="Download Onboarding QR Code SVG">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                    <span>Download SVG</span>
+                </a>
+            </div>
             <div class="qr-btn-group-row">
                 <button type="button" class="qr-btn-secondary" onclick="copyQrUrl('<?= e($onboardingUrl) ?>', this)" aria-label="Copy onboarding registration link">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
@@ -271,15 +305,25 @@ $viewTitle = "QR Codes";
                 <div class="qr-svg-wrapper">
                     <?= $aptitudeSvg ?>
                 </div>
+                <div class="qr-scan-pill">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Camera &amp; Google Lens Ready</span>
+                </div>
                 <div class="qr-target-url" id="aptitudeUrlText"><?= e($aptitudeUrl) ?></div>
             </div>
         </div>
 
         <div class="qr-actions">
-            <a href="<?= url('/admin/qr-codes/download/aptitude') ?>" class="qr-btn-primary" aria-label="Download Aptitude QR Code PNG">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                <span>Download PNG (High-Res)</span>
-            </a>
+            <div class="qr-btn-group-row">
+                <a href="<?= url('/admin/qr-codes/download/aptitude') ?>" class="qr-btn-primary" aria-label="Download Aptitude QR Code PNG">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                    <span>Download PNG</span>
+                </a>
+                <a href="<?= url('/admin/qr-codes/download/aptitude-svg') ?>" class="qr-btn-primary" style="background:var(--brand-soft); color:var(--brand); border:1px solid var(--brand);" aria-label="Download Aptitude QR Code SVG">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                    <span>Download SVG</span>
+                </a>
+            </div>
             <div class="qr-btn-group-row">
                 <button type="button" class="qr-btn-secondary" onclick="copyQrUrl('<?= e($aptitudeUrl) ?>', this)" aria-label="Copy aptitude assessment link">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
@@ -308,6 +352,10 @@ $viewTitle = "QR Codes";
             <div class="qr-preview-box">
                 <div class="qr-svg-wrapper">
                     <?= $interviewSvg ?>
+                </div>
+                <div class="qr-scan-pill">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <span>Camera &amp; Google Lens Ready</span>
                 </div>
                 <div class="qr-target-url" id="interviewUrlText"><?= e($interviewUrl) ?></div>
             </div>

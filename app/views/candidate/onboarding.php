@@ -812,24 +812,57 @@ function renderCandidateDocSlot(string $type, string $label, string $description
                     </div>
                 </div>
 
-                <!-- OTHER DOCUMENTS (OPTIONAL / IF APPLICABLE) -->
+                <!-- 2. WORK EXPERIENCE STATUS (FRESHER VS EXPERIENCED) -->
+                <?php
+                $isCandidateExperienced = false;
+                if (!empty($candidate['experience'])) {
+                    foreach ($candidate['experience'] as $e) {
+                        if (empty($e['is_fresher']) && (!empty($e['company']) || !empty($e['designation']))) {
+                            $isCandidateExperienced = true;
+                            break;
+                        }
+                    }
+                }
+                ?>
+                <div class="p-3 p-sm-4 mb-4" style="background:var(--bg); border:1px solid var(--line); border-radius:var(--r-md);">
+                    <div style="font-size:14px; font-weight:600; color:var(--text); margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+                        <i class="fas fa-briefcase" style="color:var(--brand);"></i> 2. Work Experience Status *
+                    </div>
+                    <div style="display:flex; flex-wrap:wrap; gap:24px; align-items:center; background:var(--surface); padding:16px 20px; border:1px solid var(--line); border-radius:var(--r-md);">
+                        <label style="display:inline-flex; align-items:center; gap:10px; cursor:pointer; font-size:14px; font-weight:600; color:var(--text); margin-bottom:0;">
+                            <input type="radio" name="experience_type" value="fresher" id="exp_type_fresher" <?= !$isCandidateExperienced ? 'checked' : '' ?> onchange="handleExperienceTypeChange('fresher')" <?= $isLocked ? 'disabled' : '' ?> style="accent-color:var(--brand); width:18px; height:18px;">
+                            <span>Fresher (No Prior Work Experience)</span>
+                        </label>
+                        <label style="display:inline-flex; align-items:center; gap:10px; cursor:pointer; font-size:14px; font-weight:600; color:var(--text); margin-bottom:0;">
+                            <input type="radio" name="experience_type" value="experienced" id="exp_type_experienced" <?= $isCandidateExperienced ? 'checked' : '' ?> onchange="handleExperienceTypeChange('experienced')" <?= $isLocked ? 'disabled' : '' ?> style="accent-color:var(--brand); width:18px; height:18px;">
+                            <span>Experienced (Have Prior Work Experience)</span>
+                        </label>
+                    </div>
+                    <div id="exp_notice_experienced" style="<?= $isCandidateExperienced ? 'display:block;' : 'display:none;' ?> font-size:12.5px; color:var(--brand); margin-top:10px; padding:8px 12px; background:var(--brand-soft); border-radius:var(--r-sm);">
+                        <i class="fas fa-info-circle"></i> <strong>Note for Experienced Candidates:</strong> Uploading your Experience Certificate or Relieving Letter is mandatory.
+                    </div>
+                </div>
+
+                <!-- 3. OTHER SUPPORTING DOCUMENTS -->
                 <div class="p-3 p-sm-4 mb-4" style="background:var(--surface); border:1px solid var(--line); border-radius:var(--r-md);">
                     <div style="font-size:14px; font-weight:600; color:var(--text); margin-bottom:14px; display:flex; align-items:center; gap:8px;">
-                        <i class="fas fa-folder-open" style="color:var(--brand);"></i> 2. Other Supporting Documents
+                        <i class="fas fa-folder-open" style="color:var(--brand);"></i> 3. Educational &amp; Supporting Documents
                     </div>
 
                     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap:16px;">
                         <div>
+                            <!-- Marksheet is MANDATORY for all candidates -->
+                            <?php renderCandidateDocSlot('marksheet', 'Highest Qualification Degree / Marksheet', 'Degree, Diploma or 10+2 marksheet (PDF / JPG / PNG)', true, $docs, $isLocked); ?>
+                        </div>
+                        <div id="relieving_letter_slot_wrapper">
+                            <!-- Relieving / Experience Certificate: Mandatory if experienced -->
+                            <?php renderCandidateDocSlot('relieving_letter', 'Relieving / Experience Certificate', 'Experience certificate from previous employer', $isCandidateExperienced, $docs, $isLocked); ?>
+                        </div>
+                        <div>
+                            <?php renderCandidateDocSlot('offer_letter', 'Offer / Appointment Letter', 'Current or previous company offer letter (if applicable)', false, $docs, $isLocked); ?>
+                        </div>
+                        <div>
                             <?php renderCandidateDocSlot('profile_photo', 'Passport-size Formal Photograph', 'Recent formal portrait photo (JPG / PNG)', false, $docs, $isLocked); ?>
-                        </div>
-                        <div>
-                            <?php renderCandidateDocSlot('marksheet', 'Highest Qualification Degree / Marksheet', 'Degree, Diploma or 10+2 marksheet (PDF / JPG / PNG)', false, $docs, $isLocked); ?>
-                        </div>
-                        <div>
-                            <?php renderCandidateDocSlot('offer_letter', 'Offer / Appointment Letter', 'Current or previous company offer letter (if experienced)', false, $docs, $isLocked); ?>
-                        </div>
-                        <div>
-                            <?php renderCandidateDocSlot('relieving_letter', 'Relieving / Experience Certificate', 'Experience certificate from previous employer (if applicable)', false, $docs, $isLocked); ?>
                         </div>
                         <div>
                             <?php renderCandidateDocSlot('cancelled_cheque', 'Cancelled Cheque / Bank Passbook', 'First page showing account number & IFSC for salary credit', false, $docs, $isLocked); ?>
@@ -1032,14 +1065,14 @@ function renderCandidateDocSlot(string $type, string $label, string $description
                     </button>
 
                     <?php if ($isLocked): ?>
-                        <a href="<?= url('/dashboard/aptitude') ?>" class="btn btn-primary" style="padding:14px 32px; font-weight:600; border-radius:var(--r-full); text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
-                            <span>Take Aptitude Assessment</span>
+                        <a href="<?= url('/') ?>" class="btn btn-primary" style="padding:14px 32px; font-weight:600; border-radius:var(--r-full); text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+                            <span>Go to Homepage</span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                         </a>
                     <?php else: ?>
                         <button type="submit" id="btnSubmitFinal" class="btn btn-primary" style="padding:14px 36px; font-size:15px; font-weight:600; border-radius:var(--r-full); display:inline-flex; align-items:center; gap:8px;">
-                            <span>Submit Onboarding &amp; Unlock Aptitude</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                            <span>Submit Onboarding Application</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                         </button>
                     <?php endif; ?>
                 </div>
@@ -1089,6 +1122,28 @@ function getDocLabel(docType) {
         cancelled_cheque: 'Cancelled Cheque / Passbook'
     };
     return labels[docType] || 'Document';
+}
+
+function handleExperienceTypeChange(type) {
+    const notice = document.getElementById('exp_notice_experienced');
+    const relievingContainer = document.getElementById('slot_container_relieving_letter');
+    if (type === 'experienced') {
+        if (notice) notice.style.display = 'block';
+        if (relievingContainer) {
+            const strong = relievingContainer.querySelector('strong');
+            if (strong) {
+                strong.innerHTML = 'Relieving / Experience Certificate <span style="color:var(--danger)">*</span>';
+            }
+        }
+    } else {
+        if (notice) notice.style.display = 'none';
+        if (relievingContainer) {
+            const strong = relievingContainer.querySelector('strong');
+            if (strong) {
+                strong.innerHTML = 'Relieving / Experience Certificate <span style="color:var(--muted); font-size:11px;">(Optional)</span>';
+            }
+        }
+    }
 }
 
 // Unified Prominent Toast Notification System
@@ -1280,7 +1335,32 @@ function validateStepC() {
         return false;
     }
 
-    // 5. Emergency Contact 1
+    // 5. Marksheet Document Upload (Mandatory for all candidates)
+    if (!uploadedDocs.marksheet) {
+        showToast('Please upload your Highest Qualification Degree / Marksheet before proceeding.', 'warning');
+        const container = document.getElementById('slot_container_marksheet');
+        if (container) {
+            container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            container.classList.add('pulse-highlight');
+            setTimeout(() => container.classList.remove('pulse-highlight'), 3000);
+        }
+        return false;
+    }
+
+    // 6. Experience Certificate Upload (Mandatory if candidate is experienced)
+    const isExpSelected = document.querySelector('input[name="experience_type"]:checked')?.value === 'experienced';
+    if (isExpSelected && !uploadedDocs.relieving_letter && !uploadedDocs.offer_letter) {
+        showToast('Please upload your Relieving / Experience Certificate from your previous employer (mandatory for experienced candidates).', 'warning');
+        const container = document.getElementById('slot_container_relieving_letter');
+        if (container) {
+            container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            container.classList.add('pulse-highlight');
+            setTimeout(() => container.classList.remove('pulse-highlight'), 3000);
+        }
+        return false;
+    }
+
+    // 7. Emergency Contact 1
     const formC = document.getElementById('form_step_c');
     if (formC) {
         const name1 = (formC.querySelector('input[name="emergency_name_1"]')?.value || '').trim();
@@ -2010,6 +2090,8 @@ async function submitFinalOnboarding() {
     }
 
     const formData = new FormData(form);
+    const expVal = document.querySelector('input[name="experience_type"]:checked')?.value || 'fresher';
+    formData.append('experience_type', expVal);
     formData.append('signature_type', sigType);
     formData.append('signature_data', sigData);
     formData.append('_csrf_token', '<?= csrf_token() ?>');
@@ -2032,7 +2114,7 @@ async function submitFinalOnboarding() {
             }
             if (btn) {
                 btn.disabled = false;
-                btn.innerHTML = '<span>Submit Onboarding &amp; Unlock Aptitude</span>';
+                btn.innerHTML = '<span>Submit Onboarding Application</span>';
             }
             return;
         }
@@ -2040,13 +2122,13 @@ async function submitFinalOnboarding() {
         if (data && data.success) {
             showToast('✓ Onboarding application submitted successfully! Redirecting...', 'success');
             setTimeout(() => {
-                window.location.href = data.redirect || '<?= url("/dashboard/aptitude") ?>';
+                window.location.href = data.redirect || '<?= url("/") ?>';
             }, 800);
         } else {
             showToast('Submission Error: ' + ((data && data.error) ? data.error : 'Validation failed'), 'warning');
             if (btn) {
                 btn.disabled = false;
-                btn.innerHTML = '<span>Submit Onboarding &amp; Unlock Aptitude</span>';
+                btn.innerHTML = '<span>Submit Onboarding Application</span>';
             }
         }
     } catch (e) {
@@ -2054,7 +2136,7 @@ async function submitFinalOnboarding() {
         showToast('Error connecting to submission service: ' + e.message, 'warning');
         if (btn) {
             btn.disabled = false;
-            btn.innerHTML = '<span>Submit Onboarding &amp; Unlock Aptitude</span>';
+            btn.innerHTML = '<span>Submit Onboarding Application</span>';
         }
     }
 }

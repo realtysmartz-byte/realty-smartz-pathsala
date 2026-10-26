@@ -7,6 +7,10 @@ $profile = $candidate['profile'] ?? [];
 $social = $profile['social'] ?? [];
 $test = $candidate['test_attempt'] ?? null;
 $docs = $candidate['documents'] ?? [];
+$emergency = $candidate['emergency'] ?? [];
+$education = $candidate['education'] ?? [];
+$experience = $candidate['experience'] ?? [];
+$bank = $candidate['bank'] ?? [];
 
 function formatFileSize(?int $bytes): string {
     if (!$bytes || $bytes <= 0) return '0 KB';
@@ -1053,24 +1057,31 @@ function formatFileSize(?int $bytes): string {
                     <span class="detail-value"><?= e($candidate['whatsapp'] ?? ($candidate['mobile'] ?? '-')) ?></span>
                 </div>
 
-                <div class="detail-item">
-                    <span class="detail-label">Address</span>
-                    <span class="detail-value"><?= e(trim(($profile['address_line1'] ?? '') . ' ' . ($profile['address_line2'] ?? ''))) ?: '-' ?></span>
+                <div class="detail-item" style="grid-column: 1 / -1;">
+                    <span class="detail-label">Residential / Current Address</span>
+                    <span class="detail-value" id="profileAddressVal"><?= e($profile['address'] ?? ($profile['current_address'] ?? ($profile['permanent_address'] ?? '-'))) ?></span>
                 </div>
+
+                <?php if (!empty($profile['permanent_address']) && $profile['permanent_address'] !== ($profile['address'] ?? ($profile['current_address'] ?? ''))): ?>
+                    <div class="detail-item" style="grid-column: 1 / -1;">
+                        <span class="detail-label">Permanent Address</span>
+                        <span class="detail-value"><?= e($profile['permanent_address']) ?></span>
+                    </div>
+                <?php endif; ?>
 
                 <div class="detail-item">
                     <span class="detail-label">City</span>
-                    <span class="detail-value"><?= e($profile['city'] ?? '-') ?></span>
+                    <span class="detail-value" id="profileCityVal"><?= e($profile['city'] ?? '-') ?></span>
                 </div>
 
                 <div class="detail-item">
                     <span class="detail-label">State</span>
-                    <span class="detail-value"><?= e($profile['state'] ?? '-') ?></span>
+                    <span class="detail-value" id="profileStateVal"><?= e($profile['state'] ?? '-') ?></span>
                 </div>
 
                 <div class="detail-item">
                     <span class="detail-label">Pincode</span>
-                    <span class="detail-value"><?= e($profile['pincode'] ?? '-') ?></span>
+                    <span class="detail-value" id="profilePincodeVal"><?= e($profile['pincode'] ?? '-') ?></span>
                 </div>
 
                 <div class="detail-item">
@@ -1124,10 +1135,210 @@ function formatFileSize(?int $bytes): string {
                         <?php endif; ?>
                     </div>
                 </div>
+
+                <!-- Digital Signature -->
+                <div class="detail-item" style="grid-column: 1 / -1;">
+                    <span class="detail-label">Digital Signature &amp; Declaration</span>
+                    <div class="detail-value" style="display:flex; align-items:center; gap:16px; margin-top:6px; flex-wrap:wrap;">
+                        <?php if (($profile['signature_type'] ?? '') === 'drawn' && str_starts_with($profile['signature_data'] ?? '', 'data:image')): ?>
+                            <img src="<?= e($profile['signature_data']) ?>" alt="Signature" style="max-height:48px; border:1px solid var(--line); border-radius:var(--r-sm); background:#fff; padding:4px 8px;">
+                        <?php elseif (!empty($profile['signature_data'])): ?>
+                            <span style="font-size:22px; font-weight:600; color:var(--brand);"><?= e($profile['signature_data']) ?></span>
+                        <?php else: ?>
+                            <span style="color:var(--muted); font-style:italic;">Not signed yet</span>
+                        <?php endif; ?>
+                        <?php if (!empty($profile['declaration_date'])): ?>
+                            <span style="font-size:12px; color:var(--muted); background:var(--bg); padding:4px 10px; border-radius:var(--r-sm); border:1px solid var(--line);">
+                                Verified on <?= date('d M Y, h:i A', strtotime($profile['declaration_date'])) ?>
+                            </span>
+                        <?php endif; ?>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Card 2: Documents (ALL uploaded documents in ONE list/grid) -->
+        <!-- Card 2: Emergency Contacts -->
+        <div class="content-card">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                <h2 class="content-card-title" style="margin: 0; display:flex; align-items:center; gap:8px;">
+                    <svg width="18" height="18" aria-hidden="true" style="color:var(--brand);"><use href="#icon-phone"></use></svg>
+                    <span>Emergency contacts</span>
+                </h2>
+                <?php if (!empty($emergency['contact_name']) && !empty($emergency['mobile'])): ?>
+                    <span class="chip-badge" style="background: var(--brand-soft); color: var(--brand);">Recorded</span>
+                <?php else: ?>
+                    <span class="chip-badge" style="background: var(--danger-soft); color: var(--danger);">Pending</span>
+                <?php endif; ?>
+            </div>
+
+            <?php if (empty($emergency['contact_name']) && empty($emergency['mobile'])): ?>
+                <div style="padding: 24px 16px; text-align: center; color: var(--muted); font-size: 13.5px;">
+                    No emergency contact details recorded yet.
+                </div>
+            <?php else: ?>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Primary Contact Person</span>
+                        <span class="detail-value" style="font-weight: 600;" id="profileEmgNameVal"><?= e($emergency['contact_name'] ?? '-') ?></span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Relationship</span>
+                        <span class="detail-value" id="profileEmgRelVal"><?= e($emergency['relationship'] ?? '-') ?></span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Primary Mobile</span>
+                        <div class="detail-value">
+                            <?php if (!empty($emergency['mobile'])): ?>
+                                <a href="tel:<?= e($emergency['mobile']) ?>" class="number-link" id="profileEmgPhoneVal" aria-label="Call emergency contact">
+                                    <svg width="15" height="15" aria-hidden="true"><use href="#icon-phone"></use></svg>
+                                    <span><?= e($emergency['mobile']) ?></span>
+                                </a>
+                                <a href="https://wa.me/91<?= preg_replace('/[^0-9]/', '', $emergency['mobile']) ?>" target="_blank" rel="noopener" class="number-link" style="margin-left: 10px;" aria-label="WhatsApp emergency contact">
+                                    <svg width="15" height="15" aria-hidden="true"><use href="#icon-whatsapp"></use></svg>
+                                    <span>WhatsApp</span>
+                                </a>
+                            <?php else: ?>
+                                <span id="profileEmgPhoneVal">-</span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <?php if (!empty($emergency['alternate_mobile'])): ?>
+                        <div class="detail-item">
+                            <span class="detail-label">Secondary / Alternate Contact</span>
+                            <span class="detail-value"><?= e($emergency['alternate_mobile']) ?></span>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($emergency['address'])): ?>
+                        <div class="detail-item" style="grid-column: 1 / -1;">
+                            <span class="detail-label">Emergency Residential Address</span>
+                            <span class="detail-value"><?= e($emergency['address']) ?></span>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+
+        <!-- Card 3: Education & Academic Qualifications -->
+        <?php if (!empty($education)): ?>
+            <div class="content-card">
+                <h2 class="content-card-title" style="margin-bottom: 18px;">
+                    <span>Education &amp; Qualifications</span>
+                    <span style="font-size: 13px; font-weight: 500; color: var(--muted);"><?= count($education) ?> qualification(s)</span>
+                </h2>
+                <div style="display: flex; flex-direction: column; gap: 14px;">
+                    <?php foreach ($education as $edu): ?>
+                        <div style="padding: 14px 18px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--bg);">
+                            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
+                                <strong style="font-size: 14.5px; color: var(--text);"><?= e($edu['highest_qualification'] ?? $edu['degree'] ?? 'Degree') ?></strong>
+                                <span class="chip-badge"><?= e($edu['year_of_passing'] ?? '-') ?></span>
+                            </div>
+                            <div style="font-size: 13.5px; color: var(--muted); margin-bottom: 4px;">
+                                <?= e($edu['institute'] ?? $edu['college_name'] ?? '-') ?>
+                            </div>
+                            <?php if (!empty($edu['percentage']) || !empty($edu['cgpa'])): ?>
+                                <div style="font-size: 12.5px; color: var(--brand); font-weight: 600;">
+                                    Score: <?= e($edu['percentage'] ?? $edu['cgpa']) ?><?= !empty($edu['percentage']) && is_numeric($edu['percentage']) ? '%' : '' ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <!-- Card 4: Work Experience -->
+        <?php if (!empty($experience)): ?>
+            <div class="content-card">
+                <h2 class="content-card-title" style="margin-bottom: 18px;">
+                    <span>Work Experience</span>
+                    <?php
+                    $isAnyFresher = false;
+                    foreach ($experience as $expCheck) {
+                        if (!empty($expCheck['is_fresher'])) $isAnyFresher = true;
+                    }
+                    ?>
+                    <?php if ($isAnyFresher): ?>
+                        <span class="chip-badge" style="background: var(--brand-soft); color: var(--brand);">Fresher</span>
+                    <?php else: ?>
+                        <span class="chip-badge" style="background: var(--surface-2); color: var(--text);">Experienced</span>
+                    <?php endif; ?>
+                </h2>
+
+                <div style="display: flex; flex-direction: column; gap: 14px;">
+                    <?php foreach ($experience as $exp): ?>
+                        <?php if (!empty($exp['is_fresher'])): ?>
+                            <div style="padding: 16px; border: 1px dashed var(--line); border-radius: var(--r-md); background: var(--bg); text-align: center; color: var(--muted); font-size: 13.5px;">
+                                Candidate registered as a Fresher with no prior corporate experience.
+                            </div>
+                        <?php else: ?>
+                            <div style="padding: 14px 18px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--bg);">
+                                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;">
+                                    <strong style="font-size: 14.5px; color: var(--text);"><?= e($exp['designation'] ?? '-') ?></strong>
+                                    <span style="font-size: 12px; color: var(--muted);">
+                                        <?= !empty($exp['joining_date']) ? date('M Y', strtotime($exp['joining_date'])) : '' ?>
+                                        &ndash;
+                                        <?= !empty($exp['last_working_date']) ? date('M Y', strtotime($exp['last_working_date'])) : 'Present' ?>
+                                    </span>
+                                </div>
+                                <div style="font-size: 13.5px; color: var(--brand); font-weight: 500; margin-bottom: 6px;">
+                                    <?= e($exp['company'] ?? '-') ?>
+                                </div>
+                                <?php if (!empty($exp['last_salary'])): ?>
+                                    <div style="font-size: 12.5px; color: var(--muted);">
+                                        Last CTC / Salary: <strong style="color:var(--text);"><?= e($exp['last_salary']) ?></strong>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <!-- Card 5: Bank Details (Salary & Payroll) -->
+        <?php if (!empty($bank['bank_name']) || !empty($bank['account_number']) || !empty($bank['account_number_decrypted'])): ?>
+            <div class="content-card">
+                <h2 class="content-card-title" style="margin-bottom: 18px;">
+                    <span>Bank details (Payroll)</span>
+                    <span class="chip-badge" style="background: var(--surface-2); color: var(--text);">Direct Deposit</span>
+                </h2>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Account Holder Name</span>
+                        <span class="detail-value"><?= e($bank['account_holder_name'] ?? $candidate['full_name']) ?></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Bank Name</span>
+                        <span class="detail-value"><?= e($bank['bank_name'] ?? '-') ?></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Account Number</span>
+                        <span class="detail-value">
+                            <?php
+                            $accRaw = $bank['account_number_decrypted'] ?? ($bank['account_number'] ?? '');
+                            echo !empty($accRaw) ? ('•••• ' . substr($accRaw, -4)) : '-';
+                            ?>
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">IFSC Code</span>
+                        <span class="detail-value" style="font-family: monospace; font-weight: 600;"><?= e($bank['ifsc_code'] ?? '-') ?></span>
+                    </div>
+                    <?php if (!empty($bank['branch_name'])): ?>
+                        <div class="detail-item">
+                            <span class="detail-label">Branch</span>
+                            <span class="detail-value"><?= e($bank['branch_name']) ?></span>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endif; ?>
+
+        <!-- Card 6: Documents (ALL uploaded documents in ONE list/grid) -->
         <div class="content-card">
             <h2 class="content-card-title">
                 <span>Documents</span>
@@ -1232,6 +1443,17 @@ function formatFileSize(?int $bytes): string {
                     <svg width="18" height="18" aria-hidden="true"><use href="#icon-mail"></use></svg>
                     <span style="overflow-wrap: anywhere;"><?= e($candidate['email']) ?></span>
                 </a>
+
+                <!-- Emergency Contact Quick Call -->
+                <?php if (!empty($emergency['mobile'])): ?>
+                    <a href="tel:<?= e($emergency['mobile']) ?>" class="contact-item" style="border-color: rgba(220, 38, 38, 0.25); background: rgba(220, 38, 38, 0.04);" aria-label="Call emergency contact">
+                        <svg width="18" height="18" aria-hidden="true" style="color: var(--danger);"><use href="#icon-phone"></use></svg>
+                        <div style="min-width: 0;">
+                            <div style="font-size: 11px; color: var(--danger); font-weight: 700; text-transform: uppercase;">Emergency (<?= e($emergency['relationship'] ?? 'Contact') ?>)</div>
+                            <span style="font-weight: 500;"><?= e($emergency['mobile']) ?> &bull; <?= e($emergency['contact_name'] ?? '') ?></span>
+                        </div>
+                    </a>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -1568,7 +1790,10 @@ var profileCandidateData = <?= json_encode([
     'city' => $profile['city'] ?? '',
     'state' => $profile['state'] ?? '',
     'pincode' => $profile['pincode'] ?? '',
-    'address' => $profile['permanent_address'] ?? ($profile['address'] ?? '')
+    'address' => $profile['address'] ?? ($profile['current_address'] ?? ($profile['permanent_address'] ?? '')),
+    'emergency_name' => $emergency['contact_name'] ?? '',
+    'emergency_rel' => $emergency['relationship'] ?? '',
+    'emergency_phone' => $emergency['mobile'] ?? ''
 ], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
 
 function openProfileEditModal() {
@@ -1584,6 +1809,15 @@ function openProfileEditModal() {
     document.getElementById('editCity').value = profileCandidateData.city || '';
     document.getElementById('editState').value = profileCandidateData.state || '';
     document.getElementById('editPincode').value = profileCandidateData.pincode || '';
+    if (document.getElementById('editEmergencyName')) {
+        document.getElementById('editEmergencyName').value = profileCandidateData.emergency_name || '';
+    }
+    if (document.getElementById('editEmergencyRel')) {
+        document.getElementById('editEmergencyRel').value = profileCandidateData.emergency_rel || '';
+    }
+    if (document.getElementById('editEmergencyPhone')) {
+        document.getElementById('editEmergencyPhone').value = profileCandidateData.emergency_phone || '';
+    }
     document.getElementById('editProfileFormError').style.display = 'none';
     document.getElementById('editProfileModal').classList.add('active');
 }
@@ -1633,6 +1867,9 @@ function handleSaveProfileDetails(e) {
             profileCandidateData.state = res.candidate.state || '';
             profileCandidateData.pincode = res.candidate.pincode || '';
             profileCandidateData.address = res.candidate.address || '';
+            profileCandidateData.emergency_name = res.candidate.emergency_name || '';
+            profileCandidateData.emergency_rel = res.candidate.emergency_rel || '';
+            profileCandidateData.emergency_phone = res.candidate.emergency_phone || '';
 
             // Update DOM fields in real time
             if (document.getElementById('profileFullNameVal')) {
@@ -1652,6 +1889,34 @@ function handleSaveProfileDetails(e) {
             }
             if (document.getElementById('profileGenderVal')) {
                 document.getElementById('profileGenderVal').textContent = res.candidate.gender ? (res.candidate.gender.charAt(0).toUpperCase() + res.candidate.gender.slice(1)) : '-';
+            }
+            if (document.getElementById('profileAddressVal')) {
+                document.getElementById('profileAddressVal').textContent = res.candidate.address || '-';
+            }
+            if (document.getElementById('profileCityVal')) {
+                document.getElementById('profileCityVal').textContent = res.candidate.city || '-';
+            }
+            if (document.getElementById('profileStateVal')) {
+                document.getElementById('profileStateVal').textContent = res.candidate.state || '-';
+            }
+            if (document.getElementById('profilePincodeVal')) {
+                document.getElementById('profilePincodeVal').textContent = res.candidate.pincode || '-';
+            }
+            if (document.getElementById('profileEmgNameVal')) {
+                document.getElementById('profileEmgNameVal').textContent = res.candidate.emergency_name || '-';
+            }
+            if (document.getElementById('profileEmgRelVal')) {
+                document.getElementById('profileEmgRelVal').textContent = res.candidate.emergency_rel || '-';
+            }
+            if (document.getElementById('profileEmgPhoneVal')) {
+                var emgEl = document.getElementById('profileEmgPhoneVal');
+                if (emgEl.tagName === 'A') {
+                    emgEl.href = 'tel:' + (res.candidate.emergency_phone || '');
+                    var span = emgEl.querySelector('span');
+                    if (span) span.textContent = res.candidate.emergency_phone || '-';
+                } else {
+                    emgEl.textContent = res.candidate.emergency_phone || '-';
+                }
             }
         } else {
             errEl.textContent = res.error || 'Failed to save changes.';
@@ -1747,6 +2012,29 @@ function handleSaveProfileDetails(e) {
                 <div class="form-group" style="max-width: 280px;">
                     <label class="form-label" for="editPincode">Pincode</label>
                     <input type="text" name="pincode" id="editPincode" class="form-input">
+                </div>
+
+                <div style="margin-top: 18px; margin-bottom: 12px; border-top: 1px solid var(--line); padding-top: 16px;">
+                    <h3 style="font-size: 14px; font-weight: 700; color: var(--text); margin: 0 0 12px 0; display:flex; align-items:center; gap:8px;">
+                        <svg width="16" height="16" aria-hidden="true" style="color:var(--brand);"><use href="#icon-phone"></use></svg>
+                        <span>Emergency Contact</span>
+                    </h3>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label" for="editEmergencyName">Contact Person Name</label>
+                        <input type="text" name="emergency_name" id="editEmergencyName" class="form-input" placeholder="e.g. Ramesh Kumar">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editEmergencyRel">Relationship</label>
+                        <input type="text" name="emergency_rel" id="editEmergencyRel" class="form-input" placeholder="e.g. Father, Mother, Spouse">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="editEmergencyPhone">Emergency Mobile Number</label>
+                    <input type="tel" name="emergency_phone" id="editEmergencyPhone" class="form-input" placeholder="10-digit mobile number">
                 </div>
 
                 <div id="editProfileFormError" style="display:none; color: var(--danger); font-size: 13px; margin-top: 8px;"></div>

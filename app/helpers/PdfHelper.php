@@ -87,13 +87,20 @@ class PdfHelper {
         $pdf->Line(15, $y + 6, 195, $y + 6);
 
         $profile = $candidate['profile'] ?? [];
+        $emergency = $candidate['emergency'] ?? [];
         $y = 71;
 
+        $rawAddress = trim($profile['address'] ?? ($profile['current_address'] ?? ($profile['permanent_address'] ?? ''))) ?: '-';
+        $displayAddress = (strlen($rawAddress) > 32) ? (mb_substr($rawAddress, 0, 30) . '...') : $rawAddress;
+
+        $rawEmg = !empty($emergency['contact_name']) ? ($emergency['contact_name'] . ' (' . ($emergency['relationship'] ?? 'Contact') . ') ' . ($emergency['mobile'] ?? '')) : '-';
+        $displayEmg = (strlen($rawEmg) > 32) ? (mb_substr($rawEmg, 0, 30) . '...') : $rawEmg;
+
         $fields = [
-            ['Father\'s Name', $candidate['father_name'] ?? ($profile['father_name'] ?? '-'), 'Date of Birth', $profile['dob'] ? date('d M Y', strtotime($profile['dob'])) : '-'],
+            ['Father\'s Name', $candidate['father_name'] ?? ($profile['father_name'] ?? '-'), 'Date of Birth', !empty($profile['dob']) ? date('d M Y', strtotime($profile['dob'])) : '-'],
             ['Gender', ucfirst($profile['gender'] ?? '-'), 'Pincode', $profile['pincode'] ?? '-'],
             ['City', $profile['city'] ?? '-', 'State', $profile['state'] ?? '-'],
-            ['Address', trim(($profile['address_line1'] ?? '') . ' ' . ($profile['address_line2'] ?? '')) ?: '-', 'Profile Status', !empty($candidate['is_guest']) ? 'Guest' : 'Registered Candidate'],
+            ['Address', $displayAddress, 'Emergency Contact', $displayEmg],
             ['Aadhaar Number', !empty($profile['aadhaar_masked']) ? $profile['aadhaar_masked'] : (!empty($profile['aadhaar_last4']) ? 'XXXX XXXX ' . $profile['aadhaar_last4'] : '-'), 
              'PAN Number', !empty($profile['pan_masked']) ? $profile['pan_masked'] : (!empty($profile['pan_last4']) ? 'XXXXX' . $profile['pan_last4'] : '-')]
         ];

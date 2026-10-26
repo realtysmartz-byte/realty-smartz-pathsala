@@ -865,11 +865,14 @@ if (!empty($app['updated_at'])) {
                     </div>
 
                     <div class="detail-field-item">
-                        <div class="detail-label">Segment (Commercial / Residential)</div>
+                        <div class="detail-label">Experience / Fresher</div>
+                        <div class="detail-value"><?= ucfirst(e($app['experience_type'])) ?></div>
+                    </div>
+
+                    <div class="detail-field-item">
+                        <div class="detail-label">Years in Real Estate</div>
                         <div class="detail-value">
-                            <span class="header-chip" style="background:var(--brand-soft); color:var(--brand); font-weight:700;">
-                                <?= e(ucfirst($app['applied_for_type'] ?? 'Commercial')) ?>
-                            </span>
+                            <?= ($app['experience_type'] === 'experience') ? (($app['years_in_real_estate'] !== null) ? $app['years_in_real_estate'] . ' Years' : '0 Years') : 'N/A (Fresher)' ?>
                         </div>
                     </div>
 
@@ -889,14 +892,11 @@ if (!empty($app['updated_at'])) {
                     </div>
 
                     <div class="detail-field-item">
-                        <div class="detail-label">Experience / Fresher</div>
-                        <div class="detail-value"><?= ucfirst(e($app['experience_type'])) ?></div>
-                    </div>
-
-                    <div class="detail-field-item">
-                        <div class="detail-label">Years in Real Estate</div>
+                        <div class="detail-label">Segment (Commercial / Residential)</div>
                         <div class="detail-value">
-                            <?= ($app['experience_type'] === 'experience') ? (($app['years_in_real_estate'] !== null) ? $app['years_in_real_estate'] . ' Years' : '0 Years') : 'N/A (Fresher)' ?>
+                            <span class="header-chip" style="background:var(--brand-soft); color:var(--brand); font-weight:700;">
+                                <?= e(ucfirst($app['applied_for_type'] ?? 'Commercial')) ?>
+                            </span>
                         </div>
                     </div>
 

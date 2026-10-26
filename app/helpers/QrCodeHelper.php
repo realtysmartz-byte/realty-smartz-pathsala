@@ -46,17 +46,20 @@ class QrCodeHelper {
     }
 
     /**
-     * Generate SVG string for given text/URL with solid white background and quiet zone
+     * Generate SVG string for given text/URL with solid white background and quiet zone.
+     * Uses Level 'M' (Medium ~15%) and pure solid black #000000 for instant, universal recognition
+     * on all native phone cameras (iOS, Samsung, Xiaomi, Vivo, Oppo) and Google Lens.
      *
-     * @param string $text
-     * @param int $moduleSize Module width/height in px/pt
-     * @param int $marginModules Quiet zone in modules (default 4 per ISO standard)
-     * @param string $color Hex color
+     * @param string $text Target URL or string
+     * @param int $moduleSize Module width/height in px
+     * @param int $marginModules Quiet zone in modules (minimum 4 per ISO/IEC 18004)
+     * @param string $color Hex color (defaults to #000000 for 100% optical contrast)
+     * @param string $level Error correction level: 'L', 'M', 'Q', 'H' (defaults to 'M')
      * @return string Valid SVG markup
      */
-    public static function getSvg(string $text, int $moduleSize = 6, int $marginModules = 4, string $color = '#1F5C4A'): string {
+    public static function getSvg(string $text, int $moduleSize = 6, int $marginModules = 4, string $color = '#000000', string $level = 'M'): string {
         self::ensureTcpdfBarcode();
-        $barcode = new \TCPDF2DBarcode($text, 'QRCODE,H');
+        $barcode = new \TCPDF2DBarcode($text, 'QRCODE,' . strtoupper($level));
         $array = $barcode->getBarcodeArray();
 
         if (empty($array['bcode'])) {
@@ -73,7 +76,7 @@ class QrCodeHelper {
 
         $svg = '<?xml version="1.0" standalone="no"?>' . "\n";
         $svg .= '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' . "\n";
-        $svg .= '<svg width="' . $width . '" height="' . $height . '" viewBox="0 0 ' . $width . ' ' . $height . '" version="1.1" xmlns="http://www.w3.org/2000/svg">' . "\n";
+        $svg .= '<svg width="' . $width . '" height="' . $height . '" viewBox="0 0 ' . $width . ' ' . $height . '" version="1.1" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">' . "\n";
         $svg .= "\t" . '<desc>' . htmlspecialchars($text, ENT_QUOTES | ENT_XML1, 'UTF-8') . '</desc>' . "\n";
         $svg .= "\t" . '<rect width="100%" height="100%" fill="#FFFFFF" />' . "\n";
         $svg .= "\t" . '<g id="elements" fill="' . htmlspecialchars($color, ENT_QUOTES | ENT_XML1, 'UTF-8') . '" stroke="none">' . "\n";
@@ -95,15 +98,17 @@ class QrCodeHelper {
     }
 
     /**
-     * Generate binary PNG string with solid white background and 4-module quiet zone
+     * Generate binary PNG string with solid white background and 4-module quiet zone.
+     * Uses Level 'M' and pure solid black [0, 0, 0] for maximum scannability on all devices.
      *
-     * @param string $text
+     * @param string $text Target URL or string
      * @param int $moduleSize Size of each QR module in pixels
-     * @param int $marginModules Quiet zone margin in modules (default 4)
-     * @param array|string $color Color RGB array or hex string e.g. [31, 92, 74] or '#1F5C4A'
+     * @param int $marginModules Quiet zone margin in modules (minimum 4)
+     * @param array|string $color Color RGB array or hex string (defaults to [0, 0, 0])
+     * @param string $level Error correction level: 'L', 'M', 'Q', 'H' (defaults to 'M')
      * @return string Binary PNG string
      */
-    public static function getPng(string $text, int $moduleSize = 16, int $marginModules = 4, array|string $color = [31, 92, 74]): string {
+    public static function getPng(string $text, int $moduleSize = 16, int $marginModules = 4, array|string $color = [0, 0, 0], string $level = 'M'): string {
         if (is_string($color)) {
             $hex = ltrim($color, '#');
             if (strlen($hex) === 6) {
@@ -113,12 +118,12 @@ class QrCodeHelper {
                     hexdec(substr($hex, 4, 2))
                 ];
             } else {
-                $color = [31, 92, 74];
+                $color = [0, 0, 0];
             }
         }
 
         self::ensureTcpdfBarcode();
-        $barcode = new \TCPDF2DBarcode($text, 'QRCODE,H');
+        $barcode = new \TCPDF2DBarcode($text, 'QRCODE,' . strtoupper($level));
         $array = $barcode->getBarcodeArray();
 
         if (empty($array['bcode']) || !function_exists('imagecreatetruecolor')) {
@@ -137,7 +142,7 @@ class QrCodeHelper {
         $white = imagecolorallocate($im, 255, 255, 255);
         $fg = imagecolorallocate($im, $color[0], $color[1], $color[2]);
 
-        // Solid crisp white background (no transparency, high contrast)
+        // Solid crisp white background (no transparency, high optical contrast)
         imagefill($im, 0, 0, $white);
 
         for ($r = 0; $r < $numRows; ++$r) {

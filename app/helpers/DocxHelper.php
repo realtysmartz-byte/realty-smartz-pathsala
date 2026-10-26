@@ -44,10 +44,12 @@ class DocxHelper {
         $gender = htmlspecialchars(ucfirst($p['gender'] ?? 'N/A'));
         $pan = htmlspecialchars(CryptoHelper::maskPan($p['pan_number'] ?? ''));
         $aadhaar = htmlspecialchars(CryptoHelper::maskAadhaar($p['aadhaar_last4'] ?? ''));
-        $permAddr = htmlspecialchars($p['permanent_address'] ?? 'N/A');
+        $permAddr = htmlspecialchars($p['permanent_address'] ?? ($p['address'] ?? ($p['current_address'] ?? 'N/A')));
         $city = htmlspecialchars($p['city'] ?? '');
         $state = htmlspecialchars($p['state'] ?? '');
         $pin = htmlspecialchars($p['pincode'] ?? '');
+        $emg = $candidate['emergency'] ?? [];
+        $emgContact = !empty($emg['contact_name']) ? htmlspecialchars($emg['contact_name'] . ' (' . ($emg['relationship'] ?? 'Contact') . ') - ' . ($emg['mobile'] ?? '')) : 'N/A';
 
         $docXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
@@ -75,7 +77,8 @@ class DocxHelper {
     <w:p><w:r><w:t>Mother\'s Name: ' . $mother . '</w:t></w:r></w:p>
     <w:p><w:r><w:t>Date of Birth: ' . $dob . ' | Gender: ' . $gender . '</w:t></w:r></w:p>
     <w:p><w:r><w:t>PAN: ' . $pan . ' | Aadhaar: ' . $aadhaar . '</w:t></w:r></w:p>
-    <w:p><w:r><w:t>Permanent Address: ' . $permAddr . ', ' . $city . ', ' . $state . ' - ' . $pin . '</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Residential / Permanent Address: ' . $permAddr . ', ' . $city . ', ' . $state . ' - ' . $pin . '</w:t></w:r></w:p>
+    <w:p><w:r><w:t>Emergency Contact: ' . $emgContact . '</w:t></w:r></w:p>
     <w:p><w:r><w:t>-----------------------------------------------------------------------------------------------------</w:t></w:r></w:p>
     <w:p>
       <w:r><w:rPr><w:b/><w:sz w:val="24"/><w:color w:val="9A6410"/></w:rPr><w:t>2. Declaration</w:t></w:r>

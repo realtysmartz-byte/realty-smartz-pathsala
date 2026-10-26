@@ -94,7 +94,7 @@ test.describe('Interview Application Form Module Complete Suite', () => {
         expect(formHtml).not.toContain('Module Discussed');
         expect(formHtml).not.toContain('FOR HR DEPARTMENT ONLY');
 
-        // Check All 17 Form Fields and Labels in exact order
+        // Check Form Fields and Labels
         // 1. HR Name dropdown
         await expect(page.locator('label[for="hr_name"]')).toContainText('HR Name');
         const hrOptions = await page.locator('#hr_name option').allInnerTexts();
@@ -104,27 +104,27 @@ test.describe('Interview Application Form Module Complete Suite', () => {
         // 2. Post Applied For
         await expect(page.locator('label[for="post_applied"]')).toContainText('Post Applied For');
 
-        // 2b. Have you applied for (Commercial / Residential / Both)
-        await expect(page.locator('#group_applied_for_type legend')).toContainText('Have you applied for');
-        await expect(page.locator('input[name="applied_for_type"]')).toHaveCount(3);
-
-        // 3. Full Name
-        await expect(page.locator('label[for="full_name"]')).toContainText('Full Name');
-
-        // 4. Mail ID
-        await expect(page.locator('label[for="email"]')).toContainText('Mail ID');
-
-        // 5. Contact Number
-        await expect(page.locator('label[for="mobile"]')).toContainText('Contact Number');
-
-        // 6. Experience / Fresher (Radio)
+        // 3. Experience / Fresher (Radio)
         await expect(page.locator('#group_experience_type legend')).toContainText('Experience / Fresher');
         const expRadios = page.locator('input[name="experience_type"]');
         await expect(expRadios).toHaveCount(2);
 
-        // 7. Years in Real Estate & 8. Employment history (Hidden by default when Fresher or unselected)
+        // Years in Real Estate & Employment history (Hidden by default when Fresher or unselected)
         await expect(page.locator('#group_years_in_real_estate')).toBeHidden();
         await expect(page.locator('#group_employment_history')).toBeHidden();
+
+        // 4. Full Name
+        await expect(page.locator('label[for="full_name"]')).toContainText('Full Name');
+
+        // 5. Mail ID
+        await expect(page.locator('label[for="email"]')).toContainText('Mail ID');
+
+        // 6. Contact Number
+        await expect(page.locator('label[for="mobile"]')).toContainText('Contact Number');
+
+        // 7. Have you applied for (Commercial / Residential / Both)
+        await expect(page.locator('#group_applied_for_type legend')).toContainText('Have you applied for');
+        await expect(page.locator('input[name="applied_for_type"]')).toHaveCount(3);
 
         // Selecting Experience displays Years in Real Estate & Employment history
         await page.locator('input[name="experience_type"][value="experience"]').check({ force: true });

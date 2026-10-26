@@ -200,10 +200,10 @@ class CandidateController {
         if (!empty($candidate['profile']['is_locked']) && !in_array($candidate['status'], ['changes_requested'], true)) {
             $msg = 'Your onboarding application has already been submitted and is locked under review.';
             if ($isAjax) {
-                response_json(['success' => false, 'error' => $msg, 'redirect' => url('/dashboard/aptitude')], 403);
+                response_json(['success' => false, 'error' => $msg, 'redirect' => url('/')], 403);
             }
             flash('info', $msg);
-            redirect('/dashboard/aptitude');
+            redirect('/');
             return;
         }
 
@@ -232,17 +232,17 @@ class CandidateController {
             \App\Helpers\TelegramService::log("Telegram alert failed on submitOnboarding ({$userId}): " . $e->getMessage());
         }
 
-        $successMsg = '🎉 Onboarding submitted successfully! Please complete your aptitude assessment.';
+        $successMsg = '🎉 Onboarding application submitted successfully!';
         if ($isAjax) {
             response_json([
                 'success'  => true,
                 'message'  => $successMsg,
-                'redirect' => url('/dashboard/aptitude')
+                'redirect' => url('/')
             ]);
         }
 
         flash('success', $successMsg);
-        redirect('/dashboard/aptitude');
+        redirect('/');
     }
 
     /**
