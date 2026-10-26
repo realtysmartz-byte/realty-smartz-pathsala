@@ -49,7 +49,7 @@ class AdminController {
             u.whatsapp,
             COALESCE(u.father_name, p.father_name) as father_name,
             COALESCE(p.joining_date, u.joining_date) as joining_date,
-            p.dob, p.gender, p.address, p.city, p.state, p.pincode,
+            p.dob, p.gender, p.address, p.city, p.state, p.pincode, p.social_links,
             (SELECT COUNT(*) FROM documents d WHERE d.user_id = u.id AND d.is_archived = 0) as doc_count,
             ta.score as test_score, ta.total_questions as test_total
             FROM `users` u
@@ -159,7 +159,7 @@ class AdminController {
         $sql = "SELECT u.id, u.full_name, u.email, u.mobile, u.created_at, u.is_archived, u.is_guest,
                        u.whatsapp,
                        COALESCE(p.joining_date, u.joining_date) as joining_date,
-                       p.dob, p.gender, p.address, p.city, p.state, p.pincode,
+                       p.dob, p.gender, p.address, p.city, p.state, p.pincode, p.social_links,
                        COALESCE(u.father_name, p.father_name) as father_name,
                        (SELECT COUNT(*) FROM documents d WHERE d.user_id = u.id AND d.is_archived = 0) as total_docs,
                        ta.score as test_score, ta.total_questions as test_total, ta.percentage as test_pct, ta.passed as test_passed
@@ -735,9 +735,23 @@ class AdminController {
         ]);
 
         // 2. Update profiles table
-        $stmtCheckP = $db->prepare("SELECT id FROM `profiles` WHERE `user_id` = :uid LIMIT 1");
+        $stmtCheckP = $db->prepare("SELECT id, social_links FROM `profiles` WHERE `user_id` = :uid LIMIT 1");
         $stmtCheckP->execute([':uid' => $id]);
         $hasProfile = $stmtCheckP->fetch();
+
+        // Process social links
+        $existingSocial = [];
+        if ($hasProfile && !empty($hasProfile['social_links'])) {
+            $existingSocial = is_string($hasProfile['social_links']) ? (json_decode($hasProfile['social_links'], true) ?: []) : $hasProfile['social_links'];
+        }
+
+        if (isset($_POST['linkedin']) || isset($_POST['instagram']) || isset($_POST['twitter']) || isset($_POST['facebook'])) {
+            $existingSocial['linkedin'] = trim($_POST['linkedin'] ?? '');
+            $existingSocial['instagram'] = trim($_POST['instagram'] ?? '');
+            $existingSocial['twitter'] = trim($_POST['twitter'] ?? '');
+            $existingSocial['facebook'] = trim($_POST['facebook'] ?? '');
+        }
+        $socialJson = !empty($existingSocial) ? json_encode($existingSocial, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : null;
 
         $emgName = trim($_POST['emergency_name'] ?? ($_POST['emergency_contact_name'] ?? ''));
         $emgRel = trim($_POST['emergency_rel'] ?? ($_POST['emergency_relationship'] ?? ''));
@@ -756,6 +770,7 @@ class AdminController {
                 `city` = :city,
                 `state` = :state,
                 `pincode` = :pin,
+                `social_links` = :social_links,
                 `updated_at` = NOW()
                 WHERE `user_id` = :uid");
             $stmtUpdProf->execute([
@@ -770,12 +785,13 @@ class AdminController {
                 ':city' => $city ?: null,
                 ':state' => $state ?: null,
                 ':pin' => $pincode ?: null,
+                ':social_links' => $socialJson,
                 ':uid' => $id
             ]);
         } else {
             $stmtInsProf = $db->prepare("INSERT INTO `profiles`
-                (`user_id`, `father_name`, `whatsapp`, `joining_date`, `dob`, `gender`, `address`, `current_address`, `permanent_address`, `city`, `state`, `pincode`, `completion_percentage`, `created_at`)
-                VALUES (:uid, :fatname, :wa, :jdate, :dob, :gender, :addr, :addr2, :addr3, :city, :state, :pin, 50, NOW())");
+                (`user_id`, `father_name`, `whatsapp`, `joining_date`, `dob`, `gender`, `address`, `current_address`, `permanent_address`, `city`, `state`, `pincode`, `social_links`, `completion_percentage`, `created_at`)
+                VALUES (:uid, :fatname, :wa, :jdate, :dob, :gender, :addr, :addr2, :addr3, :city, :state, :pin, :social_links, 50, NOW())");
             $stmtInsProf->execute([
                 ':uid' => $id,
                 ':fatname' => $fatherName ?: null,
@@ -788,7 +804,8 @@ class AdminController {
                 ':addr3' => $address ?: null,
                 ':city' => $city ?: null,
                 ':state' => $state ?: null,
-                ':pin' => $pincode ?: null
+                ':pin' => $pincode ?: null,
+                ':social_links' => $socialJson
             ]);
         }
 
@@ -840,7 +857,12 @@ class AdminController {
                     'pincode' => $pincode,
                     'emergency_name' => $emgName,
                     'emergency_rel' => $emgRel,
-                    'emergency_phone' => $emgPhone
+                    'emergency_phone' => $emgPhone,
+                    'social' => $existingSocial,
+                    'linkedin' => $existingSocial['linkedin'] ?? '',
+                    'instagram' => $existingSocial['instagram'] ?? '',
+                    'twitter' => $existingSocial['twitter'] ?? '',
+                    'facebook' => $existingSocial['facebook'] ?? ''
                 ]
             ]);
             return;
@@ -1340,7 +1362,13 @@ class AdminController {
         }
         AuditLog::log('settings_updated', 'settings', null, null, ['keys' => array_keys($settings)], (int)auth()['id']);
         flash('success', 'Site content and configuration settings saved successfully!');
-        redirect('/admin/content');
+        
+        $returnTab = trim($_POST['return_tab'] ?? '');
+        if ($returnTab !== '') {
+            redirect('/admin/content?tab=' . urlencode($returnTab));
+        } else {
+            redirect('/admin/content');
+        }
     }
 
     /**

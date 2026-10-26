@@ -653,6 +653,14 @@ $viewTitle = $viewTitle ?? 'Dashboard';
                 <span>Site Content</span>
             </a>
 
+            <a href="<?= url('/admin/content?tab=social') ?>" 
+               class="sidebar-item <?= ($currentPath === '/admin/content' && ($_GET['tab'] ?? '') === 'social') ? 'active' : '' ?>" 
+               data-tooltip="Social Links" 
+               aria-label="Social Links">
+                <svg width="20" height="20" aria-hidden="true"><use href="#icon-share-2"></use></svg>
+                <span>Social Links</span>
+            </a>
+
             <a href="<?= url('/admin/content?tab=settings') ?>" 
                class="sidebar-item <?= ($currentPath === '/admin/content' && ($_GET['tab'] ?? '') === 'settings') ? 'active' : '' ?>" 
                data-tooltip="Settings" 

@@ -584,6 +584,9 @@ $pageTitle = 'Dashboard | Realty Smartz Pathshala';
                                         <a href="<?= url('/admin/candidates/' . $c['id']) ?>" class="btn-view" aria-label="View details for <?= e($c['full_name']) ?>">
                                             View
                                         </a>
+                                        <?php 
+                                        $cSoc = !empty($c['social_links']) ? (is_string($c['social_links']) ? (json_decode($c['social_links'], true) ?: []) : $c['social_links']) : [];
+                                        ?>
                                         <button type="button" class="btn-edit" onclick='openEditCandidateModal(<?= json_encode([
                                             "id" => $c["id"],
                                             "full_name" => $c["full_name"],
@@ -597,7 +600,11 @@ $pageTitle = 'Dashboard | Realty Smartz Pathshala';
                                             "city" => $c["city"] ?? "",
                                             "state" => $c["state"] ?? "",
                                             "pincode" => $c["pincode"] ?? "",
-                                            "address" => $c["address"] ?? ""
+                                            "address" => $c["address"] ?? "",
+                                            "linkedin" => $cSoc["linkedin"] ?? "",
+                                            "instagram" => $cSoc["instagram"] ?? "",
+                                            "twitter" => $cSoc["twitter"] ?? "",
+                                            "facebook" => $cSoc["facebook"] ?? ""
                                         ], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>)' aria-label="Edit details for <?= e($c['full_name']) ?>">
                                             <svg width="14" height="14" aria-hidden="true"><use href="#icon-edit"></use></svg>
                                             <span>Edit</span>
@@ -731,6 +738,35 @@ $pageTitle = 'Dashboard | Realty Smartz Pathshala';
                     <input type="text" name="pincode" id="editPincode" class="form-input">
                 </div>
 
+                <div style="margin-top: 18px; margin-bottom: 12px; border-top: 1px solid var(--line); padding-top: 16px;">
+                    <h3 style="font-size: 14px; font-weight: 700; color: var(--text); margin: 0 0 12px 0; display:flex; align-items:center; gap:8px;">
+                        <svg width="16" height="16" aria-hidden="true" style="color:var(--brand);"><use href="#icon-share-2"></use></svg>
+                        <span>Candidate Social Profiles</span>
+                    </h3>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label" for="editCandidateLinkedIn">LinkedIn Profile URL</label>
+                        <input type="url" name="linkedin" id="editCandidateLinkedIn" class="form-input" placeholder="https://linkedin.com/in/username">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editCandidateInstagram">Instagram Profile / Handle</label>
+                        <input type="text" name="instagram" id="editCandidateInstagram" class="form-input" placeholder="https://instagram.com/username or @handle">
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label" for="editCandidateTwitter">Twitter / X Profile</label>
+                        <input type="text" name="twitter" id="editCandidateTwitter" class="form-input" placeholder="https://x.com/username">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editCandidateFacebook">Facebook Profile</label>
+                        <input type="text" name="facebook" id="editCandidateFacebook" class="form-input" placeholder="https://facebook.com/username">
+                    </div>
+                </div>
+
                 <div id="editFormError" style="display:none; color: var(--danger); font-size: 13px; margin-top: 8px;"></div>
             </div>
 
@@ -784,6 +820,18 @@ function openEditCandidateModal(data) {
     document.getElementById('editCity').value = data.city || '';
     document.getElementById('editState').value = data.state || '';
     document.getElementById('editPincode').value = data.pincode || '';
+    if (document.getElementById('editCandidateLinkedIn')) {
+        document.getElementById('editCandidateLinkedIn').value = data.linkedin || '';
+    }
+    if (document.getElementById('editCandidateInstagram')) {
+        document.getElementById('editCandidateInstagram').value = data.instagram || '';
+    }
+    if (document.getElementById('editCandidateTwitter')) {
+        document.getElementById('editCandidateTwitter').value = data.twitter || '';
+    }
+    if (document.getElementById('editCandidateFacebook')) {
+        document.getElementById('editCandidateFacebook').value = data.facebook || '';
+    }
     document.getElementById('editFormError').style.display = 'none';
     document.getElementById('editCandidateModal').classList.add('active');
 }

@@ -17,25 +17,28 @@ $pageTitle = "Site Content & CMS Manager | Admin Portal";
 
 <!-- Tabs Navigation -->
 <div style="display:flex; gap:10px; margin-bottom:24px; border-bottom:1px solid var(--border); padding-bottom:12px; overflow-x:auto;">
-    <button type="button" class="tab-btn active" onclick="switchContentTab('settingsTab', this)" style="padding:8px 18px; border-radius:20px; font-size:13px; font-weight:700; background:var(--primary-soft); border:1px solid var(--primary); color:var(--primary); cursor:pointer;">
+    <button type="button" id="settingsTabBtn" class="tab-btn active" onclick="switchContentTab('settingsTab', this)" style="padding:8px 18px; border-radius:20px; font-size:13px; font-weight:700; background:var(--primary-soft); border:1px solid var(--primary); color:var(--primary); cursor:pointer;">
         <i class="fas fa-sliders-h"></i> Brand &amp; Statistics
+    </button>
+    <button type="button" id="socialTabBtn" class="tab-btn" onclick="switchContentTab('socialTab', this)" style="padding:8px 18px; border-radius:20px; font-size:13px; font-weight:600; background:var(--surface); border:1px solid var(--border); color:var(--muted); cursor:pointer;">
+        <i class="fas fa-share-alt"></i> Social Media Links
     </button>
     <button type="button" id="emailTabBtn" class="tab-btn" onclick="switchContentTab('emailTab', this)" style="padding:8px 18px; border-radius:20px; font-size:13px; font-weight:600; background:var(--surface); border:1px solid var(--border); color:var(--muted); cursor:pointer;">
         <i class="fas fa-envelope"></i> Email &amp; SMTP
     </button>
-    <button type="button" class="tab-btn" onclick="switchContentTab('projectsTab', this)" style="padding:8px 18px; border-radius:20px; font-size:13px; font-weight:600; background:var(--surface); border:1px solid var(--border); color:var(--muted); cursor:pointer;">
+    <button type="button" id="projectsTabBtn" class="tab-btn" onclick="switchContentTab('projectsTab', this)" style="padding:8px 18px; border-radius:20px; font-size:13px; font-weight:600; background:var(--surface); border:1px solid var(--border); color:var(--muted); cursor:pointer;">
         <i class="fas fa-city"></i> Projects (<?= count($projects) ?>)
     </button>
-    <button type="button" class="tab-btn" onclick="switchContentTab('blogsTab', this)" style="padding:8px 18px; border-radius:20px; font-size:13px; font-weight:600; background:var(--surface); border:1px solid var(--border); color:var(--muted); cursor:pointer;">
+    <button type="button" id="blogsTabBtn" class="tab-btn" onclick="switchContentTab('blogsTab', this)" style="padding:8px 18px; border-radius:20px; font-size:13px; font-weight:600; background:var(--surface); border:1px solid var(--border); color:var(--muted); cursor:pointer;">
         <i class="fas fa-newspaper"></i> Blog Posts (<?= count($blogs) ?>)
     </button>
-    <button type="button" class="tab-btn" onclick="switchContentTab('videosTab', this)" style="padding:8px 18px; border-radius:20px; font-size:13px; font-weight:600; background:var(--surface); border:1px solid var(--border); color:var(--muted); cursor:pointer;">
+    <button type="button" id="videosTabBtn" class="tab-btn" onclick="switchContentTab('videosTab', this)" style="padding:8px 18px; border-radius:20px; font-size:13px; font-weight:600; background:var(--surface); border:1px solid var(--border); color:var(--muted); cursor:pointer;">
         <i class="fab fa-youtube"></i> Training Videos (<?= count($videos) ?>)
     </button>
-    <button type="button" class="tab-btn" onclick="switchContentTab('faqsTab', this)" style="padding:8px 18px; border-radius:20px; font-size:13px; font-weight:600; background:var(--surface); border:1px solid var(--border); color:var(--muted); cursor:pointer;">
+    <button type="button" id="faqsTabBtn" class="tab-btn" onclick="switchContentTab('faqsTab', this)" style="padding:8px 18px; border-radius:20px; font-size:13px; font-weight:600; background:var(--surface); border:1px solid var(--border); color:var(--muted); cursor:pointer;">
         <i class="fas fa-question-circle"></i> FAQs (<?= count($faqs) ?>)
     </button>
-    <button type="button" class="tab-btn" onclick="switchContentTab('enquiriesTab', this)" style="padding:8px 18px; border-radius:20px; font-size:13px; font-weight:600; background:var(--surface); border:1px solid var(--border); color:var(--muted); cursor:pointer;">
+    <button type="button" id="enquiriesTabBtn" class="tab-btn" onclick="switchContentTab('enquiriesTab', this)" style="padding:8px 18px; border-radius:20px; font-size:13px; font-weight:600; background:var(--surface); border:1px solid var(--border); color:var(--muted); cursor:pointer;">
         <i class="fas fa-envelope-open-text"></i> Enquiries (<?= count($enquiries) ?>)
     </button>
 </div>
@@ -258,6 +261,198 @@ $pageTitle = "Site Content & CMS Manager | Admin Portal";
             <button type="submit" style="background:var(--primary); color:#ffffff; padding:12px 32px; border-radius:9999px; font-size:14px; font-weight:700; border:none; cursor:pointer; box-shadow:0 4px 12px rgba(52,71,230,0.25);">
                 <i class="fas fa-save"></i> Save Brand &amp; Social Settings
             </button>
+        </div>
+    </form>
+</div>
+
+<!-- Tab: Social Media Links -->
+<div id="socialTab" class="content-tab-pane" style="display:none;">
+    <form action="<?= url('/admin/content/settings') ?>" method="POST">
+        <?= csrf_field() ?>
+        <input type="hidden" name="return_tab" value="social">
+
+        <div class="bento-card" style="padding:28px; border-top: 4px solid var(--primary); margin-bottom:24px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--border);">
+                <div>
+                    <h2 style="font-size:1.35rem; color:var(--text); font-weight:700; margin-bottom:6px; display:flex; align-items:center; gap:10px;">
+                        <i class="fas fa-share-alt" style="color:var(--primary); font-size:1.3rem;"></i> Official Social Media Profiles &amp; Public Links
+                    </h2>
+                    <p style="color:var(--muted); font-size:13.5px; margin:0;">
+                        Manage your company's social media handles and URLs. These links appear dynamically in the website footer, contact pages, and communication templates.
+                    </p>
+                </div>
+                <button type="submit" style="background:var(--primary); color:#ffffff; padding:10px 26px; border-radius:9999px; font-size:13.5px; font-weight:700; border:none; cursor:pointer; box-shadow:0 4px 12px rgba(52,71,230,0.25);">
+                    <i class="fas fa-save"></i> Save Social Links
+                </button>
+            </div>
+
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:20px;">
+                <!-- Instagram -->
+                <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; box-shadow:0 2px 6px rgba(0,0,0,0.03);">
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div style="width:38px; height:38px; border-radius:10px; background:linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0;">
+                                <i class="fab fa-instagram" style="font-size:1.25rem;"></i>
+                            </div>
+                            <div>
+                                <strong style="color:var(--text); font-size:14px; display:block;">Instagram</strong>
+                                <span style="font-size:11.5px; color:var(--muted);">Official Feed &amp; Reels</span>
+                            </div>
+                        </div>
+                        <?php if (!empty($settings['social_instagram'])): ?>
+                            <a href="<?= e($settings['social_instagram']) ?>" target="_blank" rel="noopener noreferrer" style="font-size:12px; color:var(--primary); font-weight:600; display:flex; align-items:center; gap:4px;">
+                                Visit <i class="fas fa-external-link-alt" style="font-size:10px;"></i>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                    <div style="margin-bottom:12px;">
+                        <label style="display:block; color:var(--text); font-size:12px; font-weight:600; margin-bottom:5px;">Profile URL</label>
+                        <input type="url" name="settings[social_instagram]" value="<?= e($settings['social_instagram'] ?? 'https://instagram.com/realtysmartz') ?>" placeholder="https://instagram.com/realtysmartz" style="width:100%; padding:9px 12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13px;">
+                    </div>
+                    <div>
+                        <label style="display:block; color:var(--text); font-size:12px; font-weight:600; margin-bottom:5px;">Display Handle / Text</label>
+                        <input type="text" name="settings[social_instagram_handle]" value="<?= e($settings['social_instagram_handle'] ?? '(@realtysmartz)') ?>" placeholder="(@realtysmartz)" style="width:100%; padding:9px 12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13px;">
+                    </div>
+                </div>
+
+                <!-- LinkedIn -->
+                <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; box-shadow:0 2px 6px rgba(0,0,0,0.03);">
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div style="width:38px; height:38px; border-radius:10px; background:#0A66C2; display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0;">
+                                <i class="fab fa-linkedin-in" style="font-size:1.25rem;"></i>
+                            </div>
+                            <div>
+                                <strong style="color:var(--text); font-size:14px; display:block;">LinkedIn</strong>
+                                <span style="font-size:11.5px; color:var(--muted);">Company &amp; Careers</span>
+                            </div>
+                        </div>
+                        <?php if (!empty($settings['social_linkedin'])): ?>
+                            <a href="<?= e($settings['social_linkedin']) ?>" target="_blank" rel="noopener noreferrer" style="font-size:12px; color:var(--primary); font-weight:600; display:flex; align-items:center; gap:4px;">
+                                Visit <i class="fas fa-external-link-alt" style="font-size:10px;"></i>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                    <div style="margin-bottom:12px;">
+                        <label style="display:block; color:var(--text); font-size:12px; font-weight:600; margin-bottom:5px;">Company Page URL</label>
+                        <input type="url" name="settings[social_linkedin]" value="<?= e($settings['social_linkedin'] ?? 'https://linkedin.com/company/realtysmartz') ?>" placeholder="https://linkedin.com/company/realtysmartz" style="width:100%; padding:9px 12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13px;">
+                    </div>
+                    <div>
+                        <label style="display:block; color:var(--text); font-size:12px; font-weight:600; margin-bottom:5px;">Display Handle / Text</label>
+                        <input type="text" name="settings[social_linkedin_handle]" value="<?= e($settings['social_linkedin_handle'] ?? '(Realty Smartz)') ?>" placeholder="(Realty Smartz)" style="width:100%; padding:9px 12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13px;">
+                    </div>
+                </div>
+
+                <!-- YouTube -->
+                <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; box-shadow:0 2px 6px rgba(0,0,0,0.03);">
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div style="width:38px; height:38px; border-radius:10px; background:#FF0000; display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0;">
+                                <i class="fab fa-youtube" style="font-size:1.25rem;"></i>
+                            </div>
+                            <div>
+                                <strong style="color:var(--text); font-size:14px; display:block;">YouTube</strong>
+                                <span style="font-size:11.5px; color:var(--muted);">Training &amp; Podcast</span>
+                            </div>
+                        </div>
+                        <?php if (!empty($settings['social_youtube'])): ?>
+                            <a href="<?= e($settings['social_youtube']) ?>" target="_blank" rel="noopener noreferrer" style="font-size:12px; color:var(--primary); font-weight:600; display:flex; align-items:center; gap:4px;">
+                                Visit <i class="fas fa-external-link-alt" style="font-size:10px;"></i>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                    <div style="margin-bottom:12px;">
+                        <label style="display:block; color:var(--text); font-size:12px; font-weight:600; margin-bottom:5px;">Channel URL</label>
+                        <input type="url" name="settings[social_youtube]" value="<?= e($settings['social_youtube'] ?? 'https://youtube.com/@realtysmartz') ?>" placeholder="https://youtube.com/@realtysmartz" style="width:100%; padding:9px 12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13px;">
+                    </div>
+                    <div>
+                        <label style="display:block; color:var(--text); font-size:12px; font-weight:600; margin-bottom:5px;">Display Handle / Text</label>
+                        <input type="text" name="settings[social_youtube_handle]" value="<?= e($settings['social_youtube_handle'] ?? '(@realtysmartz)') ?>" placeholder="(@realtysmartz)" style="width:100%; padding:9px 12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13px;">
+                    </div>
+                </div>
+
+                <!-- Facebook -->
+                <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; box-shadow:0 2px 6px rgba(0,0,0,0.03);">
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div style="width:38px; height:38px; border-radius:10px; background:#1877F2; display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0;">
+                                <i class="fab fa-facebook-f" style="font-size:1.25rem;"></i>
+                            </div>
+                            <div>
+                                <strong style="color:var(--text); font-size:14px; display:block;">Facebook</strong>
+                                <span style="font-size:11.5px; color:var(--muted);">Page &amp; Community</span>
+                            </div>
+                        </div>
+                        <?php if (!empty($settings['social_facebook'])): ?>
+                            <a href="<?= e($settings['social_facebook']) ?>" target="_blank" rel="noopener noreferrer" style="font-size:12px; color:var(--primary); font-weight:600; display:flex; align-items:center; gap:4px;">
+                                Visit <i class="fas fa-external-link-alt" style="font-size:10px;"></i>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                    <div style="margin-bottom:12px;">
+                        <label style="display:block; color:var(--text); font-size:12px; font-weight:600; margin-bottom:5px;">Page URL</label>
+                        <input type="url" name="settings[social_facebook]" value="<?= e($settings['social_facebook'] ?? 'https://facebook.com/realtysmartz') ?>" placeholder="https://facebook.com/realtysmartz" style="width:100%; padding:9px 12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13px;">
+                    </div>
+                    <div>
+                        <label style="display:block; color:var(--text); font-size:12px; font-weight:600; margin-bottom:5px;">Display Handle / Text</label>
+                        <input type="text" name="settings[social_facebook_handle]" value="<?= e($settings['social_facebook_handle'] ?? '(Realty Smartz)') ?>" placeholder="(Realty Smartz)" style="width:100%; padding:9px 12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13px;">
+                    </div>
+                </div>
+
+                <!-- Twitter / X -->
+                <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; box-shadow:0 2px 6px rgba(0,0,0,0.03);">
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div style="width:38px; height:38px; border-radius:10px; background:#111111; display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0;">
+                                <i class="fab fa-x-twitter" style="font-size:1.15rem;"></i>
+                            </div>
+                            <div>
+                                <strong style="color:var(--text); font-size:14px; display:block;">Twitter / X</strong>
+                                <span style="font-size:11.5px; color:var(--muted);">Public Announcements</span>
+                            </div>
+                        </div>
+                        <?php if (!empty($settings['social_twitter'])): ?>
+                            <a href="<?= e($settings['social_twitter']) ?>" target="_blank" rel="noopener noreferrer" style="font-size:12px; color:var(--primary); font-weight:600; display:flex; align-items:center; gap:4px;">
+                                Visit <i class="fas fa-external-link-alt" style="font-size:10px;"></i>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                    <div>
+                        <label style="display:block; color:var(--text); font-size:12px; font-weight:600; margin-bottom:5px;">Profile URL</label>
+                        <input type="url" name="settings[social_twitter]" value="<?= e($settings['social_twitter'] ?? 'https://x.com/realtysmartz') ?>" placeholder="https://x.com/realtysmartz" style="width:100%; padding:9px 12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13px;">
+                    </div>
+                </div>
+
+                <!-- WhatsApp Helpline -->
+                <div style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; box-shadow:0 2px 6px rgba(0,0,0,0.03);">
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div style="width:38px; height:38px; border-radius:10px; background:#25D366; display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0;">
+                                <i class="fab fa-whatsapp" style="font-size:1.25rem;"></i>
+                            </div>
+                            <div>
+                                <strong style="color:var(--text); font-size:14px; display:block;">WhatsApp Helpline</strong>
+                                <span style="font-size:11.5px; color:var(--muted);">Candidate Support &amp; Enquiries</span>
+                            </div>
+                        </div>
+                        <?php if (!empty($settings['social_whatsapp'])): ?>
+                            <a href="https://wa.me/<?= preg_replace('/[^0-9]/', '', $settings['social_whatsapp']) ?>" target="_blank" rel="noopener noreferrer" style="font-size:12px; color:#25D366; font-weight:600; display:flex; align-items:center; gap:4px;">
+                                Chat <i class="fas fa-external-link-alt" style="font-size:10px;"></i>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                    <div>
+                        <label style="display:block; color:var(--text); font-size:12px; font-weight:600; margin-bottom:5px;">WhatsApp Number (with Country Code)</label>
+                        <input type="text" name="settings[social_whatsapp]" value="<?= e($settings['social_whatsapp'] ?? '+91 9999 888 777') ?>" placeholder="+91 9999 888 777" style="width:100%; padding:9px 12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13px;">
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; margin-top:24px; padding-top:16px; border-top:1px solid var(--border);">
+                <button type="submit" style="background:var(--primary); color:#ffffff; padding:12px 32px; border-radius:9999px; font-size:14px; font-weight:700; border:none; cursor:pointer; box-shadow:0 4px 12px rgba(52,71,230,0.25);">
+                    <i class="fas fa-save"></i> Save Social Media Links
+                </button>
+            </div>
         </div>
     </form>
 </div>
@@ -529,7 +724,8 @@ $pageTitle = "Site Content & CMS Manager | Admin Portal";
 <script>
 function switchContentTab(tabId, btn) {
     document.querySelectorAll('.content-tab-pane').forEach(el => el.style.display = 'none');
-    document.getElementById(tabId).style.display = 'block';
+    const targetPane = document.getElementById(tabId);
+    if (targetPane) targetPane.style.display = 'block';
 
     document.querySelectorAll('.tab-btn').forEach(b => {
         b.style.background = 'var(--surface)';
@@ -538,16 +734,48 @@ function switchContentTab(tabId, btn) {
         b.style.fontWeight = '600';
     });
 
-    btn.style.background = 'var(--primary-soft)';
-    btn.style.borderColor = 'var(--primary)';
-    btn.style.color = 'var(--primary)';
-    btn.style.fontWeight = '700';
+    if (btn) {
+        btn.style.background = 'var(--primary-soft)';
+        btn.style.borderColor = 'var(--primary)';
+        btn.style.color = 'var(--primary)';
+        btn.style.fontWeight = '700';
+    }
 }
 
-if (window.location.hash === '#emailSettings' || window.location.hash === '#emailTab') {
-    const emailBtn = document.getElementById('emailTabBtn');
-    if (emailBtn) switchContentTab('emailTab', emailBtn);
-}
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = (urlParams.get('tab') || window.location.hash.replace('#', '') || '').toLowerCase();
+
+    const tabMap = {
+        'social': { pane: 'socialTab', btn: 'socialTabBtn' },
+        'socialtab': { pane: 'socialTab', btn: 'socialTabBtn' },
+        'settings': { pane: 'settingsTab', btn: 'settingsTabBtn' },
+        'settingstab': { pane: 'settingsTab', btn: 'settingsTabBtn' },
+        'brand': { pane: 'settingsTab', btn: 'settingsTabBtn' },
+        'email': { pane: 'emailTab', btn: 'emailTabBtn' },
+        'emailtab': { pane: 'emailTab', btn: 'emailTabBtn' },
+        'emailsettings': { pane: 'emailTab', btn: 'emailTabBtn' },
+        'projects': { pane: 'projectsTab', btn: 'projectsTabBtn' },
+        'projectstab': { pane: 'projectsTab', btn: 'projectsTabBtn' },
+        'blog': { pane: 'blogsTab', btn: 'blogsTabBtn' },
+        'blogs': { pane: 'blogsTab', btn: 'blogsTabBtn' },
+        'blogstab': { pane: 'blogsTab', btn: 'blogsTabBtn' },
+        'videos': { pane: 'videosTab', btn: 'videosTabBtn' },
+        'videostab': { pane: 'videosTab', btn: 'videosTabBtn' },
+        'faqs': { pane: 'faqsTab', btn: 'faqsTabBtn' },
+        'faqstab': { pane: 'faqsTab', btn: 'faqsTabBtn' },
+        'enquiries': { pane: 'enquiriesTab', btn: 'enquiriesTabBtn' },
+        'enquiriestab': { pane: 'enquiriesTab', btn: 'enquiriesTabBtn' }
+    };
+
+    if (tabParam && tabMap[tabParam]) {
+        const item = tabMap[tabParam];
+        const btn = document.getElementById(item.btn);
+        if (btn) {
+            switchContentTab(item.pane, btn);
+        }
+    }
+});
 </script>
 
 <?php

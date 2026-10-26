@@ -1087,23 +1087,28 @@ function formatFileSize(?int $bytes): string {
                 <div class="detail-item">
                     <span class="detail-label">Social links</span>
                     <div class="detail-value">
-                        <div class="social-icons-row">
+                        <div class="social-icons-row" id="profileSocialIconsRow">
                             <?php if (!empty($social['linkedin'])): ?>
-                                <a href="<?= e($social['linkedin']) ?>" target="_blank" rel="noopener" class="social-link-icon" aria-label="LinkedIn profile">
-                                    <svg width="16" height="16" aria-hidden="true"><use href="#icon-link"></use></svg>
-                                </a>
-                            <?php endif; ?>
-                            <?php if (!empty($social['twitter'])): ?>
-                                <a href="<?= e($social['twitter']) ?>" target="_blank" rel="noopener" class="social-link-icon" aria-label="Twitter profile">
+                                <a href="<?= e($social['linkedin']) ?>" target="_blank" rel="noopener" class="social-link-icon" aria-label="LinkedIn profile" title="LinkedIn">
                                     <svg width="16" height="16" aria-hidden="true"><use href="#icon-link"></use></svg>
                                 </a>
                             <?php endif; ?>
                             <?php if (!empty($social['instagram'])): ?>
-                                <a href="<?= e($social['instagram']) ?>" target="_blank" rel="noopener" class="social-link-icon" aria-label="Instagram profile">
+                                <a href="<?= e($social['instagram']) ?>" target="_blank" rel="noopener" class="social-link-icon" aria-label="Instagram profile" title="Instagram">
                                     <svg width="16" height="16" aria-hidden="true"><use href="#icon-link"></use></svg>
                                 </a>
                             <?php endif; ?>
-                            <?php if (empty($social['linkedin']) && empty($social['twitter']) && empty($social['instagram'])): ?>
+                            <?php if (!empty($social['twitter'])): ?>
+                                <a href="<?= e($social['twitter']) ?>" target="_blank" rel="noopener" class="social-link-icon" aria-label="Twitter profile" title="Twitter / X">
+                                    <svg width="16" height="16" aria-hidden="true"><use href="#icon-link"></use></svg>
+                                </a>
+                            <?php endif; ?>
+                            <?php if (!empty($social['facebook'])): ?>
+                                <a href="<?= e($social['facebook']) ?>" target="_blank" rel="noopener" class="social-link-icon" aria-label="Facebook profile" title="Facebook">
+                                    <svg width="16" height="16" aria-hidden="true"><use href="#icon-link"></use></svg>
+                                </a>
+                            <?php endif; ?>
+                            <?php if (empty($social['linkedin']) && empty($social['instagram']) && empty($social['twitter']) && empty($social['facebook'])): ?>
                                 <span style="color: var(--muted);">-</span>
                             <?php endif; ?>
                         </div>
@@ -1793,7 +1798,11 @@ var profileCandidateData = <?= json_encode([
     'address' => $profile['address'] ?? ($profile['current_address'] ?? ($profile['permanent_address'] ?? '')),
     'emergency_name' => $emergency['contact_name'] ?? '',
     'emergency_rel' => $emergency['relationship'] ?? '',
-    'emergency_phone' => $emergency['mobile'] ?? ''
+    'emergency_phone' => $emergency['mobile'] ?? '',
+    'linkedin' => $social['linkedin'] ?? '',
+    'instagram' => $social['instagram'] ?? '',
+    'twitter' => $social['twitter'] ?? '',
+    'facebook' => $social['facebook'] ?? ''
 ], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
 
 function openProfileEditModal() {
@@ -1817,6 +1826,18 @@ function openProfileEditModal() {
     }
     if (document.getElementById('editEmergencyPhone')) {
         document.getElementById('editEmergencyPhone').value = profileCandidateData.emergency_phone || '';
+    }
+    if (document.getElementById('editLinkedIn')) {
+        document.getElementById('editLinkedIn').value = profileCandidateData.linkedin || '';
+    }
+    if (document.getElementById('editInstagram')) {
+        document.getElementById('editInstagram').value = profileCandidateData.instagram || '';
+    }
+    if (document.getElementById('editTwitter')) {
+        document.getElementById('editTwitter').value = profileCandidateData.twitter || '';
+    }
+    if (document.getElementById('editFacebook')) {
+        document.getElementById('editFacebook').value = profileCandidateData.facebook || '';
     }
     document.getElementById('editProfileFormError').style.display = 'none';
     document.getElementById('editProfileModal').classList.add('active');
@@ -1870,6 +1891,10 @@ function handleSaveProfileDetails(e) {
             profileCandidateData.emergency_name = res.candidate.emergency_name || '';
             profileCandidateData.emergency_rel = res.candidate.emergency_rel || '';
             profileCandidateData.emergency_phone = res.candidate.emergency_phone || '';
+            profileCandidateData.linkedin = res.candidate.linkedin || '';
+            profileCandidateData.instagram = res.candidate.instagram || '';
+            profileCandidateData.twitter = res.candidate.twitter || '';
+            profileCandidateData.facebook = res.candidate.facebook || '';
 
             // Update DOM fields in real time
             if (document.getElementById('profileFullNameVal')) {
@@ -1917,6 +1942,27 @@ function handleSaveProfileDetails(e) {
                 } else {
                     emgEl.textContent = res.candidate.emergency_phone || '-';
                 }
+            }
+
+            // Update Social Icons row in real time
+            var socRow = document.getElementById('profileSocialIconsRow');
+            if (socRow) {
+                var socHtml = '';
+                var escapeAttr = function(s) { return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+                if (res.candidate.linkedin) {
+                    socHtml += '<a href="' + escapeAttr(res.candidate.linkedin) + '" target="_blank" rel="noopener" class="social-link-icon" aria-label="LinkedIn profile" title="LinkedIn"><svg width="16" height="16" aria-hidden="true"><use href="#icon-link"></use></svg></a> ';
+                }
+                if (res.candidate.instagram) {
+                    socHtml += '<a href="' + escapeAttr(res.candidate.instagram) + '" target="_blank" rel="noopener" class="social-link-icon" aria-label="Instagram profile" title="Instagram"><svg width="16" height="16" aria-hidden="true"><use href="#icon-link"></use></svg></a> ';
+                }
+                if (res.candidate.twitter) {
+                    socHtml += '<a href="' + escapeAttr(res.candidate.twitter) + '" target="_blank" rel="noopener" class="social-link-icon" aria-label="Twitter profile" title="Twitter / X"><svg width="16" height="16" aria-hidden="true"><use href="#icon-link"></use></svg></a> ';
+                }
+                if (res.candidate.facebook) {
+                    socHtml += '<a href="' + escapeAttr(res.candidate.facebook) + '" target="_blank" rel="noopener" class="social-link-icon" aria-label="Facebook profile" title="Facebook"><svg width="16" height="16" aria-hidden="true"><use href="#icon-link"></use></svg></a> ';
+                }
+                if (!socHtml) socHtml = '<span style="color: var(--muted);">-</span>';
+                socRow.innerHTML = socHtml;
             }
         } else {
             errEl.textContent = res.error || 'Failed to save changes.';
@@ -2035,6 +2081,35 @@ function handleSaveProfileDetails(e) {
                 <div class="form-group">
                     <label class="form-label" for="editEmergencyPhone">Emergency Mobile Number</label>
                     <input type="tel" name="emergency_phone" id="editEmergencyPhone" class="form-input" placeholder="10-digit mobile number">
+                </div>
+
+                <div style="margin-top: 18px; margin-bottom: 12px; border-top: 1px solid var(--line); padding-top: 16px;">
+                    <h3 style="font-size: 14px; font-weight: 700; color: var(--text); margin: 0 0 12px 0; display:flex; align-items:center; gap:8px;">
+                        <svg width="16" height="16" aria-hidden="true" style="color:var(--brand);"><use href="#icon-share-2"></use></svg>
+                        <span>Candidate Social Profiles</span>
+                    </h3>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label" for="editLinkedIn">LinkedIn Profile URL</label>
+                        <input type="url" name="linkedin" id="editLinkedIn" class="form-input" placeholder="https://linkedin.com/in/username">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editInstagram">Instagram Profile / Handle</label>
+                        <input type="text" name="instagram" id="editInstagram" class="form-input" placeholder="https://instagram.com/username or @handle">
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label class="form-label" for="editTwitter">Twitter / X Profile</label>
+                        <input type="text" name="twitter" id="editTwitter" class="form-input" placeholder="https://x.com/username">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editFacebook">Facebook Profile</label>
+                        <input type="text" name="facebook" id="editFacebook" class="form-input" placeholder="https://facebook.com/username">
+                    </div>
                 </div>
 
                 <div id="editProfileFormError" style="display:none; color: var(--danger); font-size: 13px; margin-top: 8px;"></div>
