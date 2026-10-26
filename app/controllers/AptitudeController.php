@@ -99,6 +99,14 @@ class AptitudeController {
         $attemptId = (int) ($_POST['attempt_id'] ?? 0);
 
         $res = Test::finalizeTestAttempt($attemptId, 'completed');
+
+        // Realtime Telegram alert to HR group for completed aptitude assessment
+        try {
+            \App\Helpers\TelegramService::sendStudentCandidateAlert($userId, 'test_completed');
+        } catch (\Throwable $e) {
+            \App\Helpers\TelegramService::log("Telegram alert failed on test submit ({$userId}): " . $e->getMessage());
+        }
+
         flash('success', 'Your Aptitude Assessment has been submitted successfully! Review your result below.');
         redirect('/dashboard/test');
     }
@@ -271,6 +279,13 @@ class AptitudeController {
             \App\Helpers\GoogleSheetsService::syncCandidate($userId);
         } catch (\Throwable $e) {
             error_log("Google Sheets sync failed in registerAptitudeCandidate: " . $e->getMessage());
+        }
+
+        // Realtime Telegram alert to HR group for new walk-in aptitude candidate
+        try {
+            \App\Helpers\TelegramService::sendStudentCandidateAlert($userId, 'registered');
+        } catch (\Throwable $e) {
+            \App\Helpers\TelegramService::log("Telegram alert failed on aptitude register ({$userId}): " . $e->getMessage());
         }
 
         flash('success', 'Welcome, ' . e($fullName) . '! Please review the test instructions and begin when ready.');

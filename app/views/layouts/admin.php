@@ -722,9 +722,68 @@ function toggleAdminSidebar(open) {
     } else {
         sidebar.classList.remove('open');
         backdrop.classList.remove('active');
+        syncBodyModalScrollLock();
+    }
+}
+
+// Universal Popup & Modal Background Scroll-Lock System
+function syncBodyModalScrollLock() {
+    var sidebarOpen = document.getElementById('adminSidebar')?.classList.contains('open');
+    if (sidebarOpen) {
+        document.body.style.overflow = 'hidden';
+        return;
+    }
+
+    var selectors = [
+        '.modal-overlay.active',
+        '.drawer-overlay.active',
+        '.drawer-panel.open',
+        '.drawer-panel.active',
+        '.modal-backdrop.open',
+        '.modal-backdrop.active',
+        '.modal-overlay',
+        '.drawer-overlay'
+    ];
+    var openElements = document.querySelectorAll(selectors.join(','));
+    var hasVisibleModal = false;
+
+    for (var i = 0; i < openElements.length; i++) {
+        var el = openElements[i];
+        if (el.classList.contains('active') || el.classList.contains('open')) {
+            hasVisibleModal = true;
+            break;
+        }
+        var comp = window.getComputedStyle(el);
+        if (comp.display !== 'none' && comp.visibility !== 'hidden' && comp.opacity !== '0' && (el.style.display === 'flex' || el.style.display === 'block')) {
+            hasVisibleModal = true;
+            break;
+        }
+    }
+
+    if (hasVisibleModal) {
+        if (!document.body.classList.contains('modal-open')) {
+            document.body.classList.add('modal-open');
+        }
+        document.body.style.overflow = 'hidden';
+    } else {
+        if (document.body.classList.contains('modal-open')) {
+            document.body.classList.remove('modal-open');
+        }
         document.body.style.overflow = '';
     }
 }
+
+if (window.MutationObserver) {
+    var modalObserver = new MutationObserver(function() {
+        syncBodyModalScrollLock();
+    });
+    modalObserver.observe(document.documentElement, {
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+}
+document.addEventListener('DOMContentLoaded', syncBodyModalScrollLock);
 </script>
 
 </body>

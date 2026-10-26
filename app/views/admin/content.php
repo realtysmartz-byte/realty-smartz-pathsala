@@ -152,11 +152,111 @@ $pageTitle = "Site Content & CMS Manager | Admin Portal";
                 </div>
             </div>
 
+            <!-- Social Media Profiles & Public Links -->
+            <div class="bento-card" style="padding:24px; grid-column: 1 / -1; border-left: 4px solid #E1306C;">
+                <h3 style="font-size:1.15rem; color:var(--text); font-weight:700; margin-bottom:8px; display:flex; align-items:center; gap:8px;">
+                    <i class="fas fa-share-alt" style="color:#E1306C; font-size:1.2rem;"></i> Official Social Media Profiles &amp; Public Links
+                </h3>
+                <p style="color:var(--muted); font-size:13px; margin-bottom:16px;">
+                    Control the official social links displayed in the website footer, contact pages, and candidate communication.
+                </p>
+
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:16px;">
+                    <!-- Instagram -->
+                    <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px;">
+                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                            <i class="fab fa-instagram" style="color:#E1306C; font-size:1.2rem;"></i>
+                            <strong style="color:var(--text); font-size:13.5px;">Instagram</strong>
+                        </div>
+                        <div style="margin-bottom:10px;">
+                            <label style="display:block; color:var(--muted); font-size:12px; margin-bottom:4px;">Profile URL</label>
+                            <input type="url" name="settings[social_instagram]" value="<?= e($settings['social_instagram'] ?? 'https://instagram.com/realtysmartz') ?>" placeholder="https://instagram.com/realtysmartz" style="width:100%; padding:8px 12px; background:var(--bg); border:1px solid var(--border); border-radius:6px; color:var(--text); font-size:13px;">
+                        </div>
+                        <div>
+                            <label style="display:block; color:var(--muted); font-size:12px; margin-bottom:4px;">Display Handle / Text</label>
+                            <input type="text" name="settings[social_instagram_handle]" value="<?= e($settings['social_instagram_handle'] ?? '(@realtysmartz)') ?>" placeholder="(@realtysmartz)" style="width:100%; padding:8px 12px; background:var(--bg); border:1px solid var(--border); border-radius:6px; color:var(--text); font-size:13px;">
+                        </div>
+                    </div>
+
+                    <!-- LinkedIn -->
+                    <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px;">
+                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                            <i class="fab fa-linkedin" style="color:#0A66C2; font-size:1.2rem;"></i>
+                            <strong style="color:var(--text); font-size:13.5px;">LinkedIn</strong>
+                        </div>
+                        <div style="margin-bottom:10px;">
+                            <label style="display:block; color:var(--muted); font-size:12px; margin-bottom:4px;">Company Page URL</label>
+                            <input type="url" name="settings[social_linkedin]" value="<?= e($settings['social_linkedin'] ?? 'https://linkedin.com/company/realtysmartz') ?>" placeholder="https://linkedin.com/company/realtysmartz" style="width:100%; padding:8px 12px; background:var(--bg); border:1px solid var(--border); border-radius:6px; color:var(--text); font-size:13px;">
+                        </div>
+                        <div>
+                            <label style="display:block; color:var(--muted); font-size:12px; margin-bottom:4px;">Display Handle / Text</label>
+                            <input type="text" name="settings[social_linkedin_handle]" value="<?= e($settings['social_linkedin_handle'] ?? '(Realty Smartz)') ?>" placeholder="(Realty Smartz)" style="width:100%; padding:8px 12px; background:var(--bg); border:1px solid var(--border); border-radius:6px; color:var(--text); font-size:13px;">
+                        </div>
+                    </div>
+
+                    <!-- YouTube -->
+                    <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px;">
+                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                            <i class="fab fa-youtube" style="color:#FF0000; font-size:1.2rem;"></i>
+                            <strong style="color:var(--text); font-size:13.5px;">YouTube</strong>
+                        </div>
+                        <div style="margin-bottom:10px;">
+                            <label style="display:block; color:var(--muted); font-size:12px; margin-bottom:4px;">Channel URL</label>
+                            <input type="url" name="settings[social_youtube]" value="<?= e($settings['social_youtube'] ?? 'https://youtube.com/@realtysmartz') ?>" placeholder="https://youtube.com/@realtysmartz" style="width:100%; padding:8px 12px; background:var(--bg); border:1px solid var(--border); border-radius:6px; color:var(--text); font-size:13px;">
+                        </div>
+                        <div>
+                            <label style="display:block; color:var(--muted); font-size:12px; margin-bottom:4px;">Display Handle / Text</label>
+                            <input type="text" name="settings[social_youtube_handle]" value="<?= e($settings['social_youtube_handle'] ?? '(@realtysmartz)') ?>" placeholder="(@realtysmartz)" style="width:100%; padding:8px 12px; background:var(--bg); border:1px solid var(--border); border-radius:6px; color:var(--text); font-size:13px;">
+                        </div>
+                    </div>
+
+                    <!-- Facebook -->
+                    <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px;">
+                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                            <i class="fab fa-facebook" style="color:#1877F2; font-size:1.2rem;"></i>
+                            <strong style="color:var(--text); font-size:13.5px;">Facebook</strong>
+                        </div>
+                        <div style="margin-bottom:10px;">
+                            <label style="display:block; color:var(--muted); font-size:12px; margin-bottom:4px;">Page URL</label>
+                            <input type="url" name="settings[social_facebook]" value="<?= e($settings['social_facebook'] ?? 'https://facebook.com/realtysmartz') ?>" placeholder="https://facebook.com/realtysmartz" style="width:100%; padding:8px 12px; background:var(--bg); border:1px solid var(--border); border-radius:6px; color:var(--text); font-size:13px;">
+                        </div>
+                        <div>
+                            <label style="display:block; color:var(--muted); font-size:12px; margin-bottom:4px;">Display Handle / Text</label>
+                            <input type="text" name="settings[social_facebook_handle]" value="<?= e($settings['social_facebook_handle'] ?? '(Realty Smartz)') ?>" placeholder="(Realty Smartz)" style="width:100%; padding:8px 12px; background:var(--bg); border:1px solid var(--border); border-radius:6px; color:var(--text); font-size:13px;">
+                        </div>
+                    </div>
+
+                    <!-- Twitter / X -->
+                    <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px;">
+                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                            <i class="fab fa-twitter" style="color:#1DA1F2; font-size:1.2rem;"></i>
+                            <strong style="color:var(--text); font-size:13.5px;">Twitter / X</strong>
+                        </div>
+                        <div>
+                            <label style="display:block; color:var(--muted); font-size:12px; margin-bottom:4px;">Profile URL</label>
+                            <input type="url" name="settings[social_twitter]" value="<?= e($settings['social_twitter'] ?? 'https://x.com/realtysmartz') ?>" placeholder="https://x.com/realtysmartz" style="width:100%; padding:8px 12px; background:var(--bg); border:1px solid var(--border); border-radius:6px; color:var(--text); font-size:13px;">
+                        </div>
+                    </div>
+
+                    <!-- WhatsApp Helpline -->
+                    <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px;">
+                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                            <i class="fab fa-whatsapp" style="color:#25D366; font-size:1.2rem;"></i>
+                            <strong style="color:var(--text); font-size:13.5px;">Official WhatsApp Helpline</strong>
+                        </div>
+                        <div>
+                            <label style="display:block; color:var(--muted); font-size:12px; margin-bottom:4px;">Number (with Country Code)</label>
+                            <input type="text" name="settings[social_whatsapp]" value="<?= e($settings['social_whatsapp'] ?? '+91 9999 888 777') ?>" placeholder="+91 9999 888 777" style="width:100%; padding:8px 12px; background:var(--bg); border:1px solid var(--border); border-radius:6px; color:var(--text); font-size:13px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <div style="margin-top:24px; text-align:right;">
             <button type="submit" style="background:var(--primary); color:#ffffff; padding:12px 32px; border-radius:9999px; font-size:14px; font-weight:700; border:none; cursor:pointer; box-shadow:0 4px 12px rgba(52,71,230,0.25);">
-                <i class="fas fa-save"></i> Save Brand &amp; Statistics Settings
+                <i class="fas fa-save"></i> Save Brand &amp; Social Settings
             </button>
         </div>
     </form>

@@ -858,4 +858,15 @@ class Profile {
 
         return ['success' => true];
     }
+
+    /**
+     * Find profile row by user_id
+     */
+    public static function findByUserId(int $userId): ?array {
+        $db = Database::getConnection();
+        $stmt = $db->prepare("SELECT * FROM `profiles` WHERE `user_id` = :uid LIMIT 1");
+        $stmt->execute([':uid' => $userId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ?: null;
+    }
 }

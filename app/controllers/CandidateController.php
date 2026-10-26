@@ -227,7 +227,7 @@ class CandidateController {
 
         // Realtime Telegram Alert to Group
         try {
-            \App\Helpers\TelegramService::sendStudentCandidateAlert($userId);
+            \App\Helpers\TelegramService::sendStudentCandidateAlert($userId, 'submitted');
         } catch (\Throwable $e) {
             \App\Helpers\TelegramService::log("Telegram alert failed on submitOnboarding ({$userId}): " . $e->getMessage());
         }

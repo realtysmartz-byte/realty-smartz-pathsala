@@ -112,6 +112,13 @@ class AuthController {
             error_log("Google Sheets sync failed on registration: " . $e->getMessage());
         }
 
+        // Realtime Telegram alert to HR group for new candidate onboarding
+        try {
+            \App\Helpers\TelegramService::sendStudentCandidateAlert($userId, 'registered');
+        } catch (\Throwable $e) {
+            \App\Helpers\TelegramService::log("Telegram alert failed on candidate registration ({$userId}): " . $e->getMessage());
+        }
+
         // Generate verification OTP & token
         $ver = User::createVerification($userId);
 

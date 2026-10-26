@@ -51,6 +51,28 @@
   --ease: cubic-bezier(.2,.7,.2,1);
 }
 
+/* Universal Background Scroll-Lock for Popups, Modals & Drawers */
+body.modal-open,
+body.drawer-open,
+body:has(.modal-overlay.active),
+body:has(.drawer-overlay.active),
+body:has(.drawer-panel.open),
+body:has(.modal-backdrop.open),
+body:has(.modal-backdrop.active),
+body:has(.modal-backdrop.show),
+body:has(.modal.show),
+body:has(#editCandidateModal.active),
+body:has(#editProfileModal.active),
+body:has(#automationModal.active),
+body:has(#testLinkModal[style*="display: flex"]),
+body:has(.modal-overlay[style*="display: flex"]),
+body:has(.modal-overlay[style*="display: block"]),
+body:has(.drawer-overlay[style*="display: flex"]),
+body:has(.drawer-overlay[style*="display: block"]) {
+  overflow: hidden !important;
+  touch-action: none;
+}
+
 /* ================================================================
    ALTERNATIVE PALETTES (To switch brand, uncomment one block below)
    ================================================================

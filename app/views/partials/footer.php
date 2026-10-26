@@ -25,11 +25,22 @@
             </div>
 
             <!-- Col 3: Social Media with Original Brand Icons -->
+            <?php
+            $socialIg = \App\Models\Setting::get('social_instagram', 'https://instagram.com/realtysmartz');
+            $socialIgHandle = \App\Models\Setting::get('social_instagram_handle', '(@realtysmartz)');
+            $socialLi = \App\Models\Setting::get('social_linkedin', 'https://linkedin.com/company/realtysmartz');
+            $socialLiHandle = \App\Models\Setting::get('social_linkedin_handle', '(Realty Smartz)');
+            $socialYt = \App\Models\Setting::get('social_youtube', 'https://youtube.com/@realtysmartz');
+            $socialYtHandle = \App\Models\Setting::get('social_youtube_handle', '(@realtysmartz)');
+            $socialFb = \App\Models\Setting::get('social_facebook', '');
+            $socialFbHandle = \App\Models\Setting::get('social_facebook_handle', '(Realty Smartz)');
+            ?>
             <div class="col-lg-3 col-md-6">
                 <div class="footer-col-title">Social Media</div>
                 <ul class="footer-links footer-social-list">
+                    <?php if (!empty($socialIg)): ?>
                     <li>
-                        <a href="https://instagram.com/realtysmartz" target="_blank" rel="noopener" class="social-footer-link" aria-label="Follow Realty Smartz on Instagram">
+                        <a href="<?= e($socialIg) ?>" target="_blank" rel="noopener" class="social-footer-link" aria-label="Follow Realty Smartz on Instagram">
                             <span class="social-icon-badge" aria-hidden="true">
                                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <defs>
@@ -47,31 +58,52 @@
                                     <circle cx="15.8" cy="8.2" r="0.9" fill="#FFFFFF"/>
                                 </svg>
                             </span>
-                            <span class="social-link-label">Instagram <span class="social-handle">(@realtysmartz)</span></span>
+                            <span class="social-link-label">Instagram <span class="social-handle"><?= e($socialIgHandle) ?></span></span>
                         </a>
                     </li>
+                    <?php endif; ?>
+
+                    <?php if (!empty($socialLi)): ?>
                     <li>
-                        <a href="https://linkedin.com/company/realtysmartz" target="_blank" rel="noopener" class="social-footer-link" aria-label="Connect with Realty Smartz on LinkedIn">
+                        <a href="<?= e($socialLi) ?>" target="_blank" rel="noopener" class="social-footer-link" aria-label="Connect with Realty Smartz on LinkedIn">
                             <span class="social-icon-badge" aria-hidden="true">
                                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <rect width="24" height="24" rx="5" fill="#0A66C2"/>
                                     <path d="M7 9.5H4.8V17H7V9.5ZM5.9 6.2C5.1 6.2 4.5 6.8 4.5 7.5C4.5 8.2 5.1 8.8 5.9 8.8C6.7 8.8 7.3 8.2 7.3 7.5C7.3 6.8 6.7 6.2 5.9 6.2ZM17.5 12.8C17.5 10.6 16.3 9.5 14.8 9.5C13.6 9.5 13 10.2 12.7 10.7V9.5H10.5V17H12.7V13.3C12.7 12.3 12.9 11.4 14.1 11.4C15.3 11.4 15.3 12.4 15.3 13.4V17H17.5V12.8Z" fill="#FFFFFF"/>
                                 </svg>
                             </span>
-                            <span class="social-link-label">LinkedIn <span class="social-handle">(Realty Smartz)</span></span>
+                            <span class="social-link-label">LinkedIn <span class="social-handle"><?= e($socialLiHandle) ?></span></span>
                         </a>
                     </li>
+                    <?php endif; ?>
+
+                    <?php if (!empty($socialYt)): ?>
                     <li>
-                        <a href="https://youtube.com/@realtysmartz" target="_blank" rel="noopener" class="social-footer-link" aria-label="Subscribe to Realty Smartz on YouTube">
+                        <a href="<?= e($socialYt) ?>" target="_blank" rel="noopener" class="social-footer-link" aria-label="Subscribe to Realty Smartz on YouTube">
                             <span class="social-icon-badge" aria-hidden="true">
                                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <rect width="24" height="24" rx="5" fill="#FF0000"/>
                                     <polygon points="10,8.2 15.8,12 10,15.8" fill="#FFFFFF"/>
                                 </svg>
                             </span>
-                            <span class="social-link-label">YouTube <span class="social-handle">(@realtysmartz)</span></span>
+                            <span class="social-link-label">YouTube <span class="social-handle"><?= e($socialYtHandle) ?></span></span>
                         </a>
                     </li>
+                    <?php endif; ?>
+
+                    <?php if (!empty($socialFb)): ?>
+                    <li>
+                        <a href="<?= e($socialFb) ?>" target="_blank" rel="noopener" class="social-footer-link" aria-label="Follow Realty Smartz on Facebook">
+                            <span class="social-icon-badge" aria-hidden="true">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="24" height="24" rx="5" fill="#1877F2"/>
+                                    <path d="M16.5 12.5H13.8V21H10.3V12.5H8.6V9.5H10.3V7.5C10.3 5.7 11.4 4.5 13.5 4.5C14.5 4.5 15.3 4.6 15.5 4.6V7.2H14.1C13.2 7.2 13 7.7 13 8.3V9.5H16.2L16.5 12.5Z" fill="#FFFFFF"/>
+                                </svg>
+                            </span>
+                            <span class="social-link-label">Facebook <span class="social-handle"><?= e($socialFbHandle) ?></span></span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
                 </ul>
             </div>
 

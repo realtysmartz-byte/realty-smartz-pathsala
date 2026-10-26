@@ -234,12 +234,13 @@ class TelegramService {
     }
 
     /**
-     * Send Real-Time Alert for Student/Candidate Onboarding or Aptitude Test
+     * Send Real-Time Alert for Candidate Onboarding, Test Completion, or Document Submission
      *
-     * @param int $userId
+     * @param int $userId Candidate User ID
+     * @param string $event 'registered' | 'test_completed' | 'submitted'
      * @return array
      */
-    public static function sendStudentCandidateAlert(int $userId): array {
+    public static function sendStudentCandidateAlert(int $userId, string $event = 'registered'): array {
         if (!self::isEnabled()) {
             return [
                 'success' => false,
@@ -260,30 +261,63 @@ class TelegramService {
             };
 
             $name = $esc($user['full_name'] ?? '');
+            $father = $esc($user['father_name'] ?? ($profile['father_name'] ?? ''));
             $cid = $esc($profile['candidate_id'] ?? ('RSC-' . str_pad($userId, 4, '0', STR_PAD_LEFT)));
             $mobile = $esc($user['mobile'] ?? '');
             $email = $esc($user['email'] ?? '');
-            $city = $esc($profile['current_city'] ?? 'Gurugram');
-            $status = ucfirst($esc($user['onboarding_status'] ?? 'pending'));
+            $city = $esc($profile['city'] ?? ($profile['current_city'] ?? 'Gurugram'));
+            $status = ucfirst(str_replace('_', ' ', $esc($user['status'] ?? 'registered')));
+            $candType = ucfirst(str_replace('_', ' ', $esc($user['candidate_type'] ?? 'onboarding')));
+            $source = $esc($user['source'] ?? 'Direct');
 
             $baseUrl = function_exists('config') ? rtrim((string)config('APP_URL', 'https://realtysmartzpathshala.in'), '/') : 'https://realtysmartzpathshala.in';
             $adminLink = "{$baseUrl}/admin/candidates/{$userId}";
 
-            $html = "🎓 <b>REALTY SMARTZ — NEW STUDENT CANDIDATE</b>\n";
+            if ($event === 'test_completed') {
+                $html = "📝 <b>REALTY SMARTZ — APTITUDE TEST COMPLETED</b>\n";
+            } elseif ($event === 'submitted') {
+                $html = "📋 <b>REALTY SMARTZ — ONBOARDING DOCUMENTS SUBMITTED</b>\n";
+            } else {
+                $html = "🎓 <b>REALTY SMARTZ — NEW CANDIDATE ONBOARDED</b>\n";
+            }
+
             $html .= "━━━━━━━━━━━━━━━━━━━━━━━━\n";
             $html .= "📋 <b>Candidate ID:</b> <code>{$cid}</code>\n";
-            $html .= "👤 <b>Name:</b> <b>{$name}</b>\n";
+            $html .= "👤 <b>Full Name:</b> <b>{$name}</b>\n";
+            if (!empty($father) && $father !== 'N/A') {
+                $html .= "👨‍👧 <b>Father's Name:</b> {$father}\n";
+            }
             $html .= "📞 <b>Mobile:</b> <code>{$mobile}</code>\n";
             $html .= "✉️ <b>Email:</b> {$email}\n";
             $html .= "📍 <b>City:</b> {$city}\n";
-            $html .= "📊 <b>Onboarding Status:</b> {$status}\n";
+            $html .= "🏷️ <b>Candidate Type:</b> <b>{$candType}</b>\n";
+            $html .= "📌 <b>Source:</b> {$source}\n";
+            $html .= "📊 <b>Status:</b> <b>{$status}</b>\n";
+
+            // If test completed, attach score metrics
+            if ($event === 'test_completed') {
+                try {
+                    $db = \App\Config\Database::getConnection();
+                    $stmtAttempt = $db->prepare("SELECT * FROM `test_attempts` WHERE `user_id` = :uid ORDER BY `id` DESC LIMIT 1");
+                    $stmtAttempt->execute([':uid' => $userId]);
+                    $attempt = $stmtAttempt->fetch();
+                    if ($attempt) {
+                        $score = $attempt['score'] ?? 0;
+                        $total = $attempt['total_questions'] ?? 15;
+                        $pct = round((float)($attempt['percentage'] ?? 0), 1);
+                        $passed = !empty($attempt['passed']) ? '✅ PASSED' : '❌ NEEDS REVIEW';
+                        $html .= "🎯 <b>Test Score:</b> <b>{$score}/{$total} ({$pct}%)</b> — {$passed}\n";
+                    }
+                } catch (\Throwable $e) {}
+            }
+
             $html .= "━━━━━━━━━━━━━━━━━━━━━━━━\n";
-            $html .= "🔗 <a href=\"{$adminLink}\">👉 View Candidate Profile</a>\n";
-            $html .= "🕒 <i>Submitted on: " . date('d M Y, h:i A') . "</i>";
+            $html .= "🔗 <a href=\"{$adminLink}\">👉 View Candidate in Admin Portal</a>\n";
+            $html .= "🕒 <i>Event at: " . date('d M Y, h:i A') . "</i>";
 
             return self::sendMessage($html);
         } catch (\Throwable $e) {
-            self::log("Failed student alert: " . $e->getMessage());
+            self::log("Failed student alert ({$userId}): " . $e->getMessage());
             return ['success' => false, 'error' => $e->getMessage()];
         }
     }
