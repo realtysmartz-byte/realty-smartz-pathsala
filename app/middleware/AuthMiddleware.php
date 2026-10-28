@@ -20,7 +20,7 @@ class AuthMiddleware {
 
         // Verify account is active in DB
         $db = Database::getConnection();
-        $stmt = $db->prepare("SELECT id, full_name, email, role, status, email_verified_at, is_locked, is_archived FROM `users` WHERE `id` = :id LIMIT 1");
+        $stmt = $db->prepare("SELECT id, full_name, email, role, candidate_type, status, email_verified_at, is_locked, is_archived FROM `users` WHERE `id` = :id LIMIT 1");
         $stmt->execute([':id' => $user['id']]);
         $freshUser = $stmt->fetch();
 
@@ -39,10 +39,16 @@ class AuthMiddleware {
         // Update session cache with latest database state
         $_SESSION['user'] = array_merge($_SESSION['user'], $freshUser);
 
-        // Check email verification
-        if (empty($freshUser['email_verified_at']) && $_SERVER['REQUEST_URI'] !== '/verify-email' && !str_starts_with($_SERVER['REQUEST_URI'], '/verify-email')) {
-            flash('warning', 'Please verify your email address to unlock your onboarding profile.');
-            redirect('/verify-email');
+        // Check email verification: Strictly required for onboarding candidates, NEVER for aptitude candidates
+        $isAptitude = (($freshUser['candidate_type'] ?? '') === 'aptitude_only');
+        $reqUri = $_SERVER['REQUEST_URI'] ?? '';
+        $isAptitudeRoute = str_starts_with($reqUri, '/dashboard/test') || str_starts_with($reqUri, '/dashboard/aptitude') || str_starts_with($reqUri, '/aptitude');
+
+        if (!$isAptitude && !$isAptitudeRoute) {
+            if (empty($freshUser['email_verified_at']) && $reqUri !== '/verify-email' && !str_starts_with($reqUri, '/verify-email')) {
+                flash('warning', 'Please verify your email address to unlock your onboarding profile.');
+                redirect('/verify-email');
+            }
         }
     }
 }

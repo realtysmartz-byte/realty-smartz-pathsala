@@ -147,6 +147,11 @@ class AuthController {
         }
 
         $user = auth();
+        if (($user['candidate_type'] ?? '') === 'aptitude_only') {
+            redirect('/dashboard/test');
+            return;
+        }
+
         if (!empty($user['email_verified_at'])) {
             redirect('/dashboard');
         }
@@ -295,14 +300,14 @@ class AuthController {
             return;
         }
 
-        // Candidate status checks
+        // Candidate status checks: Aptitude candidates do not verify email and go straight to test
         if (($user['candidate_type'] ?? '') === 'aptitude_only') {
-            unset($_SESSION['user']);
-            flash('info', 'Your aptitude assessment has been recorded. Full onboarding requires account registration and email verification.');
-            redirect('/register');
+            flash('success', "Welcome back, " . e($user['full_name']) . "!");
+            redirect('/dashboard/test');
             return;
         }
 
+        // Onboarding candidates MUST verify their email address
         if (empty($user['email_verified_at'])) {
             flash('warning', 'Please verify your registered email address to continue.');
             redirect('/verify-email');
