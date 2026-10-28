@@ -24,11 +24,7 @@ class AdminController {
 
         // 1. Stat Strip Metrics (Real Data Only)
         $totalCandidates = (int) $db->query("SELECT COUNT(DISTINCT u.id) FROM `users` u 
-            LEFT JOIN `profiles` p ON u.id = p.user_id
-            WHERE u.role = 'candidate' AND u.candidate_type = 'onboarding' AND u.is_archived = 0 
-            AND (u.status IN ('documents_submitted', 'profile_completed', 'test_pending', 'test_completed', 'under_review', 'approved') 
-                 OR p.declaration_accepted = 1
-                 OR (SELECT COUNT(*) FROM documents d WHERE d.user_id = u.id AND d.is_archived = 0) >= 1)")->fetchColumn();
+            WHERE u.role = 'candidate' AND u.candidate_type = 'onboarding' AND u.is_archived = 0")->fetchColumn();
         
         $onboardingSubmitted = (int) $db->query("SELECT COUNT(DISTINCT u.id) FROM `users` u 
             LEFT JOIN `profiles` p ON u.id = p.user_id
@@ -60,9 +56,6 @@ class AdminController {
                 INNER JOIN (SELECT user_id, MAX(id) as max_id FROM test_attempts WHERE status = 'completed' GROUP BY user_id) ta2 ON ta1.id = ta2.max_id
             ) ta ON u.id = ta.user_id
             WHERE u.role = 'candidate' AND u.candidate_type = 'onboarding' AND u.is_archived = 0
-            AND (u.status IN ('documents_submitted', 'profile_completed', 'test_pending', 'test_completed', 'under_review', 'approved') 
-                 OR p.declaration_accepted = 1
-                 OR (SELECT COUNT(*) FROM documents d WHERE d.user_id = u.id AND d.is_archived = 0) >= 1)
             ORDER BY u.created_at DESC LIMIT 10");
         $recentCandidates = $stmtRecent ? $stmtRecent->fetchAll() : [];
 
@@ -101,11 +94,17 @@ class AdminController {
 
         $where = [
             "u.role = 'candidate'", 
-            "u.is_archived = :archived", 
-            "u.candidate_type = 'onboarding'",
-            "(u.status IN ('documents_submitted', 'profile_completed', 'test_pending', 'test_completed', 'under_review', 'approved') OR p.declaration_accepted = 1 OR (SELECT COUNT(*) FROM documents d WHERE d.user_id = u.id AND d.is_archived = 0) > 0)"
+            "u.is_archived = :archived"
         ];
         $params = [':archived' => $archived];
+
+        $candidateType = trim($_GET['candidate_type'] ?? '');
+        if (!empty($candidateType)) {
+            $where[] = "u.candidate_type = :candidate_type";
+            $params[':candidate_type'] = $candidateType;
+        } elseif (empty($search)) {
+            $where[] = "u.candidate_type = 'onboarding'";
+        }
 
         if (!empty($search)) {
             $where[] = "(u.full_name LIKE :search OR u.father_name LIKE :search OR p.father_name LIKE :search OR u.email LIKE :search OR u.mobile LIKE :search OR u.whatsapp LIKE :search)";
@@ -1079,7 +1078,7 @@ class AdminController {
             $inClause = implode(',', $ids);
             $stmt = $db->query("SELECT u.* FROM users u WHERE u.id IN ({$inClause}) ORDER BY u.created_at DESC");
         } else {
-            $stmt = $db->query("SELECT u.* FROM users u LEFT JOIN profiles p ON u.id = p.user_id WHERE u.role = 'candidate' AND u.candidate_type = 'onboarding' AND u.is_archived = 0 AND (u.status IN ('documents_submitted', 'profile_completed', 'test_pending', 'test_completed', 'under_review', 'approved') OR p.declaration_accepted = 1 OR (SELECT COUNT(*) FROM documents d WHERE d.user_id = u.id AND d.is_archived = 0) > 0) ORDER BY u.created_at DESC");
+            $stmt = $db->query("SELECT u.* FROM users u LEFT JOIN profiles p ON u.id = p.user_id WHERE u.role = 'candidate' AND u.candidate_type = 'onboarding' AND u.is_archived = 0 ORDER BY u.created_at DESC");
         }
 
         $users = $stmt ? $stmt->fetchAll() : [];
