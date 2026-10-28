@@ -65,6 +65,32 @@ class User {
             'mobile' => $cleanMobile
         ], $userId);
 
+        // Ensure candidate immediately appears in Interview Candidates dashboard (/admin/interview-candidates)
+        try {
+            $stmtCheck = $db->prepare("SELECT id FROM `interview_applications` WHERE `mobile` = :mob OR `email` = :em LIMIT 1");
+            $stmtCheck->execute([':mob' => $cleanMobile, ':em' => strtolower(trim($data['email']))]);
+            if (!$stmtCheck->fetch()) {
+                $postName = ($candidateType === 'aptitude_only') ? 'Aptitude Candidate' : 'Onboarding Candidate';
+                $stmtIa = $db->prepare("INSERT INTO `interview_applications` (
+                    `hr_name`, `post_applied`, `applied_for_type`, `full_name`, `email`, `mobile`,
+                    `experience_type`, `current_location`, `higher_education`, `consent_at`,
+                    `submitted_at`, `decision`, `version`, `is_archived`
+                ) VALUES (
+                    'Direct', :post, 'Both', :name, :email, :mobile,
+                    'fresher', 'Gurugram', 'Graduate', NOW(),
+                    NOW(), 'pending', 1, 0
+                )");
+                $stmtIa->execute([
+                    ':post'   => $postName,
+                    ':name'   => trim($data['full_name']),
+                    ':email'  => strtolower(trim($data['email'])),
+                    ':mobile' => $cleanMobile
+                ]);
+            }
+        } catch (\Throwable $e) {
+            error_log("Failed to sync candidate to interview_applications: " . $e->getMessage());
+        }
+
         return $userId;
     }
 
