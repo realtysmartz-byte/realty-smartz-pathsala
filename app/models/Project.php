@@ -24,6 +24,7 @@ class Project {
             $projects = $stmt->fetchAll();
 
             foreach ($projects as &$p) {
+                $p['image_url'] = !empty($p['cover_image']) ? $p['cover_image'] : '/assets/img/gallery/topic1.png';
                 $p['highlights_array'] = !empty($p['highlights']) ? json_decode($p['highlights'], true) : [];
                 if (!is_array($p['highlights_array'])) {
                     $p['highlights_array'] = array_filter(array_map('trim', explode("\n", $p['highlights'] ?? '')));
@@ -60,6 +61,7 @@ class Project {
                     $project['highlights_array'] = array_filter(array_map('trim', explode("\n", $project['highlights'] ?? '')));
                 }
 
+                $project['image_url'] = !empty($project['cover_image']) ? $project['cover_image'] : '/assets/img/gallery/topic1.png';
                 // Fetch extra images
                 $stmtImg = $db->prepare("SELECT * FROM `project_images` WHERE `project_id` = :pid ORDER BY `order_num` ASC");
                 $stmtImg->execute([':pid' => $project['id']]);

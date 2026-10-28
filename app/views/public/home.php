@@ -155,32 +155,22 @@ ob_start();
         </div>
 
         <div class="projects-grid" data-reveal>
-            <!-- Project 1 -->
-            <a href="<?= url('/projects/shapoorji-pallonji-gurgaon') ?>" class="project-item">
-                <div class="project-item-thumb">
-                    <img src="<?= asset('/assets/img/gallery/topic1.png') ?>" alt="Shapoorji Pallonji Joyville Sector 102" width="400" height="250" loading="lazy">
-                </div>
-                <div class="project-item-title">Shapoorji Pallonji Joyville</div>
-                <div class="project-item-meta">Sector 102, Dwarka Expressway, Gurgaon</div>
-            </a>
-
-            <!-- Project 2 -->
-            <a href="<?= url('/projects/dlf-privana-sector-76') ?>" class="project-item">
-                <div class="project-item-thumb">
-                    <img src="<?= asset('/assets/img/gallery/topic2.png') ?>" alt="DLF Privana Sector 76" width="400" height="250" loading="lazy">
-                </div>
-                <div class="project-item-title">DLF Privana</div>
-                <div class="project-item-meta">Sector 76, SPR, Gurgaon</div>
-            </a>
-
-            <!-- Project 3 -->
-            <a href="<?= url('/projects/signature-global-daxin') ?>" class="project-item">
-                <div class="project-item-thumb">
-                    <img src="<?= asset('/assets/img/gallery/topic3.png') ?>" alt="Signature Global Daxin" width="400" height="250" loading="lazy">
-                </div>
-                <div class="project-item-title">Signature Global Daxin</div>
-                <div class="project-item-meta">Sohna, South Gurgaon</div>
-            </a>
+            <?php
+            $featuredHome = !empty($projects) ? array_slice($projects, 0, 6) : [];
+            if (!empty($featuredHome)):
+                foreach ($featuredHome as $proj):
+            ?>
+                    <a href="<?= !empty($proj['slug']) ? url('/projects/' . $proj['slug']) : url('/projects') ?>" class="project-item">
+                        <div class="project-item-thumb">
+                            <img src="<?= asset($proj['image_url'] ?? $proj['cover_image'] ?? '/assets/img/gallery/topic1.png') ?>" alt="<?= e($proj['title']) ?>" width="400" height="250" loading="lazy">
+                        </div>
+                        <div class="project-item-title"><?= e($proj['title']) ?></div>
+                        <div class="project-item-meta"><?= e($proj['location'] ?? 'Gurgaon, Haryana') ?> &bull; <?= e($proj['price_range'] ?? 'On Request') ?></div>
+                    </a>
+            <?php
+                endforeach;
+            endif;
+            ?>
         </div>
     </div>
 </section>
