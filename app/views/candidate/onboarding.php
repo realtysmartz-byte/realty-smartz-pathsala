@@ -62,8 +62,8 @@ if ($isDecisionDone) {
 }
 
 $stepBAllowed = $stepACompleted || $isLocked;
-$stepCAllowed = ($stepACompleted && $stepBCompleted) || $isLocked;
-$stepDAllowed = ($stepACompleted && $stepBCompleted && $stepCCompleted) || $isLocked;
+$stepCAllowed = $stepACompleted || $isLocked;
+$stepDAllowed = ($stepACompleted && $stepCCompleted) || $isLocked;
 
 function renderCandidateDocSlot(string $type, string $label, string $description, bool $required, array $docs, bool $isLocked): void {
     $doc = $docs[$type] ?? null;
@@ -685,14 +685,14 @@ function renderCandidateDocSlot(string $type, string $label, string $description
 
                 <div style="margin-bottom:24px;">
                     <h3 style="font-size:1.25rem; font-weight:600; color:var(--text); margin:0 0 4px;">Step B &bull; Professional &amp; Social Links</h3>
-                    <p style="font-size:13.5px; color:var(--muted); margin:0;">Share your online profiles to help our hiring partners know you better. <strong style="color:var(--brand);">At least one profile link (LinkedIn or Instagram) is required.</strong></p>
+                    <p style="font-size:13.5px; color:var(--muted); margin:0;">Share your online profiles to help our hiring partners know you better. <span style="color:var(--muted);">(Optional &bull; You may skip or enter any profile)</span></p>
                 </div>
 
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px; margin-bottom:30px;">
                     <!-- LinkedIn -->
                     <div>
                         <label class="form-label" for="soc_linkedin">
-                            <i class="fab fa-linkedin" style="color:#0A66C2; margin-right:4px;"></i> LinkedIn Profile URL <span style="font-size:12px; color:var(--muted); font-weight:normal;">(Required if no Instagram)</span>
+                            <i class="fab fa-linkedin" style="color:#0A66C2; margin-right:4px;"></i> LinkedIn Profile URL <span style="font-size:12px; color:var(--muted); font-weight:normal;">(Optional)</span>
                         </label>
                         <input type="url" id="soc_linkedin" name="linkedin" class="form-control" value="<?= e($social['linkedin'] ?? '') ?>" placeholder="https://linkedin.com/in/yourname" <?= $isLocked ? 'readonly' : '' ?>>
                     </div>
@@ -700,7 +700,7 @@ function renderCandidateDocSlot(string $type, string $label, string $description
                     <!-- Instagram -->
                     <div>
                         <label class="form-label" for="soc_instagram">
-                            <i class="fab fa-instagram" style="color:#E1306C; margin-right:4px;"></i> Instagram Handle / URL <span style="font-size:12px; color:var(--muted); font-weight:normal;">(Required if no LinkedIn)</span>
+                            <i class="fab fa-instagram" style="color:#E1306C; margin-right:4px;"></i> Instagram Handle / URL <span style="font-size:12px; color:var(--muted); font-weight:normal;">(Optional)</span>
                         </label>
                         <input type="text" id="soc_instagram" name="instagram" class="form-control" value="<?= e($social['instagram'] ?? '') ?>" placeholder="@yourhandle or URL" <?= $isLocked ? 'readonly' : '' ?>>
                     </div>
@@ -1206,10 +1206,10 @@ function isStepAllowed(targetStep) {
         return !!stepState.step_a_completed;
     }
     if (targetStep === 'step_c') {
-        return !!(stepState.step_a_completed && stepState.step_b_completed);
+        return !!stepState.step_a_completed;
     }
     if (targetStep === 'step_d') {
-        return !!(stepState.step_a_completed && stepState.step_b_completed && stepState.step_c_completed);
+        return !!(stepState.step_a_completed && stepState.step_c_completed);
     }
     return false;
 }
@@ -1254,19 +1254,7 @@ function validateStepA() {
 
 function validateStepB() {
     const linkedinInput = document.getElementById('soc_linkedin');
-    const instagramInput = document.getElementById('soc_instagram');
     const linkedinVal = linkedinInput ? linkedinInput.value.trim() : '';
-    const instagramVal = instagramInput ? instagramInput.value.trim() : '';
-
-    if (!linkedinVal && !instagramVal) {
-        showToast('Please provide at least one social profile link (LinkedIn or Instagram).', 'warning');
-        if (linkedinInput) {
-            linkedinInput.focus();
-            linkedinInput.classList.add('pulse-highlight');
-            setTimeout(() => linkedinInput.classList.remove('pulse-highlight'), 3000);
-        }
-        return false;
-    }
 
     if (linkedinVal) {
         const linkedinPattern = /^(https?:\/\/)?([a-zA-Z0-9_\-]+\.)?linkedin\.com\/.+/i;
@@ -1458,11 +1446,6 @@ function switchStep(stepId, updateHistory = true) {
             }, 100);
             return;
         }
-        if (!stepState.step_b_completed && (stepId === 'step_c' || stepId === 'step_d')) {
-            showToast('Please save Step 2 (Social Profiles) before continuing.', 'warning');
-            switchStep('step_b', updateHistory);
-            return;
-        }
         if (!stepState.step_c_completed && stepId === 'step_d') {
             showToast('Please complete Step 3 (Identity Proofs & Emergency Contacts) before review.', 'warning');
             switchStep('step_c', updateHistory);
@@ -1519,8 +1502,8 @@ function updateStepLocks(status) {
     stepState.max_allowed_step = status.max_allowed_step || 'step_a';
 
     const stepBAllowed = stepState.step_a_completed || stepState.is_locked;
-    const stepCAllowed = (stepState.step_a_completed && stepState.step_b_completed) || stepState.is_locked;
-    const stepDAllowed = (stepState.step_a_completed && stepState.step_b_completed && stepState.step_c_completed) || stepState.is_locked;
+    const stepCAllowed = stepState.step_a_completed || stepState.is_locked;
+    const stepDAllowed = (stepState.step_a_completed && stepState.step_c_completed) || stepState.is_locked;
 
     // Step A
     const badgeA = document.getElementById('badge_step_a');
