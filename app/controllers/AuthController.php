@@ -142,8 +142,29 @@ class AuthController {
      * Show Email Verification Page
      */
     public function showVerifyEmail(): void {
+        // Check if token was passed in query parameter (one-click link from email)
+        if (!empty($_GET['token'])) {
+            $res = User::verifyWithToken(trim($_GET['token']));
+            if ($res['success']) {
+                $user = User::findById((int)$res['user_id']);
+                if ($user) {
+                    $_SESSION['user'] = $user;
+                }
+                flash('success', 'Email successfully verified! Welcome to your onboarding wizard.');
+                redirect('/dashboard/onboarding');
+                return;
+            } else {
+                flash('error', $res['error']);
+                if (!auth_check()) {
+                    redirect('/login');
+                    return;
+                }
+            }
+        }
+
         if (!auth_check()) {
             redirect('/login');
+            return;
         }
 
         $user = auth();
@@ -153,20 +174,8 @@ class AuthController {
         }
 
         if (!empty($user['email_verified_at'])) {
-            redirect('/dashboard');
-        }
-
-        // Check if token was passed in query parameter (one-click link)
-        if (!empty($_GET['token'])) {
-            $res = User::verifyWithToken(trim($_GET['token']));
-            if ($res['success']) {
-                $_SESSION['user']['email_verified_at'] = date('Y-m-d H:i:s');
-                flash('success', 'Email successfully verified! Welcome to your onboarding wizard.');
-                redirect('/dashboard/onboarding');
-                return;
-            } else {
-                flash('error', $res['error']);
-            }
+            redirect('/dashboard/onboarding');
+            return;
         }
 
         require APP_PATH . '/views/public/verify_email.php';

@@ -68,6 +68,45 @@ $panLast4 = $profile['pan_last4'] ?? '5678';
     <hr class="gold-rule">
 </div>
 
+<!-- Active Action Banner -->
+<?php if (!$isEmailVerified): ?>
+    <div class="p-4 mb-4 border d-flex justify-content-between align-items-center flex-wrap gap-3" style="background:#FFF9E6; border-color:#FFE28A !important; border-radius:var(--r-lg);">
+        <div>
+            <div class="fw-bold" style="color:#8A6D05; font-size:15px; margin-bottom:4px;">
+                <i class="fas fa-exclamation-triangle"></i> Action Required: Verify Email Address
+            </div>
+            <div class="small" style="color:#594602;">A 6-digit verification code was sent to <strong><?= e($candidate['email']) ?></strong>.</div>
+        </div>
+        <a href="<?= url('/verify-email') ?>" class="btn btn-primary" style="padding:10px 24px; border-radius:var(--r-full); font-weight:600;">
+            Verify Email Now &rarr;
+        </a>
+    </div>
+<?php elseif (!$isOnboardingSubmitted): ?>
+    <div class="p-4 mb-4 border d-flex justify-content-between align-items-center flex-wrap gap-3" style="background:#EBF5F1; border-color:#C4E2D5 !important; border-radius:var(--r-lg);">
+        <div>
+            <div class="fw-bold" style="color:#1F5C4A; font-size:15px; margin-bottom:4px;">
+                <i class="fas fa-user-edit"></i> Onboarding Profile Incomplete (<?= $completion ?>% Completed)
+            </div>
+            <div class="small" style="color:#26332D;">Please submit your KYC documents and personal details to finalize your candidature.</div>
+        </div>
+        <a href="<?= url('/dashboard/onboarding') ?>" class="btn btn-primary" style="padding:10px 24px; border-radius:var(--r-full); font-weight:600;">
+            Complete Onboarding &rarr;
+        </a>
+    </div>
+<?php elseif (!$isTestCompleted): ?>
+    <div class="p-4 mb-4 border d-flex justify-content-between align-items-center flex-wrap gap-3" style="background:#EBF5F1; border-color:#C4E2D5 !important; border-radius:var(--r-lg);">
+        <div>
+            <div class="fw-bold" style="color:#1F5C4A; font-size:15px; margin-bottom:4px;">
+                <i class="fas fa-clipboard-check"></i> Onboarding Submitted &bull; Next Step: Aptitude Test
+            </div>
+            <div class="small" style="color:#26332D;">Your profile has been submitted for review. Please complete your 15-question aptitude test.</div>
+        </div>
+        <a href="<?= url('/dashboard/test') ?>" class="btn btn-primary" style="padding:10px 24px; border-radius:var(--r-full); font-weight:600;">
+            Take Aptitude Test Now &rarr;
+        </a>
+    </div>
+<?php endif; ?>
+
 <!-- Progress Timeline: 4 Steps (Registered, Email Verified, Onboarding Submitted, Aptitude Test) -->
 <div class="p-4 bg-white border mb-4" style="border-radius: var(--r-lg); border-color: var(--line) !important;">
     <h2 class="h5 mb-3">Application Stages</h2>

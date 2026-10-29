@@ -129,7 +129,7 @@ function renderCandidateDocSlot(string $type, string $label, string $description
                 <a id="slot_view_<?= $type ?>" href="<?= $isUploaded ? url('/document/download/' . $doc['id']) : '#' ?>" target="_blank" class="btn btn-outline btn-sm" style="padding:4px 10px; font-size:12px; border-radius:var(--r-sm);">
                     View
                 </a>
-                <?php if (!$isLocked && !empty($isReupload)): ?>
+                <?php if (!$isLocked): ?>
                     <button type="button" class="btn btn-outline btn-sm" style="padding:4px 10px; font-size:12px; border-radius:var(--r-sm);" onclick="triggerUpload('<?= $type ?>')">
                         Replace
                     </button>
@@ -140,7 +140,7 @@ function renderCandidateDocSlot(string $type, string $label, string $description
         <input type="file" id="file_<?= $type ?>" accept="image/jpeg,image/png,image/webp,application/pdf" style="display:none;" onchange="handleFileUpload(this, '<?= $type ?>')">
 
         <?php if (!$isLocked): ?>
-            <div class="dropzone-box" id="dropzone_<?= $type ?>" data-doctype="<?= $type ?>" onclick="triggerUpload('<?= $type ?>')" style="<?= ($isUploaded && empty($isReupload)) ? 'display:none;' : '' ?>">
+            <div class="dropzone-box" id="dropzone_<?= $type ?>" data-doctype="<?= $type ?>" onclick="triggerUpload('<?= $type ?>')" style="<?= $isUploaded ? 'display:none;' : '' ?>">
                 <div style="margin-bottom:6px; color:var(--brand);">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
                 </div>
@@ -899,11 +899,11 @@ function renderCandidateDocSlot(string $type, string $label, string $description
                             <div style="font-weight:600; font-size:13px; color:var(--text); margin-bottom:12px;">Secondary Emergency Contact</div>
                             <div style="margin-bottom:12px;">
                                 <label class="form-label" style="font-size:12px;">Contact Name</label>
-                                <input type="text" name="emergency_name_2" class="form-control" value="" placeholder="e.g. Sunita Malhotra" <?= $isLocked ? 'readonly' : '' ?>>
+                                <input type="text" name="emergency_name_2" class="form-control" value="<?= e($emergency['contact_2_name'] ?? '') ?>" placeholder="e.g. Sunita Malhotra" <?= $isLocked ? 'readonly' : '' ?>>
                             </div>
                             <div style="margin-bottom:12px;">
                                 <label class="form-label" style="font-size:12px;">Relationship</label>
-                                <input type="text" name="emergency_rel_2" class="form-control" value="" placeholder="e.g. Mother, Sibling" <?= $isLocked ? 'readonly' : '' ?>>
+                                <input type="text" name="emergency_rel_2" class="form-control" value="<?= e($emergency['relationship_2'] ?? '') ?>" placeholder="e.g. Mother, Sibling" <?= $isLocked ? 'readonly' : '' ?>>
                             </div>
                             <div>
                                 <label class="form-label" style="font-size:12px;">Phone Number</label>
@@ -1286,8 +1286,10 @@ function validateStepB() {
 function validateStepC() {
     // 1. Aadhaar Number
     const aadhaarInput = document.getElementById('aadhaar_number');
-    const aadhaarDigits = aadhaarInput ? aadhaarInput.value.replace(/\D/g, '') : '';
-    if (aadhaarDigits.length !== 12) {
+    const aadhaarVal = aadhaarInput ? aadhaarInput.value.trim() : '';
+    const aadhaarDigits = aadhaarVal.replace(/\D/g, '');
+    const isAadhaarMasked = (aadhaarVal.includes('XXXX') || aadhaarDigits.length === 4) && uploadedDocs.aadhaar_front;
+    if (!isAadhaarMasked && aadhaarDigits.length !== 12) {
         showToast('Please enter a valid 12-digit Aadhaar Number in Step 3.', 'warning');
         if (aadhaarInput) {
             aadhaarInput.focus();
@@ -1313,7 +1315,8 @@ function validateStepC() {
     const panInput = document.getElementById('pan_number');
     const panVal = panInput ? panInput.value.trim().toUpperCase() : '';
     const panPattern = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
-    if (!panPattern.test(panVal)) {
+    const isPanMasked = (panVal.includes('XXXXX') || panVal.startsWith('XXXXX')) && uploadedDocs.pan_card;
+    if (!isPanMasked && !panPattern.test(panVal)) {
         showToast('Please enter a valid 10-character PAN Number (e.g. ABCDE1234F).', 'warning');
         if (panInput) {
             panInput.focus();
@@ -2122,7 +2125,7 @@ async function submitFinalOnboarding() {
         if (data && data.success) {
             showToast('✓ Onboarding application submitted successfully! Redirecting...', 'success');
             setTimeout(() => {
-                window.location.href = data.redirect || '<?= url("/") ?>';
+                window.location.href = data.redirect || '<?= url("/dashboard") ?>';
             }, 800);
         } else {
             showToast('Submission Error: ' + ((data && data.error) ? data.error : 'Validation failed'), 'warning');

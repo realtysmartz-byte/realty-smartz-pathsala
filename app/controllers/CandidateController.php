@@ -237,12 +237,12 @@ class CandidateController {
             response_json([
                 'success'  => true,
                 'message'  => $successMsg,
-                'redirect' => url('/')
+                'redirect' => url('/dashboard')
             ]);
         }
 
         flash('success', $successMsg);
-        redirect('/');
+        redirect('/dashboard');
     }
 
     /**

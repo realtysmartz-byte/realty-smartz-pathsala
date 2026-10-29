@@ -55,7 +55,20 @@ class Mailer {
 
             $mail->CharSet    = 'UTF-8';
             $mail->Encoding   = 'base64';
-            $mail->Timeout    = 5;
+            $mail->Timeout    = 10;
+
+            // Strict Hostname for Message-ID RFC alignment with sender domain (avoids Spam)
+            $mail->Hostname   = 'realtysmartzpathshala.in';
+
+            // Explicit Envelope-From (Return-Path) for SPF 100% pass and DMARC alignment
+            $mail->Sender     = $fromEmail;
+
+            // Remove default PHPMailer bot signature header
+            $mail->XMailer    = ' ';
+
+            // Anti-Spam Transactional Headers
+            $mail->addCustomHeader('Auto-Submitted', 'auto-generated');
+            $mail->addCustomHeader('X-Auto-Response-Suppress', 'All');
 
             // Sender and Reply-To
             $mail->setFrom($fromEmail, $fromName);
@@ -189,61 +202,56 @@ HTML;
     }
 
     /**
-     * Wrap email in unified light branded layout (NO dark backgrounds)
-     * Design tokens: #FBF8F3 page bg, #FFFFFF surface, #2E2A24 text, #9A6410 primary.
+     * Wrap email in unified high-deliverability branded layout (Fully inline-styled for Gmail, Outlook, Apple Mail)
      */
     public static function wrapLayout(string $title, string $contentHtml): string {
-        $logoUrl = asset('/assets/img/logo/Pathshala.webp');
+        $logoUrl = asset('/assets/img/logo/Pathshala.png');
         $siteUrl = url('/');
         $year = date('Y');
 
         return <<<HTML
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>{$title}</title>
-<style>
-body { margin: 0; padding: 0; background-color: #F7F5EF; font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #26332D; -webkit-font-smoothing: antialiased; }
-.email-wrap { width: 100%; background-color: #F7F5EF; padding: 32px 16px; box-sizing: border-box; }
-.email-container { max-width: 580px; margin: 0 auto; background-color: #FFFFFF; border: 1px solid #E2DDD0; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(38, 51, 45, 0.06); }
-.email-header { background: #FFFFFF; padding: 28px 24px 20px 24px; text-align: center; border-bottom: 1px solid #E2DDD0; }
-.email-header img { max-height: 48px; width: auto; object-fit: contain; }
-.email-body { padding: 36px 32px; color: #26332D; line-height: 1.65; font-size: 14.5px; }
-.otp-box { background: #E2EEE8; border: 1px solid #E2DDD0; border-radius: 12px; padding: 22px; text-align: center; margin: 26px 0; }
-.otp-code { font-size: 34px; font-weight: 700; letter-spacing: 8px; color: #1F5C4A; font-family: 'Courier New', Courier, monospace; margin: 6px 0; }
-.btn-primary { display: inline-block; background-color: #1F5C4A; color: #FFFFFF !important; text-decoration: none; font-weight: 500; padding: 13px 32px; border-radius: 999px; font-size: 14px; margin: 20px 0; text-align: center; }
-.email-footer { background: #EFEBE0; padding: 24px 32px; text-align: center; font-size: 12px; color: #6D766F; border-top: 1px solid #E2DDD0; line-height: 1.6; }
-.email-footer a { color: #1F5C4A; text-decoration: none; font-weight: 500; }
-@media (max-width: 480px) {
-    .email-body { padding: 26px 20px; }
-    .email-footer { padding: 20px 16px; }
-}
-</style>
 </head>
-<body>
-<div class="email-wrap">
-    <div class="email-container">
-        <div class="email-header">
-            <a href="{$siteUrl}">
-                <img src="{$logoUrl}" alt="Realty Smartz Pathshala" border="0">
-            </a>
-        </div>
-        <div class="email-body">
-            {$contentHtml}
-        </div>
-        <div class="email-footer">
-            <p style="margin:0 0 6px 0;"><strong>Realty Smartz Pathshala</strong> &bull; Master the Art of Real Estate</p>
-            <p style="margin:0 0 10px 0;">Golf Course Extension Road, Sector 65, Gurgaon, Haryana, India</p>
-            <p style="margin:0;">
-                <a href="{$siteUrl}">Visit Portal</a> &bull; 
-                <a href="{$siteUrl}/contact">Support Desk</a> &bull; 
-                <a href="{$siteUrl}/about">About Us</a>
-            </p>
-        </div>
-    </div>
-</div>
+<body style="margin:0; padding:0; background-color:#F7F5EF; font-family:'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color:#26332D; -webkit-font-smoothing:antialiased;">
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#F7F5EF; padding:24px 12px;">
+    <tr>
+        <td align="center">
+            <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:580px; background-color:#FFFFFF; border:1px solid #E2DDD0; border-radius:16px; overflow:hidden; box-shadow:0 6px 24px rgba(38,51,45,0.05);">
+                <!-- Header with PNG Brand Logo -->
+                <tr>
+                    <td align="center" style="background-color:#FFFFFF; padding:28px 24px 20px 24px; border-bottom:1px solid #EAE6DB;">
+                        <a href="{$siteUrl}" target="_blank" style="text-decoration:none;">
+                            <img src="{$logoUrl}" alt="Realty Smartz Pathshala" width="160" height="104" style="display:block; border:0; outline:none; text-decoration:none; max-width:160px; height:auto; margin:0 auto;" />
+                        </a>
+                    </td>
+                </tr>
+                <!-- Body Content -->
+                <tr>
+                    <td style="padding:32px 28px; color:#26332D; font-size:14.5px; line-height:1.65;">
+                        {$contentHtml}
+                    </td>
+                </tr>
+                <!-- Footer with Physical Address and Legitimate Organization Links -->
+                <tr>
+                    <td align="center" style="background-color:#F4F1EA; padding:22px 28px; font-size:12px; color:#6D766F; border-top:1px solid #EAE6DB; line-height:1.6;">
+                        <p style="margin:0 0 6px 0; color:#26332D; font-weight:600;">Realty Smartz Pathshala &bull; Master the Art of Real Estate</p>
+                        <p style="margin:0 0 8px 0; color:#6D766F;">Golf Course Extension Road, Sector 65, Gurgaon, Haryana 122002, India</p>
+                        <p style="margin:0;">
+                            <a href="{$siteUrl}" style="color:#1F5C4A; text-decoration:none; font-weight:600;">Visit Portal</a> &bull; 
+                            <a href="{$siteUrl}/contact" style="color:#1F5C4A; text-decoration:none; font-weight:600;">Support Desk</a> &bull; 
+                            <a href="mailto:info@realtysmartzpathshala.in" style="color:#1F5C4A; text-decoration:none; font-weight:600;">info@realtysmartzpathshala.in</a>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
 </body>
 </html>
 HTML;
@@ -251,30 +259,39 @@ HTML;
 
     /**
      * Send OTP Verification Email
-     * Short plain subject line, no excessive punctuation, self-hosted logo
+     * Clean, authoritative subject line (no dynamic OTP digits in subject to avoid spam filters)
      */
     public static function sendVerificationOtp(string $toEmail, string $toName, string $otp, string $token): bool {
         $verifyUrl = url("/verify-email?token={$token}");
         $content = <<<HTML
-<h2 style="color:#2E2A24; margin-top:0; font-size:20px; font-weight:800;">Verify Your Email Address</h2>
-<p>Hello <strong>{$toName}</strong>,</p>
-<p>Welcome to <strong>Realty Smartz Pathshala</strong>. Please enter the 6-digit verification code below to confirm your account and access your candidate onboarding dashboard:</p>
+<h2 style="color:#1F5C4A; margin-top:0; font-size:22px; font-weight:700; margin-bottom:14px;">Verify Your Email Address</h2>
+<p style="font-size:15px; color:#26332D; margin:0 0 14px 0; line-height:1.6;">Hello <strong>{$toName}</strong>,</p>
+<p style="font-size:14.5px; color:#4A5568; margin:0 0 20px 0; line-height:1.6;">Welcome to <strong>Realty Smartz Pathshala</strong>. Please enter the 6-digit verification code below to confirm your account and proceed with your candidate onboarding:</p>
 
-<div class="otp-box">
-    <div style="font-size:11.5px; text-transform:uppercase; color:#9A6410; font-weight:700; letter-spacing:1px; margin-bottom:4px;">Verification Code</div>
-    <div class="otp-code">{$otp}</div>
-    <div style="font-size:12px; color:#7A7164; margin-top:4px;">Valid for 10 minutes only. Do not share this code.</div>
-</div>
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#EBF5F1; border:1px solid #C4E2D5; border-radius:12px; margin:22px 0;">
+    <tr>
+        <td style="padding:22px 16px; text-align:center;">
+            <div style="font-size:11px; text-transform:uppercase; color:#1F5C4A; font-weight:700; letter-spacing:1.5px; margin-bottom:6px;">Verification Code (OTP)</div>
+            <div style="font-size:36px; font-weight:800; letter-spacing:8px; color:#1F5C4A; font-family:'Courier New', Courier, monospace; margin:6px 0;">{$otp}</div>
+            <div style="font-size:12px; color:#5A6E65; margin-top:6px;">Valid for 15 minutes only &bull; Please do not share this OTP with anyone.</div>
+        </td>
+    </tr>
+</table>
 
-<p style="text-align:center; margin-top:16px;">Or click the button below to verify your email automatically:</p>
-<div style="text-align:center;">
-    <a href="{$verifyUrl}" class="btn-primary">Verify Email Now &rarr;</a>
-</div>
+<p style="font-size:14px; color:#4A5568; text-align:center; margin:24px 0 12px 0;">Or click the button below to verify your email automatically:</p>
+<table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+        <td align="center" style="padding:6px 0 22px 0;">
+            <a href="{$verifyUrl}" target="_blank" style="background-color:#1F5C4A; color:#FFFFFF; text-decoration:none; font-weight:600; font-size:14.5px; padding:13px 34px; border-radius:50px; display:inline-block; border:1px solid #1F5C4A;">Verify Email Address &rarr;</a>
+        </td>
+    </tr>
+</table>
 
-<p style="font-size:12.5px; color:#7A7164; margin-top:28px;">If you did not request this verification code, please disregard this email.</p>
+<p style="font-size:12.5px; color:#718096; line-height:1.5; border-top:1px solid #EAE6DB; padding-top:18px; margin-top:20px;">If the button does not work, copy and paste this verification URL in your browser:<br><a href="{$verifyUrl}" style="color:#1F5C4A; word-break:break-all;">{$verifyUrl}</a></p>
+<p style="font-size:12px; color:#A0AEC0; margin-top:12px;">If you did not request this verification code, please disregard this email.</p>
 HTML;
 
-        $subject = "Your Pathshala verification code: {$otp}";
+        $subject = "Verify your email address - Realty Smartz Pathshala";
         $html = self::wrapLayout("Verify Your Email", $content);
         return self::send($toEmail, $toName, $subject, $html);
     }

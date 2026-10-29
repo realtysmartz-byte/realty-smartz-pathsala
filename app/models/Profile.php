@@ -735,32 +735,37 @@ class Profile {
         // Emergency Contacts
         $c1Name = trim($data['emergency_name_1'] ?? ($data['emergency_contact_name'] ?? ''));
         $c1Rel = trim($data['emergency_rel_1'] ?? ($data['emergency_relationship'] ?? ''));
-        $c1Phone = trim($data['emergency_phone_1'] ?? ($data['emergency_mobile'] ?? ''));
+        $c1Phone = preg_replace('/\D/', '', $data['emergency_phone_1'] ?? ($data['emergency_mobile'] ?? ''));
         $c2Name = trim($data['emergency_name_2'] ?? '');
         $c2Rel = trim($data['emergency_rel_2'] ?? '');
-        $c2Phone = trim($data['emergency_phone_2'] ?? '');
+        $c2Phone = preg_replace('/\D/', '', $data['emergency_phone_2'] ?? '');
 
         if (!empty($c1Name) && !empty($c1Phone)) {
-            $c2Combined = (!empty($c2Name) && !empty($c2Phone)) ? "{$c2Phone} ({$c2Name} - {$c2Rel})" : null;
             $stmtEmg = $db->prepare("INSERT INTO `emergency_contacts` 
-                (`user_id`, `contact_name`, `relationship`, `mobile`, `alternate_mobile`, `created_at`, `updated_at`)
-                VALUES (:uid, :c1name, :c1rel, :c1phone, :c2phone, NOW(), NOW())
+                (`user_id`, `contact_name`, `relationship`, `mobile`, `alternate_mobile`, `contact_2_name`, `relationship_2`, `created_at`, `updated_at`)
+                VALUES (:uid, :c1name, :c1rel, :c1phone, :c2phone, :c2name, :c2rel, NOW(), NOW())
                 ON DUPLICATE KEY UPDATE 
                 `contact_name` = :c1name2,
                 `relationship` = :c1rel2,
                 `mobile` = :c1phone2,
                 `alternate_mobile` = :c2phone2,
+                `contact_2_name` = :c2name2,
+                `relationship_2` = :c2rel2,
                 `updated_at` = NOW()");
             $stmtEmg->execute([
                 ':uid'      => $userId,
                 ':c1name'   => $c1Name,
                 ':c1rel'    => $c1Rel,
                 ':c1phone'  => $c1Phone,
-                ':c2phone'  => $c2Combined,
+                ':c2phone'  => $c2Phone ?: null,
+                ':c2name'   => $c2Name ?: null,
+                ':c2rel'    => $c2Rel ?: null,
                 ':c1name2'  => $c1Name,
                 ':c1rel2'   => $c1Rel,
                 ':c1phone2' => $c1Phone,
-                ':c2phone2' => $c2Combined
+                ':c2phone2' => $c2Phone ?: null,
+                ':c2name2'  => $c2Name ?: null,
+                ':c2rel2'   => $c2Rel ?: null
             ]);
         }
 
