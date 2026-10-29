@@ -814,6 +814,39 @@ class Profile {
             }
         }
 
+        // Social Media Link Check (Any 1 Required: LinkedIn, Instagram, Facebook, X, YouTube, or Portfolio)
+        $linkedin = trim($data['linkedin'] ?? '');
+        $instagram = trim($data['instagram'] ?? '');
+        $facebook = trim($data['facebook'] ?? '');
+        $twitter = trim($data['twitter'] ?? ($data['x'] ?? ''));
+        $youtube = trim($data['youtube'] ?? '');
+        $portfolio = trim($data['portfolio'] ?? '');
+
+        $existingSocial = $p['social'] ?? [];
+        if (empty($existingSocial) && !empty($p['social_links'])) {
+            $existingSocial = is_string($p['social_links']) ? json_decode($p['social_links'], true) : $p['social_links'];
+        }
+
+        $hasAnySocial = !empty($linkedin) || !empty($instagram) || !empty($facebook) || !empty($twitter) || !empty($youtube) || !empty($portfolio)
+            || !empty($existingSocial['linkedin']) || !empty($existingSocial['instagram']) || !empty($existingSocial['facebook']) || !empty($existingSocial['twitter']) || !empty($existingSocial['youtube']) || !empty($existingSocial['portfolio']);
+
+        if (!$hasAnySocial) {
+            return ['success' => false, 'error' => 'Kripya apna koi bhi ek social link darj karein (Bss ek required hai koi bhi - LinkedIn, Instagram, Facebook, X, etc.).'];
+        }
+
+        if (!empty($linkedin) && !preg_match('#^(https?:\/\/)?([a-zA-Z0-9_\-]+\.)?linkedin\.com\/#i', $linkedin)) {
+            return ['success' => false, 'error' => 'Please provide a valid LinkedIn profile URL (e.g. https://www.linkedin.com/in/username).'];
+        }
+
+        $mergedSocial = array_merge($existingSocial ?: [], array_filter([
+            'linkedin'  => $linkedin,
+            'instagram' => $instagram,
+            'facebook'  => $facebook,
+            'twitter'   => $twitter,
+            'youtube'   => $youtube,
+            'portfolio' => $portfolio
+        ]));
+
         if (empty($data['declaration_accepted'])) {
             return ['success' => false, 'error' => 'You must accept the DPDP data declaration and consent statement to proceed.'];
         }
@@ -830,14 +863,16 @@ class Profile {
             `declaration_date` = NOW(),
             `signature_type` = :stype,
             `signature_data` = :sdata,
+            `social_links` = :slinks,
             `completion_percentage` = 100,
             `is_locked` = 1,
             `updated_at` = NOW()
             WHERE `user_id` = :uid");
         $stmtP->execute([
-            ':stype' => $sigType,
-            ':sdata' => $sigData,
-            ':uid'   => $userId
+            ':stype'  => $sigType,
+            ':sdata'  => $sigData,
+            ':slinks' => json_encode($mergedSocial, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
+            ':uid'    => $userId
         ]);
 
         // Update status to 'documents_submitted'

@@ -58,14 +58,17 @@ class CandidateController {
 
         $stepStatus = Profile::getOnboardingStepStatus($userId);
         $reqStep = $_GET['step'] ?? 'step_a';
-        $validSteps = ['step_a', 'step_b', 'step_c', 'step_d'];
+        if ($reqStep === 'step_b') {
+            $reqStep = 'step_c';
+        }
+        $validSteps = ['step_a', 'step_c', 'step_d'];
         if (!in_array($reqStep, $validSteps, true)) {
             $reqStep = 'step_a';
         }
 
         $isLocked = !empty($candidate['profile']['is_locked']) && !in_array($candidate['status'], ['changes_requested'], true);
         if (!$isLocked) {
-            $stepWeights = ['step_a' => 1, 'step_b' => 2, 'step_c' => 3, 'step_d' => 4];
+            $stepWeights = ['step_a' => 1, 'step_c' => 2, 'step_d' => 3];
             $maxWeight = $stepWeights[$stepStatus['max_allowed_step']] ?? 1;
             $reqWeight = $stepWeights[$reqStep] ?? 1;
 
@@ -74,9 +77,8 @@ class CandidateController {
                 if (isset($_GET['step'])) {
                     $stepNames = [
                         'step_a' => 'Step 1 (Basic Details)',
-                        'step_b' => 'Step 2 (Social Links)',
-                        'step_c' => 'Step 3 (Documents & KYC)',
-                        'step_d' => 'Step 4 (Review & Sign)'
+                        'step_c' => 'Step 2 (Documents & KYC)',
+                        'step_d' => 'Step 3 (Review, Social Links & Sign)'
                     ];
                     flash('warning', "Please complete {$stepNames[$activeStep]} before proceeding.");
                     redirect('/dashboard/onboarding?step=' . $activeStep);
@@ -173,7 +175,7 @@ class CandidateController {
 
             flash('success', $msg);
             $next = match($step) {
-                'step_a', 'basic' => 'step_b',
+                'step_a', 'basic' => 'step_c',
                 'step_b', 'social' => 'step_c',
                 'step_c', 'documents' => 'step_d',
                 default => 'step_d'

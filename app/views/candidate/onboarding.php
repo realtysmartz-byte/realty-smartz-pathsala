@@ -22,8 +22,11 @@ $maxAllowedStep = $stepStatus['max_allowed_step'] ?? 'step_a';
 
 // Enforce active step cannot exceed max allowed step unless locked
 $activeStep = $activeStep ?? ($_GET['step'] ?? 'step_a');
+if ($activeStep === 'step_b') {
+    $activeStep = 'step_c';
+}
 if (!$isLocked) {
-    $stepWeights = ['step_a' => 1, 'step_b' => 2, 'step_c' => 3, 'step_d' => 4];
+    $stepWeights = ['step_a' => 1, 'step_c' => 2, 'step_d' => 3];
     $maxWeight = $stepWeights[$maxAllowedStep] ?? 1;
     $currWeight = $stepWeights[$activeStep] ?? 1;
     if ($currWeight > $maxWeight) {
@@ -278,7 +281,7 @@ function renderCandidateDocSlot(string $type, string $label, string $description
 <div class="d-lg-none bg-white p-3 border mb-3" style="border-radius: var(--r-md); border-color: var(--line) !important;">
     <div class="d-flex justify-content-between align-items-center mb-1">
         <span class="small fw-bold text-dark" id="mobileStepTitle">
-            <?= $activeStep === 'step_b' ? 'Step 2 of 4 &bull; Social Links' : ($activeStep === 'step_c' ? 'Step 3 of 4 &bull; Documents & KYC' : ($activeStep === 'step_d' ? 'Step 4 of 4 &bull; Review &amp; Sign' : 'Step 1 of 4 &bull; Basic Details')) ?>
+            <?= $activeStep === 'step_c' ? 'Step 2 of 3 &bull; Documents & KYC' : ($activeStep === 'step_d' ? 'Step 3 of 3 &bull; Review, Social Profile &amp; Sign' : 'Step 1 of 3 &bull; Basic Details') ?>
         </span>
         <span class="small text-muted" id="mobileStepPct"><?= $completion ?>%</span>
     </div>
@@ -311,33 +314,16 @@ function renderCandidateDocSlot(string $type, string $label, string $description
                     </div>
                 </button>
 
-                <!-- Step 2: Social Links -->
-                <button type="button" 
-                        class="wizard-tab-btn <?= $activeStep === 'step_b' ? 'active' : '' ?> <?= !$stepBAllowed ? 'is-locked' : '' ?>" 
-                        id="tab_step_b"
-                        onclick="switchStep('step_b')">
-                    <span class="step-num" id="badge_step_b"><?= $stepBCompleted ? '✓' : '2' ?></span>
-                    <div class="text-start flex-grow-1">
-                        <div class="step-title d-flex justify-content-between align-items-center">
-                            <span>Social Links</span>
-                            <span class="lock-indicator" id="lock_step_b" style="<?= $stepBAllowed ? 'display:none;' : 'display:inline-flex;' ?>" title="Complete Step 1 to unlock">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                            </span>
-                        </div>
-                        <div class="step-sub text-muted">Professional Profiles</div>
-                    </div>
-                </button>
-
-                <!-- Step 3: Documents & KYC -->
+                <!-- Step 2: Documents & KYC -->
                 <button type="button" 
                         class="wizard-tab-btn <?= $activeStep === 'step_c' ? 'active' : '' ?> <?= !$stepCAllowed ? 'is-locked' : '' ?>" 
                         id="tab_step_c"
                         onclick="switchStep('step_c')">
-                    <span class="step-num" id="badge_step_c"><?= $stepCCompleted ? '✓' : '3' ?></span>
+                    <span class="step-num" id="badge_step_c"><?= $stepCCompleted ? '✓' : '2' ?></span>
                     <div class="text-start flex-grow-1">
                         <div class="step-title d-flex justify-content-between align-items-center">
                             <span>Documents &amp; KYC</span>
-                            <span class="lock-indicator" id="lock_step_c" style="<?= $stepCAllowed ? 'display:none;' : 'display:inline-flex;' ?>" title="Complete Step 1 & 2 to unlock">
+                            <span class="lock-indicator" id="lock_step_c" style="<?= $stepCAllowed ? 'display:none;' : 'display:inline-flex;' ?>" title="Complete Step 1 to unlock">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                             </span>
                         </div>
@@ -345,20 +331,20 @@ function renderCandidateDocSlot(string $type, string $label, string $description
                     </div>
                 </button>
 
-                <!-- Step 4: Review & Sign -->
+                <!-- Step 3: Review & Sign -->
                 <button type="button" 
                         class="wizard-tab-btn <?= $activeStep === 'step_d' ? 'active' : '' ?> <?= !$stepDAllowed ? 'is-locked' : '' ?>" 
                         id="tab_step_d"
                         onclick="switchStep('step_d')">
-                    <span class="step-num" id="badge_step_d"><?= $isOnboardingSubmitted ? '✓' : '4' ?></span>
+                    <span class="step-num" id="badge_step_d"><?= $isOnboardingSubmitted ? '✓' : '3' ?></span>
                     <div class="text-start flex-grow-1">
                         <div class="step-title d-flex justify-content-between align-items-center">
                             <span>Review &amp; Sign</span>
-                            <span class="lock-indicator" id="lock_step_d" style="<?= $stepDAllowed ? 'display:none;' : 'display:inline-flex;' ?>" title="Complete Step 1, 2 & 3 to unlock">
+                            <span class="lock-indicator" id="lock_step_d" style="<?= $stepDAllowed ? 'display:none;' : 'display:inline-flex;' ?>" title="Complete Step 1 &amp; 2 to unlock">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                             </span>
                         </div>
-                        <div class="step-sub text-muted">DPDP Declaration</div>
+                        <div class="step-sub text-muted">Social Link &amp; DPDP Declaration</div>
                     </div>
                 </button>
             </div>
@@ -662,88 +648,6 @@ function renderCandidateDocSlot(string $type, string $label, string $description
                 <!-- Actions -->
                 <div style="display:flex; justify-content:flex-end; gap:12px; border-top:1px solid var(--line); padding-top:20px;">
                     <?php if ($isLocked): ?>
-                        <button type="button" class="btn btn-outline" onclick="switchStep('step_b')" style="padding:12px 28px; font-weight:600; border-radius:var(--r-full);">
-                            <span>Next: View Social Links &rarr;</span>
-                        </button>
-                    <?php else: ?>
-                        <button type="submit" class="btn btn-primary" style="padding:12px 28px; font-weight:600; border-radius:var(--r-full);">
-                            <span>Save &amp; Continue to Social Links</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:6px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                        </button>
-                    <?php endif; ?>
-                </div>
-            </form>
-        </div>
-
-        <!-- ================================================================
-             STEP B: SOCIAL LINKS
-             ================================================================ -->
-        <div id="step_b_section" class="wizard-step-content" style="<?= $activeStep === 'step_b' ? 'display:block;' : 'display:none;' ?>">
-            <form id="form_step_b" onsubmit="event.preventDefault(); saveStepData('step_b', true);">
-                <?= csrf_field() ?>
-                <input type="hidden" name="step" value="step_b">
-
-                <div style="margin-bottom:24px;">
-                    <h3 style="font-size:1.25rem; font-weight:600; color:var(--text); margin:0 0 4px;">Step B &bull; Professional &amp; Social Links</h3>
-                    <p style="font-size:13.5px; color:var(--muted); margin:0;">Share your online profiles to help our hiring partners know you better. <span style="color:var(--muted);">(Optional &bull; You may skip or enter any profile)</span></p>
-                </div>
-
-                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px; margin-bottom:30px;">
-                    <!-- LinkedIn -->
-                    <div>
-                        <label class="form-label" for="soc_linkedin">
-                            <i class="fab fa-linkedin" style="color:#0A66C2; margin-right:4px;"></i> LinkedIn Profile URL <span style="font-size:12px; color:var(--muted); font-weight:normal;">(Optional)</span>
-                        </label>
-                        <input type="url" id="soc_linkedin" name="linkedin" class="form-control" value="<?= e($social['linkedin'] ?? '') ?>" placeholder="https://linkedin.com/in/yourname" <?= $isLocked ? 'readonly' : '' ?>>
-                    </div>
-
-                    <!-- Instagram -->
-                    <div>
-                        <label class="form-label" for="soc_instagram">
-                            <i class="fab fa-instagram" style="color:#E1306C; margin-right:4px;"></i> Instagram Handle / URL <span style="font-size:12px; color:var(--muted); font-weight:normal;">(Optional)</span>
-                        </label>
-                        <input type="text" id="soc_instagram" name="instagram" class="form-control" value="<?= e($social['instagram'] ?? '') ?>" placeholder="@yourhandle or URL" <?= $isLocked ? 'readonly' : '' ?>>
-                    </div>
-
-                    <!-- Facebook -->
-                    <div>
-                        <label class="form-label" for="soc_facebook">
-                            <i class="fab fa-facebook" style="color:var(--muted); margin-right:4px;"></i> Facebook Profile URL
-                        </label>
-                        <input type="url" id="soc_facebook" name="facebook" class="form-control" value="<?= e($social['facebook'] ?? '') ?>" placeholder="https://facebook.com/yourprofile" <?= $isLocked ? 'readonly' : '' ?>>
-                    </div>
-
-                    <!-- X / Twitter -->
-                    <div>
-                        <label class="form-label" for="soc_twitter">
-                            <i class="fab fa-x-twitter" style="color:var(--muted); margin-right:4px;"></i> X (Twitter) Profile URL
-                        </label>
-                        <input type="url" id="soc_twitter" name="twitter" class="form-control" value="<?= e($social['twitter'] ?? '') ?>" placeholder="https://x.com/yourhandle" <?= $isLocked ? 'readonly' : '' ?>>
-                    </div>
-
-                    <!-- YouTube -->
-                    <div>
-                        <label class="form-label" for="soc_youtube">
-                            <i class="fab fa-youtube" style="color:var(--muted); margin-right:4px;"></i> YouTube Channel / Link
-                        </label>
-                        <input type="url" id="soc_youtube" name="youtube" class="form-control" value="<?= e($social['youtube'] ?? '') ?>" placeholder="https://youtube.com/@yourchannel" <?= $isLocked ? 'readonly' : '' ?>>
-                    </div>
-
-                    <!-- Portfolio / Personal Website -->
-                    <div>
-                        <label class="form-label" for="soc_portfolio">
-                            <i class="fas fa-globe" style="color:var(--muted); margin-right:4px;"></i> Portfolio / Personal Website
-                        </label>
-                        <input type="url" id="soc_portfolio" name="portfolio" class="form-control" value="<?= e($social['portfolio'] ?? '') ?>" placeholder="https://yourportfolio.com" <?= $isLocked ? 'readonly' : '' ?>>
-                    </div>
-                </div>
-
-                <!-- Actions -->
-                <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--line); padding-top:20px;">
-                    <button type="button" class="btn btn-outline" onclick="switchStep('step_a')" style="padding:10px 22px; border-radius:var(--r-full); font-weight:600; border-color:var(--line);">
-                        &larr; Back to Basic Details
-                    </button>
-                    <?php if ($isLocked): ?>
                         <button type="button" class="btn btn-outline" onclick="switchStep('step_c')" style="padding:12px 28px; font-weight:600; border-radius:var(--r-full);">
                             <span>Next: View Documents &rarr;</span>
                         </button>
@@ -915,16 +819,16 @@ function renderCandidateDocSlot(string $type, string $label, string $description
 
                 <!-- Actions -->
                 <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--line); padding-top:20px;">
-                    <button type="button" class="btn btn-outline" onclick="switchStep('step_b')" style="padding:10px 22px; border-radius:var(--r-full); font-weight:600; border-color:var(--line);">
-                        &larr; Back to Social Links
+                    <button type="button" class="btn btn-outline" onclick="switchStep('step_a')" style="padding:10px 22px; border-radius:var(--r-full); font-weight:600; border-color:var(--line);">
+                        &larr; Back to Basic Details
                     </button>
                     <?php if ($isLocked): ?>
                         <button type="button" class="btn btn-outline" onclick="switchStep('step_d')" style="padding:12px 28px; font-weight:600; border-radius:var(--r-full);">
-                            <span>Next: View Declaration &rarr;</span>
+                            <span>Next: View Review &amp; Sign &rarr;</span>
                         </button>
                     <?php else: ?>
                         <button type="submit" class="btn btn-primary" style="padding:12px 28px; font-weight:600; border-radius:var(--r-full);">
-                            <span>Review &amp; Sign Declaration</span>
+                            <span>Continue to Review &amp; Sign</span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:6px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                         </button>
                     <?php endif; ?>
@@ -940,8 +844,8 @@ function renderCandidateDocSlot(string $type, string $label, string $description
                 <?= csrf_field() ?>
 
                 <div style="margin-bottom:24px;">
-                    <h3 style="font-size:1.25rem; font-weight:600; color:var(--text); margin:0 0 4px;">Step D &bull; Application Review &amp; Digital Signature</h3>
-                    <p style="font-size:13.5px; color:var(--muted); margin:0;">Please review your submitted information carefully before providing your signature and final submission.</p>
+                    <h3 style="font-size:1.25rem; font-weight:600; color:var(--text); margin:0 0 4px;">Step 3 &bull; Application Review, Social Profile &amp; Digital Signature</h3>
+                    <p style="font-size:13.5px; color:var(--muted); margin:0;">Please review your submitted credentials, add any one social/professional profile, and provide your digital signature.</p>
                 </div>
 
                 <!-- Comprehensive Review Card -->
@@ -983,6 +887,72 @@ function renderCandidateDocSlot(string $type, string $label, string $description
                         <div>
                             <span style="color:var(--muted); display:block; font-size:11.5px; text-transform:uppercase; letter-spacing:0.04em; font-weight:600; margin-bottom:2px;">PAN Number</span>
                             <strong id="rev_pan" style="color:var(--text); font-weight:500;"><?= !empty($profile['pan_masked']) ? e($profile['pan_masked']) : 'Encrypted on file' ?></strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Professional & Social Profile (Only 1 Required) -->
+                <div class="p-4 mb-4" style="background:var(--surface); border:1px solid var(--line); border-radius:var(--r-md);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+                        <div style="font-size:14px; font-weight:700; color:var(--text); display:flex; align-items:center; gap:8px;">
+                            <i class="fas fa-share-alt" style="color:var(--brand);"></i>
+                            <span>Professional &amp; Social Profile</span>
+                        </div>
+                        <span class="badge" style="background:rgba(31,92,74,0.12); color:var(--brand); border:1px solid rgba(31,92,74,0.25); padding:6px 12px; font-size:12px; font-weight:700; border-radius:var(--r-full);">
+                            Bss ek required h koi bhi &bull; Any 1 Required
+                        </span>
+                    </div>
+                    <p style="font-size:13px; color:var(--text); margin:0 0 16px; line-height:1.5;">
+                        Kripya apna koi bhi ek profile link darj karein. <strong style="color:var(--brand);">Bss ek required h koi bhi</strong> (LinkedIn, Instagram, Facebook, X, YouTube ya Portfolio). Baaki sabhi profile optional hain.
+                    </p>
+
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:16px;">
+                        <!-- LinkedIn -->
+                        <div>
+                            <label class="form-label" for="soc_linkedin" style="font-size:12.5px; margin-bottom:4px;">
+                                <i class="fab fa-linkedin" style="color:#0A66C2; margin-right:4px;"></i> LinkedIn Profile URL
+                            </label>
+                            <input type="url" id="soc_linkedin" name="linkedin" class="form-control" value="<?= e($social['linkedin'] ?? '') ?>" placeholder="https://linkedin.com/in/yourname" <?= $isLocked ? 'readonly' : '' ?>>
+                        </div>
+
+                        <!-- Instagram -->
+                        <div>
+                            <label class="form-label" for="soc_instagram" style="font-size:12.5px; margin-bottom:4px;">
+                                <i class="fab fa-instagram" style="color:#E1306C; margin-right:4px;"></i> Instagram Handle / URL
+                            </label>
+                            <input type="text" id="soc_instagram" name="instagram" class="form-control" value="<?= e($social['instagram'] ?? '') ?>" placeholder="@yourhandle or profile URL" <?= $isLocked ? 'readonly' : '' ?>>
+                        </div>
+
+                        <!-- Facebook -->
+                        <div>
+                            <label class="form-label" for="soc_facebook" style="font-size:12.5px; margin-bottom:4px;">
+                                <i class="fab fa-facebook" style="color:#1877F2; margin-right:4px;"></i> Facebook Profile URL
+                            </label>
+                            <input type="url" id="soc_facebook" name="facebook" class="form-control" value="<?= e($social['facebook'] ?? '') ?>" placeholder="https://facebook.com/yourprofile" <?= $isLocked ? 'readonly' : '' ?>>
+                        </div>
+
+                        <!-- X (Twitter) -->
+                        <div>
+                            <label class="form-label" for="soc_twitter" style="font-size:12.5px; margin-bottom:4px;">
+                                <i class="fab fa-x-twitter" style="color:var(--text); margin-right:4px;"></i> X (Twitter) Profile URL
+                            </label>
+                            <input type="url" id="soc_twitter" name="twitter" class="form-control" value="<?= e($social['twitter'] ?? '') ?>" placeholder="https://x.com/yourhandle" <?= $isLocked ? 'readonly' : '' ?>>
+                        </div>
+
+                        <!-- YouTube -->
+                        <div>
+                            <label class="form-label" for="soc_youtube" style="font-size:12.5px; margin-bottom:4px;">
+                                <i class="fab fa-youtube" style="color:#FF0000; margin-right:4px;"></i> YouTube Channel / Link
+                            </label>
+                            <input type="url" id="soc_youtube" name="youtube" class="form-control" value="<?= e($social['youtube'] ?? '') ?>" placeholder="https://youtube.com/@channel" <?= $isLocked ? 'readonly' : '' ?>>
+                        </div>
+
+                        <!-- Portfolio / Personal Website -->
+                        <div>
+                            <label class="form-label" for="soc_portfolio" style="font-size:12.5px; margin-bottom:4px;">
+                                <i class="fas fa-globe" style="color:var(--brand); margin-right:4px;"></i> Portfolio / Website
+                            </label>
+                            <input type="url" id="soc_portfolio" name="portfolio" class="form-control" value="<?= e($social['portfolio'] ?? '') ?>" placeholder="https://yourportfolio.com" <?= $isLocked ? 'readonly' : '' ?>>
                         </div>
                     </div>
                 </div>
@@ -1202,9 +1172,7 @@ function showStepGateNotice(msg) {
 function isStepAllowed(targetStep) {
     if (stepState.is_locked) return true;
     if (targetStep === 'step_a') return true;
-    if (targetStep === 'step_b') {
-        return !!stepState.step_a_completed;
-    }
+    if (targetStep === 'step_b') return true; // fallback
     if (targetStep === 'step_c') {
         return !!stepState.step_a_completed;
     }
@@ -1447,12 +1415,16 @@ function switchStep(stepId, updateHistory = true) {
             return;
         }
         if (!stepState.step_c_completed && stepId === 'step_d') {
-            showToast('Please complete Step 3 (Identity Proofs & Emergency Contacts) before review.', 'warning');
+            showToast('Please complete Step 2 (Documents & Identity Proofs) before review.', 'warning');
             switchStep('step_c', updateHistory);
             return;
         }
         showToast('This step is locked until previous steps are completed.', 'warning');
         return;
+    }
+
+    if (stepId === 'step_b') {
+        stepId = 'step_c';
     }
 
     if (stepId === 'step_d') {
@@ -1469,10 +1441,9 @@ function switchStep(stepId, updateHistory = true) {
     if (tabBtn) tabBtn.classList.add('active');
 
     const stepTitles = {
-        'step_a': 'Step 1 of 4 • Basic Details',
-        'step_b': 'Step 2 of 4 • Social Links',
-        'step_c': 'Step 3 of 4 • Documents & KYC',
-        'step_d': 'Step 4 of 4 • Review & Sign'
+        'step_a': 'Step 1 of 3 • Basic Details',
+        'step_c': 'Step 2 of 3 • Documents & KYC',
+        'step_d': 'Step 3 of 3 • Review, Social Profile & Sign'
     };
     const mobTitle = document.getElementById('mobileStepTitle');
     if (mobTitle && stepTitles[stepId]) {
@@ -1496,12 +1467,10 @@ function switchStep(stepId, updateHistory = true) {
 function updateStepLocks(status) {
     if (!status) return;
     stepState.step_a_completed = !!status.step_a_completed;
-    stepState.step_b_completed = !!status.step_b_completed;
     stepState.step_c_completed = !!status.step_c_completed;
     stepState.step_d_completed = !!status.step_d_completed;
     stepState.max_allowed_step = status.max_allowed_step || 'step_a';
 
-    const stepBAllowed = stepState.step_a_completed || stepState.is_locked;
     const stepCAllowed = stepState.step_a_completed || stepState.is_locked;
     const stepDAllowed = (stepState.step_a_completed && stepState.step_c_completed) || stepState.is_locked;
 
@@ -1509,28 +1478,20 @@ function updateStepLocks(status) {
     const badgeA = document.getElementById('badge_step_a');
     if (badgeA) badgeA.textContent = stepState.step_a_completed ? '✓' : '1';
 
-    // Step B
-    const tabB = document.getElementById('tab_step_b');
-    const badgeB = document.getElementById('badge_step_b');
-    const lockB = document.getElementById('lock_step_b');
-    if (tabB) tabB.classList.toggle('is-locked', !stepBAllowed);
-    if (badgeB) badgeB.textContent = stepState.step_b_completed ? '✓' : '2';
-    if (lockB) lockB.style.display = stepBAllowed ? 'none' : 'inline-flex';
-
-    // Step C
+    // Step C (Step 2)
     const tabC = document.getElementById('tab_step_c');
     const badgeC = document.getElementById('badge_step_c');
     const lockC = document.getElementById('lock_step_c');
     if (tabC) tabC.classList.toggle('is-locked', !stepCAllowed);
-    if (badgeC) badgeC.textContent = stepState.step_c_completed ? '✓' : '3';
+    if (badgeC) badgeC.textContent = stepState.step_c_completed ? '✓' : '2';
     if (lockC) lockC.style.display = stepCAllowed ? 'none' : 'inline-flex';
 
-    // Step D
+    // Step D (Step 3)
     const tabD = document.getElementById('tab_step_d');
     const badgeD = document.getElementById('badge_step_d');
     const lockD = document.getElementById('lock_step_d');
     if (tabD) tabD.classList.toggle('is-locked', !stepDAllowed);
-    if (badgeD) badgeD.textContent = stepState.step_d_completed ? '✓' : '4';
+    if (badgeD) badgeD.textContent = stepState.step_d_completed ? '✓' : '3';
     if (lockD) lockD.style.display = stepDAllowed ? 'none' : 'inline-flex';
 }
 
@@ -1544,10 +1505,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const urlParams = new URLSearchParams(window.location.search);
         const urlStep = urlParams.get('step');
         const savedStep = localStorage.getItem('candidate_wizard_step');
-        const validSteps = ['step_a', 'step_b', 'step_c', 'step_d'];
+        const validSteps = ['step_a', 'step_c', 'step_d'];
         let targetStep = (urlStep && validSteps.includes(urlStep)) 
             ? urlStep 
             : ((savedStep && validSteps.includes(savedStep)) ? savedStep : currentStepId);
+
+        if (targetStep === 'step_b') targetStep = 'step_c';
 
         if (!isStepAllowed(targetStep)) {
             targetStep = stepState.max_allowed_step || 'step_a';
@@ -1950,7 +1913,7 @@ function setupAutoSave() {
     if (stepState.is_locked) {
         return; // Disable all auto-saving if profile is locked
     }
-    document.querySelectorAll('#form_step_a, #form_step_b, #form_step_c').forEach(form => {
+    document.querySelectorAll('#form_step_a, #form_step_c').forEach(form => {
         form.querySelectorAll('input:not([type="file"]):not([type="hidden"]), select, textarea').forEach(input => {
             input.addEventListener('input', () => {
                 showAutoSaveStatus('Saving changes...', 'var(--muted)');
@@ -1966,7 +1929,7 @@ function setupAutoSave() {
 async function saveStepData(stepId, advanceToNext = false) {
     if (stepState.is_locked) {
         if (advanceToNext) {
-            const nextStep = (stepId === 'step_a') ? 'step_b' : ((stepId === 'step_b') ? 'step_c' : 'step_d');
+            const nextStep = (stepId === 'step_a') ? 'step_c' : 'step_d';
             switchStep(nextStep);
         }
         return;
@@ -1974,12 +1937,6 @@ async function saveStepData(stepId, advanceToNext = false) {
 
     if (stepId === 'step_a' && advanceToNext) {
         if (!validateStepA()) {
-            return;
-        }
-    }
-
-    if (stepId === 'step_b' && advanceToNext) {
-        if (!validateStepB()) {
             return;
         }
     }
@@ -2031,12 +1988,11 @@ async function saveStepData(stepId, advanceToNext = false) {
             if (advanceToNext) {
                 const stepSuccessMsgs = {
                     'step_a': '✓ Step 1: Personal & contact details saved successfully!',
-                    'step_b': '✓ Step 2: Professional & social profiles saved successfully!',
-                    'step_c': '✓ Step 3: Identity proofs & emergency contacts saved successfully!'
+                    'step_c': '✓ Step 2: Documents & emergency contacts saved successfully!'
                 };
                 showToast(stepSuccessMsgs[stepId] || '✓ Details saved successfully!', 'success');
 
-                const nextStep = (stepId === 'step_a') ? 'step_b' : ((stepId === 'step_b') ? 'step_c' : 'step_d');
+                const nextStep = (stepId === 'step_a') ? 'step_c' : 'step_d';
                 switchStep(nextStep);
             }
         } else {
@@ -2053,6 +2009,40 @@ async function saveStepData(stepId, advanceToNext = false) {
 async function submitFinalOnboarding() {
     const form = document.getElementById('form_step_d');
     if (!form) return;
+
+    // Validate that at least one social / professional profile link is filled ("Bss ek required h koi bhi")
+    const socIds = ['soc_linkedin', 'soc_instagram', 'soc_facebook', 'soc_twitter', 'soc_youtube', 'soc_portfolio'];
+    const hasAnySocial = socIds.some(id => {
+        const el = document.getElementById(id);
+        return el && el.value.trim().length > 0;
+    });
+
+    if (!hasAnySocial) {
+        showToast('Bss ek required h koi bhi: Kripya kam se kam ek profile link darj karein (LinkedIn, Instagram, Facebook, X, etc.).', 'warning');
+        const firstInput = document.getElementById('soc_linkedin');
+        if (firstInput) {
+            firstInput.focus();
+            firstInput.classList.add('pulse-highlight');
+            setTimeout(() => firstInput.classList.remove('pulse-highlight'), 3000);
+        }
+        return;
+    }
+
+    // Validate LinkedIn URL format if provided
+    const linkedinInput = document.getElementById('soc_linkedin');
+    const linkedinVal = linkedinInput ? linkedinInput.value.trim() : '';
+    if (linkedinVal) {
+        const linkedinPattern = /^(https?:\/\/)?([a-zA-Z0-9_\-]+\.)?linkedin\.com\/.+/i;
+        if (!linkedinPattern.test(linkedinVal)) {
+            showToast('Please enter a valid LinkedIn URL (e.g. https://www.linkedin.com/in/yourname)', 'warning');
+            if (linkedinInput) {
+                linkedinInput.focus();
+                linkedinInput.classList.add('pulse-highlight');
+                setTimeout(() => linkedinInput.classList.remove('pulse-highlight'), 3000);
+            }
+            return;
+        }
+    }
 
     if (!document.getElementById('declaration_accepted').checked) {
         showToast('Please review and check the DPDP consent declaration to proceed.', 'warning');
