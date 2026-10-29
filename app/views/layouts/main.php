@@ -27,6 +27,9 @@
 
     <!-- Application Master Stylesheet (Hashed Dist via manifest.json) -->
     <link rel="stylesheet" href="<?= asset('/assets/css/style.css') ?>">
+
+    <!-- Interactive Motion & Mobile Shield -->
+    <link rel="stylesheet" href="<?= asset('/assets/css/interactive.css') ?>">
 </head>
 <body>
     <!-- Navbar (Transforming Pill) -->
@@ -42,6 +45,7 @@
 
     <!-- Master Scripts (Bootstrap 5.3 + Motion) -->
     <script src="<?= asset('/assets/js/main.js') ?>" defer></script>
+    <script src="<?= asset('/assets/js/interactive.js') ?>" defer></script>
 
     <!-- Flash Notifications Toast Container -->
     <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1090;">

@@ -10,11 +10,23 @@ ob_start();
         <div class="row align-items-center g-5">
             <!-- Left Column: Editorial Typography Block -->
             <div class="col-lg-6">
-                <span class="eyebrow">India's #1 Real Estate Training</span>
-                <h1 class="mb-3">Master the Art of Real Estate</h1>
+                <!-- Eyebrow with Pulsing Live Activity Indicator -->
+                <div class="hero-live-badge mb-3">
+                    <span class="live-dot-pulse"></span>
+                    <span class="hero-live-text">ADMISSIONS OPEN &bull; OCTOBER 2026 BATCH &bull; 100% PLACEMENT SUPPORT</span>
+                </div>
+
+                <!-- Dynamic Animated Headline with Word Rotator -->
+                <h1 class="hero-title mb-3">
+                    Master the Art of<br>
+                    <span class="rotator-text-wrap">
+                        <span class="rotator-text active" id="heroRotatorText">Real Estate Sales</span>
+                        <span class="rotator-cursor">|</span>
+                    </span>
+                </h1>
                 <hr class="gold-rule">
                 <p class="lead mb-4">
-                    Empowering businesses with skilled professionals — we build high-performing sales teams that drive smarter strategies and stronger results.
+                    Empowering businesses with skilled professionals — we build high-performing sales teams that drive smarter strategies, lucrative commissions, and stronger results.
                 </p>
                 <div class="d-flex flex-wrap gap-3 hero-cta-group">
                     <a href="<?= url('/register') ?>" class="btn btn-primary btn-lg">
@@ -28,32 +40,78 @@ ob_start();
 
             <!-- Right Column: Organic Hero Graphic with Transparent Background (No Border) -->
             <div class="col-lg-6 d-flex align-items-center justify-content-center">
-                <div class="hero-image-wrap text-center w-100">
+                <div class="hero-image-wrap text-center w-100 position-relative">
                     <img src="<?= asset('/assets/img/gallery/about3.png') ?>" alt="Realty Smartz Pathshala Training Session" class="img-fluid hero-img" width="600" height="450" loading="eager" fetchpriority="high">
+                    <!-- Floating Highlight Badge -->
+                    <div class="hero-floating-card">
+                        <div class="hero-floating-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C9A24A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                        </div>
+                        <div class="text-start">
+                            <div class="hero-floating-title">98% Placement Rate</div>
+                            <div class="hero-floating-sub">Top Tier Developer Allocation</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- 2. STATS ROW (Single Horizontal Row Separated by Thin Vertical Lines, No Cards) -->
+<!-- LIVE MARQUEE TICKER (Interactive Real-Time Ecosystem) -->
+<div class="live-ticker-strip">
+    <div class="live-ticker-track">
+        <div class="live-ticker-content">
+            <span class="ticker-pill"><span class="ticker-sparkle">✦</span> LIVE COHORT 2026</span>
+            <span class="ticker-item">Over 500+ Professionals Placed in Top Real Estate Firms</span>
+            <span class="ticker-dot">•</span>
+            <span class="ticker-item">Hiring Developers: DLF, Godrej, BPTP, M3M, Signature Global, Eldeco, Adani</span>
+            <span class="ticker-dot">•</span>
+            <span class="ticker-item">Highest Package: ₹18.5 LPA</span>
+            <span class="ticker-dot">•</span>
+            <span class="ticker-item">100% Practical Field Training &amp; Closing Mastery</span>
+            <span class="ticker-dot">•</span>
+            <span class="ticker-item">Instant Aptitude Assessment &amp; Fast-Track Selection</span>
+            <span class="ticker-dot">•</span>
+            <span class="ticker-item">Gurugram's Premier Real Estate Finishing School</span>
+            <span class="ticker-dot">•</span>
+        </div>
+        <div class="live-ticker-content" aria-hidden="true">
+            <span class="ticker-pill"><span class="ticker-sparkle">✦</span> LIVE COHORT 2026</span>
+            <span class="ticker-item">Over 500+ Professionals Placed in Top Real Estate Firms</span>
+            <span class="ticker-dot">•</span>
+            <span class="ticker-item">Hiring Developers: DLF, Godrej, BPTP, M3M, Signature Global, Eldeco, Adani</span>
+            <span class="ticker-dot">•</span>
+            <span class="ticker-item">Highest Package: ₹18.5 LPA</span>
+            <span class="ticker-dot">•</span>
+            <span class="ticker-item">100% Practical Field Training &amp; Closing Mastery</span>
+            <span class="ticker-dot">•</span>
+            <span class="ticker-item">Instant Aptitude Assessment &amp; Fast-Track Selection</span>
+            <span class="ticker-dot">•</span>
+            <span class="ticker-item">Gurugram's Premier Real Estate Finishing School</span>
+            <span class="ticker-dot">•</span>
+        </div>
+    </div>
+</div>
+
+<!-- 2. STATS ROW (Single Horizontal Row Separated by Thin Vertical Lines, Dynamic Count Up) -->
 <section class="pb-5">
     <div class="container">
         <div class="stats-row" data-reveal>
             <div class="stat-item">
-                <div class="stat-value">500+</div>
+                <div class="stat-value" data-counter="500" data-suffix="+">500+</div>
                 <div class="stat-label">Professionals Trained</div>
             </div>
             <div class="stat-item">
-                <div class="stat-value">50+</div>
+                <div class="stat-value" data-counter="50" data-suffix="+">50+</div>
                 <div class="stat-label">Live Projects</div>
             </div>
             <div class="stat-item">
-                <div class="stat-value">98%</div>
+                <div class="stat-value" data-counter="98" data-suffix="%">98%</div>
                 <div class="stat-label">Placement Rate</div>
             </div>
             <div class="stat-item">
-                <div class="stat-value">10+</div>
+                <div class="stat-value" data-counter="10" data-suffix="+">10+</div>
                 <div class="stat-label">Years Active</div>
             </div>
         </div>
