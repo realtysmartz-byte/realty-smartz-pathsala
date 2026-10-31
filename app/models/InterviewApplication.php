@@ -463,9 +463,9 @@ class InterviewApplication {
     }
 
     /**
-     * Save all HR feedback fields at once, and dispatch candidate email when requested
+     * Save all HR feedback fields at once, and dispatch candidate email when enabled in automation settings
      */
-    public static function saveHrFeedback(int $id, array $data, int $adminId, bool $sendEmail = true): array {
+    public static function saveHrFeedback(int $id, array $data, int $adminId): array {
         $db = Database::getConnection();
 
         // Fetch current record
@@ -567,8 +567,7 @@ class InterviewApplication {
             // Audit Log
             AuditLog::log('interview_hr_feedback_saved', 'interview_applications', $id, null, [
                 'decision'   => $decision,
-                'version'    => $newVersion,
-                'send_email' => $sendEmail
+                'version'    => $newVersion
             ], $adminId);
 
             $db->commit();
@@ -583,14 +582,20 @@ class InterviewApplication {
             // Fetch refreshed application data
             $updatedApp = self::findById($id);
 
-            // Dispatch automated email ONLY NOW after details are fully filled and saved!
+            // Dispatch automated email strictly if enabled in Automation Settings
             $emailSent = false;
-            if ($sendEmail && in_array($decision, ['selected', 'rejected'], true)) {
-                try {
-                    self::sendAutomationEmails($id, $decision, $updatedApp, true /* force */);
-                    $emailSent = true;
-                } catch (\Throwable $e) {
-                    error_log("Failed sending {$decision} email to candidate {$id}: " . $e->getMessage());
+            if (in_array($decision, ['selected', 'rejected'], true)) {
+                $isAutoEnabled = ($decision === 'selected')
+                    ? (int) Setting::get('interview_email_candidate_selected', 0)
+                    : (int) Setting::get('interview_email_candidate_rejected', 0);
+
+                if ($isAutoEnabled) {
+                    try {
+                        self::sendAutomationEmails($id, $decision, $updatedApp, false /* force = false: respects automation settings & 24h deduplication */);
+                        $emailSent = true;
+                    } catch (\Throwable $e) {
+                        error_log("Failed sending {$decision} email to candidate {$id}: " . $e->getMessage());
+                    }
                 }
             }
 

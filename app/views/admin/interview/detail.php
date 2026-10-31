@@ -262,52 +262,6 @@ if (!empty($app['updated_at'])) {
         box-shadow: none;
     }
 
-    /* Email notification toggle card */
-    .email-toggle-card {
-        background: #F8FAFC;
-        border: 1px solid #E2E8F0;
-        border-radius: var(--r-md);
-        padding: 12px 14px;
-        margin-top: 14px;
-        margin-bottom: 16px;
-        transition: border-color 0.2s ease, background-color 0.2s ease;
-    }
-    .email-toggle-card:hover {
-        background: #F1F5F9;
-        border-color: #CBD5E1;
-    }
-    .email-toggle-label {
-        display: flex;
-        align-items: flex-start;
-        gap: 12px;
-        cursor: pointer;
-        user-select: none;
-        margin: 0;
-    }
-    .email-toggle-checkbox {
-        width: 18px;
-        height: 18px;
-        accent-color: var(--brand);
-        margin-top: 2px;
-        flex-shrink: 0;
-        cursor: pointer;
-    }
-    .email-toggle-info {
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
-    }
-    .email-toggle-title {
-        font-size: 13.5px;
-        font-weight: 700;
-        color: var(--text);
-    }
-    .email-toggle-sub {
-        font-size: 12px;
-        color: var(--muted);
-        line-height: 1.4;
-    }
-
     /* Input with prefix symbol (₹) */
     .input-with-symbol {
         position: relative;
@@ -1173,17 +1127,6 @@ if (!empty($app['updated_at'])) {
                     <div class="hr-form-group">
                         <label for="hr_module_discussed" class="hr-label">Module Discussed</label>
                         <textarea id="hr_module_discussed" name="module_discussed" class="hr-control" placeholder="Curriculum / modules / department discussed..." <?= $isReadOnly ? 'disabled' : '' ?>><?= e($app['module_discussed'] ?? '') ?></textarea>
-                    </div>
-
-                    <!-- Email Notification Option Checkbox -->
-                    <div class="email-toggle-card">
-                        <label class="email-toggle-label" for="send_candidate_email">
-                            <input type="checkbox" name="send_candidate_email" id="send_candidate_email" class="email-toggle-checkbox" value="1" checked <?= $isReadOnly ? 'disabled' : '' ?>>
-                            <div class="email-toggle-info">
-                                <span class="email-toggle-title">Send automated email to candidate on save</span>
-                                <span class="email-toggle-sub">Sends official offer or rejection letter to <strong><?= e($app['email']) ?></strong> once you save.</span>
-                            </div>
-                        </label>
                     </div>
 
                     <!-- Prominent Save Button -->

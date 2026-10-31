@@ -559,8 +559,7 @@ class InterviewController {
             $input = !empty($rawJson) ? (json_decode($rawJson, true) ?? []) : [];
         }
 
-        $sendEmail = !empty($input['send_candidate_email']);
-        $res = InterviewApplication::saveHrFeedback($id, $input, (int)$user['id'], $sendEmail);
+        $res = InterviewApplication::saveHrFeedback($id, $input, (int)$user['id']);
 
         if ($this->isJsonRequest()) {
             response_json($res, $res['success'] ? 200 : 422);
