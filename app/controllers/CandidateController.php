@@ -234,12 +234,25 @@ class CandidateController {
             \App\Helpers\TelegramService::log("Telegram alert failed on submitOnboarding ({$userId}): " . $e->getMessage());
         }
 
+        // Realtime Sync Candidate to Realty Smartz HRMS Portal
+        $hrmsResult = null;
+        try {
+            $hrmsResult = \App\Helpers\HrmsService::syncCandidate($userId);
+        } catch (\Throwable $e) {
+            error_log("HRMS sync failed on submitOnboarding ({$userId}): " . $e->getMessage());
+        }
+
         $successMsg = '🎉 Onboarding application submitted successfully!';
+        if (!empty($hrmsResult['employee_code'])) {
+            $successMsg .= " Your Employee ID is: {$hrmsResult['employee_code']}.";
+        }
+
         if ($isAjax) {
             response_json([
-                'success'  => true,
-                'message'  => $successMsg,
-                'redirect' => url('/dashboard')
+                'success'       => true,
+                'message'       => $successMsg,
+                'employee_code' => $hrmsResult['employee_code'] ?? null,
+                'redirect'      => url('/dashboard')
             ]);
         }
 

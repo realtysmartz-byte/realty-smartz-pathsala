@@ -187,6 +187,7 @@ Router::post('/admin/candidates/{id}/update', [AdminController::class, 'updateCa
 Router::post('/admin/candidates/{id}/archive', [AdminController::class, 'archiveCandidate'], ['admin', 'csrf']);
 Router::post('/admin/candidates/{id}/delete', [AdminController::class, 'archiveCandidate'], ['admin', 'csrf']);
 Router::post('/admin/candidates/{id}/restore', [AdminController::class, 'restoreCandidate'], ['admin', 'csrf']);
+Router::post('/admin/candidates/{id}/sync-hrms', [AdminController::class, 'syncHrms'], ['admin', 'csrf']);
 
 Router::get('/admin/candidates/{id}/export-full-pdf', [AdminController::class, 'exportFullPdf'], ['admin']);
 Router::get('/admin/candidates/{id}/export-pdf', [AdminController::class, 'exportPdf'], ['admin']);

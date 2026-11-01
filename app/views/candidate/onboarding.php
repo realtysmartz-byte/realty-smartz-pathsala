@@ -2096,10 +2096,13 @@ async function submitFinalOnboarding() {
         }
 
         if (data && data.success) {
-            showToast('✓ Onboarding application submitted successfully! Redirecting...', 'success');
+            const successText = data.employee_code 
+                ? '✓ Onboarding application submitted successfully! Your Employee ID is: ' + data.employee_code + '. Redirecting...'
+                : (data.message || '✓ Onboarding application submitted successfully! Redirecting...');
+            showToast(successText, 'success');
             setTimeout(() => {
                 window.location.href = data.redirect || '<?= url("/dashboard") ?>';
-            }, 800);
+            }, 1200);
         } else {
             showToast('Submission Error: ' + ((data && data.error) ? data.error : 'Validation failed'), 'warning');
             if (btn) {

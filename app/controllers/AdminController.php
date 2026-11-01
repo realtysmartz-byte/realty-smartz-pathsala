@@ -900,6 +900,33 @@ class AdminController {
     }
 
     /**
+     * Manual Sync Candidate to Realty Smartz HRMS (POST /admin/candidates/{id}/sync-hrms)
+     */
+    public function syncHrms(int $id): void {
+        $candidate = Profile::getFullProfile($id);
+        if (!$candidate) {
+            flash('error', 'Candidate not found.');
+            redirect('/admin/candidates');
+            return;
+        }
+
+        try {
+            $result = \App\Helpers\HrmsService::syncCandidate($id);
+            if (!empty($result['success'])) {
+                $code = $result['employee_code'] ?? 'Created';
+                flash('success', "Candidate successfully synced to Realty Smartz HRMS! Employee Code: {$code}");
+            } else {
+                $err = $result['error'] ?? 'Sync failed';
+                flash('warning', "HRMS Sync Notice: {$err}");
+            }
+        } catch (\Throwable $e) {
+            flash('error', 'Error syncing with HRMS: ' . $e->getMessage());
+        }
+
+        redirect('/admin/candidates/' . $id);
+    }
+
+    /**
      * Download Full File PDF: Cover + Table of Contents + All Uploaded Documents
      * (/admin/candidates/{id}/export-full-pdf)
      */

@@ -120,6 +120,12 @@ CREATE TABLE IF NOT EXISTS `profiles` (
   `signature_data` MEDIUMTEXT NULL,
   `completion_percentage` TINYINT UNSIGNED NOT NULL DEFAULT 0,
   `is_locked` TINYINT(1) NOT NULL DEFAULT 0,
+  -- Realty Smartz HRMS Integration Fields
+  `hrms_employee_code` VARCHAR(50) NULL,
+  `hrms_employee_id` VARCHAR(100) NULL,
+  `hrms_synced_at` DATETIME NULL,
+  `hrms_sync_status` VARCHAR(50) NULL DEFAULT 'pending',
+  `hrms_sync_error` TEXT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT `fk_profile_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
@@ -561,6 +567,24 @@ CREATE TABLE IF NOT EXISTS `migrations` (
   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   `migration_name` VARCHAR(255) NOT NULL UNIQUE,
   `executed_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------------------------------------------
+-- 32. HRMS Sync Log Table (Realty Smartz HRMS Integration)
+-- ----------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `hrms_sync_log` (
+  `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `user_id` INT UNSIGNED NOT NULL,
+  `endpoint` VARCHAR(255) NOT NULL,
+  `request_payload` JSON NULL,
+  `response_code` INT NULL,
+  `response_body` TEXT NULL,
+  `status` ENUM('success', 'failed', 'conflict') NOT NULL,
+  `employee_code` VARCHAR(50) NULL,
+  `error_message` VARCHAR(255) NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX `idx_hrms_user` (`user_id`),
+  INDEX `idx_hrms_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ================================================================

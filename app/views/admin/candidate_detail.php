@@ -940,6 +940,15 @@ function formatFileSize(?int $bytes): string {
                 <?php if (!empty($candidate['is_archived'])): ?>
                     <span class="chip-badge" style="background: var(--danger-soft); color: var(--danger);">Archived</span>
                 <?php endif; ?>
+                <?php if (!empty($profile['hrms_employee_code'])): ?>
+                    <span class="chip-badge" style="background: #e6f4ea; color: #137333; font-weight: 600; border: 1px solid #ceead6;" title="Realty Smartz HRMS Employee ID">
+                        <i class="fas fa-id-badge" style="margin-right: 4px;"></i> HRMS: <?= e($profile['hrms_employee_code']) ?>
+                    </span>
+                <?php elseif (!empty($profile['hrms_sync_status']) && $profile['hrms_sync_status'] === 'failed'): ?>
+                    <span class="chip-badge" style="background: #fce8e6; color: #c5221f; border: 1px solid #fad2cf;" title="HRMS Sync Notice: <?= e($profile['hrms_sync_error'] ?? '') ?>">
+                        <i class="fas fa-exclamation-triangle" style="margin-right: 4px;"></i> HRMS Pending
+                    </span>
+                <?php endif; ?>
             </div>
 
             <!-- Email on its own line (overflow-wrap: anywhere) -->
@@ -970,6 +979,21 @@ function formatFileSize(?int $bytes): string {
 
     <!-- Right of Header: Primary Download full file (PDF) + Secondary Dropdown More -->
     <div class="profile-header-actions">
+        <?php if (empty($profile['hrms_employee_code'])): ?>
+            <form action="<?= url('/admin/candidates/' . $candidate['id'] . '/sync-hrms') ?>" method="POST" style="margin: 0; display: inline-flex;">
+                <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
+                <button type="submit" class="btn-header-more" style="background: var(--surface-2); border-color: var(--line); color: var(--brand);" title="Sync Candidate to Realty Smartz HRMS Portal">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                    <span>Sync to HRMS</span>
+                </button>
+            </form>
+        <?php else: ?>
+            <a href="https://rshrms.in" target="_blank" rel="noopener" class="btn-header-more" style="background: #f0fdf4; border-color: #bbf7d0; color: #15803d; text-decoration: none;" title="Open in Realty Smartz HRMS Portal">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                <span>HRMS: <?= e($profile['hrms_employee_code']) ?></span>
+            </a>
+        <?php endif; ?>
+
         <a href="<?= url('/admin/candidates/' . $candidate['id'] . '/export-full-pdf') ?>" class="btn-header-primary" aria-label="Download full file PDF">
             <svg width="16" height="16" aria-hidden="true"><use href="#icon-download"></use></svg>
             <span>Download full file (PDF)</span>
@@ -1040,6 +1064,29 @@ function formatFileSize(?int $bytes): string {
                 <div class="detail-item">
                     <span class="detail-label">Gender</span>
                     <span class="detail-value" id="profileGenderVal"><?= !empty($profile['gender']) ? ucfirst($profile['gender']) : '-' ?></span>
+                </div>
+
+                <div class="detail-item">
+                    <span class="detail-label">HRMS Employee Code</span>
+                    <span class="detail-value">
+                        <?php if (!empty($profile['hrms_employee_code'])): ?>
+                            <span style="display: inline-flex; align-items: center; gap: 6px; color: #166534; font-weight: 700;">
+                                <i class="fas fa-check-circle" style="color: #22c55e;"></i>
+                                <?= e($profile['hrms_employee_code']) ?>
+                                <?php if (!empty($profile['hrms_synced_at'])): ?>
+                                    <small style="color: var(--muted); font-weight: normal; font-size: 11px;">(Synced <?= date('d M Y, h:i A', strtotime($profile['hrms_synced_at'])) ?>)</small>
+                                <?php endif; ?>
+                            </span>
+                        <?php else: ?>
+                            <span style="color: var(--muted); display: inline-flex; align-items: center; gap: 8px;">
+                                Not synced
+                                <form action="<?= url('/admin/candidates/' . $candidate['id'] . '/sync-hrms') ?>" method="POST" style="display:inline; margin:0;">
+                                    <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
+                                    <button type="submit" class="btn-doc-view" style="padding: 2px 8px; font-size: 11px; cursor: pointer;">Sync now</button>
+                                </form>
+                            </span>
+                        <?php endif; ?>
+                    </span>
                 </div>
 
                 <div class="detail-item">
