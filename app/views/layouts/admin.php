@@ -65,6 +65,8 @@ $viewTitle = $viewTitle ?? 'Dashboard';
             margin: 0;
             padding: 0;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            max-width: 100vw;
         }
 
         a {
@@ -90,21 +92,41 @@ $viewTitle = $viewTitle ?? 'Dashboard';
             display: grid;
             grid-template-columns: 240px minmax(0, 1fr);
             min-height: 100vh;
+            max-width: 100vw;
+            overflow-x: hidden;
             background: var(--bg);
         }
 
-        /* Sticky Left Sidebar */
+        /* Sticky Left Sidebar with Modern Sleek Scrollbar */
         .sidebar {
             position: sticky;
             top: 0;
             align-self: start;
             height: 100vh;
+            height: 100dvh;
             overflow-y: auto;
+            overflow-x: hidden;
             background: var(--surface);
             border-right: 1px solid var(--line);
             display: flex;
             flex-direction: column;
             z-index: 40;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(38, 51, 45, 0.2) transparent;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 5px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(38, 51, 45, 0.2);
+            border-radius: 999px;
+        }
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(38, 51, 45, 0.4);
         }
 
         .sidebar-header {
@@ -145,6 +167,7 @@ $viewTitle = $viewTitle ?? 'Dashboard';
             display: flex;
             flex-direction: column;
             gap: 4px;
+            overflow-x: hidden;
         }
 
         /* Sidebar Item: icon (20px) + label (15px), height 44px, radius --r-md; active = --brand-soft background + --brand text */
@@ -161,6 +184,8 @@ $viewTitle = $viewTitle ?? 'Dashboard';
             font-weight: 500;
             transition: background 0.15s ease, color 0.15s ease;
             white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
             position: relative;
         }
 

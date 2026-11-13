@@ -857,10 +857,11 @@ class Profile {
             return ['success' => false, 'error' => 'Please provide your digital signature (typed name or drawn signature).'];
         }
 
-        // Lock profile and set completion to 100%
+        // Lock profile and set completion to 100%, and stamp joining date on successful document submission
         $stmtP = $db->prepare("UPDATE `profiles` SET
             `declaration_accepted` = 1,
             `declaration_date` = NOW(),
+            `joining_date` = COALESCE(`joining_date`, CURDATE()),
             `signature_type` = :stype,
             `signature_data` = :sdata,
             `social_links` = :slinks,
@@ -874,6 +875,12 @@ class Profile {
             ':slinks' => json_encode($mergedSocial, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
             ':uid'    => $userId
         ]);
+
+        // Also ensure user table records joining date
+        try {
+            $db->prepare("UPDATE `users` SET `joining_date` = COALESCE(`joining_date`, CURDATE()) WHERE `id` = :uid")
+               ->execute([':uid' => $userId]);
+        } catch (\Throwable $e) {}
 
         // Update status to 'documents_submitted'
         User::updateStatus($userId, 'documents_submitted', 'Candidate completed 4-step onboarding wizard and submitted documents.', $userId);

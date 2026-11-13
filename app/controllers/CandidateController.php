@@ -252,12 +252,12 @@ class CandidateController {
                 'success'       => true,
                 'message'       => $successMsg,
                 'employee_code' => $hrmsResult['employee_code'] ?? null,
-                'redirect'      => url('/dashboard')
+                'redirect'      => 'https://rshrms.in'
             ]);
         }
 
         flash('success', $successMsg);
-        redirect('/dashboard');
+        redirect('https://rshrms.in');
     }
 
     /**

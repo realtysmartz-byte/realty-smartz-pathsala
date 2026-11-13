@@ -2097,11 +2097,11 @@ async function submitFinalOnboarding() {
 
         if (data && data.success) {
             const successText = data.employee_code 
-                ? '✓ Onboarding application submitted successfully! Your Employee ID is: ' + data.employee_code + '. Redirecting...'
-                : (data.message || '✓ Onboarding application submitted successfully! Redirecting...');
+                ? '✓ Onboarding application submitted successfully! Your Employee ID is: ' + data.employee_code + '. Redirecting to Realty Smartz HRMS...'
+                : (data.message || '✓ Onboarding application submitted successfully! Redirecting to Realty Smartz HRMS...');
             showToast(successText, 'success');
             setTimeout(() => {
-                window.location.href = data.redirect || '<?= url("/dashboard") ?>';
+                window.location.href = data.redirect || 'https://rshrms.in';
             }, 1200);
         } else {
             showToast('Submission Error: ' + ((data && data.error) ? data.error : 'Validation failed'), 'warning');

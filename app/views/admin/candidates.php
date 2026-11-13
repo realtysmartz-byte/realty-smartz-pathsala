@@ -770,9 +770,10 @@ function buildFilterUrl(array $overrides = []): string {
                             <input type="checkbox" id="selectAllCheckbox" class="row-checkbox" aria-label="Select all candidates on page">
                         </th>
                         <th>Name</th>
+                        <th>Designation</th>
+                        <th>Joining date</th>
                         <th>Father's name</th>
                         <th>Mobile</th>
-                        <th>Joining date</th>
                         <th>Email</th>
                         <th>Documents</th>
                         <th>Test score</th>
@@ -794,15 +795,20 @@ function buildFilterUrl(array $overrides = []): string {
                                     <?php endif; ?>
                                 </div>
                             </td>
-                            <td id="cFather_<?= $c['id'] ?>"><?= e($c['father_name'] ?? '-') ?></td>
-                            <td id="cMobile_<?= $c['id'] ?>"><?= e($c['mobile'] ?? '-') ?></td>
+                            <td id="cDesignation_<?= $c['id'] ?>">
+                                <span class="badge" style="background:var(--brand-soft); color:var(--brand); font-weight:600; font-size:12px; padding:3px 8px; border-radius:var(--r-sm); white-space:nowrap; display:inline-block;">
+                                    <?= e($c['designation'] ?? 'Sales Executive') ?>
+                                </span>
+                            </td>
                             <td id="cJoining_<?= $c['id'] ?>">
                                 <?php if (!empty($c['joining_date'])): ?>
-                                    <span class="joining-date-val"><?= date('d M Y', strtotime($c['joining_date'])) ?></span>
+                                    <span class="joining-date-val" style="font-weight:600; color:var(--text);"><?= date('d M Y', strtotime($c['joining_date'])) ?></span>
                                 <?php else: ?>
-                                    <span class="joining-date-empty">Not set</span>
+                                    <span class="joining-date-empty" style="color:var(--muted); font-style:italic;">Pending</span>
                                 <?php endif; ?>
                             </td>
+                            <td id="cFather_<?= $c['id'] ?>"><?= e($c['father_name'] ?? '-') ?></td>
+                            <td id="cMobile_<?= $c['id'] ?>"><?= e($c['mobile'] ?? '-') ?></td>
                             <td id="cEmail_<?= $c['id'] ?>"><?= e($c['email']) ?></td>
                             <td><?= (int)$c['total_docs'] ?></td>
                             <td>
@@ -876,16 +882,20 @@ function buildFilterUrl(array $overrides = []): string {
 
                     <div class="card-mobile-meta">
                         <div>
+                            <span style="color: var(--muted); font-size: 12px;">Designation:</span>
+                            <div style="font-weight:600; color:var(--brand);"><?= e($c['designation'] ?? 'Sales Executive') ?></div>
+                        </div>
+                        <div>
+                            <span style="color: var(--muted); font-size: 12px;">Joining date:</span>
+                            <div id="mJoining_<?= $c['id'] ?>"><?= !empty($c['joining_date']) ? ('<span style="font-weight:600;">' . date('d M Y', strtotime($c['joining_date'])) . '</span>') : '<span style="color:var(--muted); font-style:italic;">Pending</span>' ?></div>
+                        </div>
+                        <div>
                             <span style="color: var(--muted); font-size: 12px;">Father:</span>
                             <div id="mFather_<?= $c['id'] ?>"><?= e($c['father_name'] ?? '-') ?></div>
                         </div>
                         <div>
                             <span style="color: var(--muted); font-size: 12px;">Mobile:</span>
                             <div id="mMobile_<?= $c['id'] ?>"><?= e($c['mobile'] ?? '-') ?></div>
-                        </div>
-                        <div>
-                            <span style="color: var(--muted); font-size: 12px;">Joining date:</span>
-                            <div id="mJoining_<?= $c['id'] ?>"><?= !empty($c['joining_date']) ? date('d M Y', strtotime($c['joining_date'])) : '<span style="color:var(--muted); font-style:italic;">Not set</span>' ?></div>
                         </div>
                         <div>
                             <span style="color: var(--muted); font-size: 12px;">Docs / Score:</span>

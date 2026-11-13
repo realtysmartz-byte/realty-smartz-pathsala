@@ -160,6 +160,12 @@ class AdminController {
                        COALESCE(p.joining_date, u.joining_date) as joining_date,
                        p.dob, p.gender, p.address, p.city, p.state, p.pincode, p.social_links,
                        COALESCE(u.father_name, p.father_name) as father_name,
+                       COALESCE(
+                           (SELECT ia.position_offered FROM interview_applications ia WHERE (ia.email = u.email AND ia.email != '') OR (ia.mobile = u.mobile AND ia.mobile != '') ORDER BY ia.id DESC LIMIT 1),
+                           (SELECT ia.post_applied FROM interview_applications ia WHERE (ia.email = u.email AND ia.email != '') OR (ia.mobile = u.mobile AND ia.mobile != '') ORDER BY ia.id DESC LIMIT 1),
+                           (SELECT ex.designation FROM experience ex WHERE ex.user_id = u.id AND ex.designation IS NOT NULL AND ex.designation != '' ORDER BY ex.id DESC LIMIT 1),
+                           'Sales Executive'
+                       ) as designation,
                        (SELECT COUNT(*) FROM documents d WHERE d.user_id = u.id AND d.is_archived = 0) as total_docs,
                        ta.score as test_score, ta.total_questions as test_total, ta.percentage as test_pct, ta.passed as test_passed
                 FROM `users` u
