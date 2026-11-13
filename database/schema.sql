@@ -12,10 +12,16 @@ SET FOREIGN_KEY_CHECKS = 0;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   `full_name` VARCHAR(150) NOT NULL,
+  `father_name` VARCHAR(150) NULL,
   `email` VARCHAR(191) NOT NULL UNIQUE,
   `mobile` VARCHAR(20) NOT NULL,
+  `whatsapp` VARCHAR(20) NULL,
+  `joining_date` DATE NULL,
   `password_hash` VARCHAR(255) NOT NULL,
   `role` ENUM('candidate', 'super_admin', 'hr_manager', 'reviewer') NOT NULL DEFAULT 'candidate',
+  `candidate_type` VARCHAR(50) NOT NULL DEFAULT 'standard',
+  `source` VARCHAR(100) NULL,
+  `is_guest` TINYINT(1) NOT NULL DEFAULT 0,
   `status` ENUM(
       'registered',
       'email_verified',
@@ -28,6 +34,7 @@ CREATE TABLE IF NOT EXISTS `users` (
       'changes_requested',
       'rejected'
   ) NOT NULL DEFAULT 'registered',
+  `email_verified` TINYINT(1) NOT NULL DEFAULT 0,
   `email_verified_at` DATETIME NULL,
   `remember_token` VARCHAR(100) NULL,
   `is_locked` TINYINT(1) NOT NULL DEFAULT 0,
@@ -315,8 +322,13 @@ CREATE TABLE IF NOT EXISTS `tests` (
 CREATE TABLE IF NOT EXISTS `test_attempts` (
   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   `test_id` INT UNSIGNED NOT NULL,
+  `set_id` INT UNSIGNED NOT NULL DEFAULT 1,
   `user_id` INT UNSIGNED NOT NULL,
+  `guest_test_link_id` INT UNSIGNED NULL,
+  `attempt_no` INT UNSIGNED NOT NULL DEFAULT 1,
   `started_at` DATETIME NOT NULL,
+  `deadline_at` DATETIME NULL,
+  `submitted_at` DATETIME NULL,
   `expires_at` DATETIME NOT NULL,
   `completed_at` DATETIME NULL,
   `total_questions` INT UNSIGNED NOT NULL,
@@ -334,6 +346,7 @@ CREATE TABLE IF NOT EXISTS `test_attempts` (
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX `idx_ta_user` (`user_id`),
   INDEX `idx_ta_test` (`test_id`),
+  INDEX `idx_ta_guest` (`guest_test_link_id`),
   CONSTRAINT `fk_ta_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_ta_test` FOREIGN KEY (`test_id`) REFERENCES `tests` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

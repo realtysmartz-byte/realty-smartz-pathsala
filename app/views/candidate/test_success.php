@@ -280,3 +280,4 @@ $isOnboarded = !empty($currentUser) && ($currentUser['candidate_type'] ?? '') !=
     </div>
 </body>
 </html>
+
