@@ -761,8 +761,14 @@ $initialViolations = (int)($session['attempt']['tab_switch_count'] ?? 0);
 
     // Tab Switch / Focus Monitor
     let modalActive = false;
+    let isPageUnloading = false;
+    window.addEventListener('beforeunload', function() {
+        isPageUnloading = true;
+    });
+
     document.addEventListener('visibilitychange', function() {
-        if (document.hidden && !modalActive && !isSubmitting) {
+        if (isPageUnloading || isSubmitting) return;
+        if (document.hidden && !modalActive) {
             handleViolation('tab_switch');
         }
     });
@@ -836,6 +842,9 @@ $initialViolations = (int)($session['attempt']['tab_switch_count'] ?? 0);
     function renderQuestion(index) {
         if (index < 0 || index >= testQuestions.length) return;
         currentIndex = index;
+        try {
+            localStorage.setItem('rs_test_q_index_' + attemptId, currentIndex);
+        } catch (e) {}
         const q = testQuestions[currentIndex];
 
         document.getElementById('qCounter').innerText = `Question ${currentIndex + 1} of ${testQuestions.length}`;
@@ -1015,7 +1024,26 @@ $initialViolations = (int)($session['attempt']['tab_switch_count'] ?? 0);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        renderQuestion(0);
+        let initialIdx = 0;
+        try {
+            const savedIdx = localStorage.getItem('rs_test_q_index_' + attemptId);
+            if (savedIdx !== null) {
+                const parsed = parseInt(savedIdx, 10);
+                if (!isNaN(parsed) && parsed >= 0 && parsed < testQuestions.length) {
+                    initialIdx = parsed;
+                }
+            }
+        } catch (e) {}
+        renderQuestion(initialIdx);
+
+        const form = document.getElementById('testSubmitForm');
+        if (form) {
+            form.addEventListener('submit', () => {
+                try {
+                    localStorage.removeItem('rs_test_q_index_' + attemptId);
+                } catch (e) {}
+            });
+        }
     });
     </script>
 </body>

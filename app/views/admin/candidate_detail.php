@@ -1539,21 +1539,42 @@ function formatFileSize(?int $bytes): string {
                     </div>
                 </div>
 
-                <?php if (!empty($testAnswers)): ?>
-                    <button type="button" class="btn-view-answers" onclick="openAnswersDrawer()" aria-label="View candidate test answers">
-                        <svg width="16" height="16" aria-hidden="true"><use href="#icon-file-check"></use></svg>
-                        <span>View answers</span>
+                <div style="display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap;">
+                    <?php if (!empty($testAnswers)): ?>
+                        <button type="button" class="btn-view-answers" onclick="openAnswersDrawer()" aria-label="View candidate test answers">
+                            <svg width="16" height="16" aria-hidden="true"><use href="#icon-file-check"></use></svg>
+                            <span>View answers</span>
+                        </button>
+                    <?php endif; ?>
+
+                    <form action="<?= url('/admin/candidates/' . $candidate['id'] . '/allow-reattempt') ?>" method="POST" onsubmit="return confirm('Allow <?= e(addslashes($candidate['full_name'])) ?> to retake the aptitude assessment? Previous test will be reset for a fresh chance.');" style="display:inline; margin:0;">
+                        <input type="hidden" name="_csrf_token" value="<?= csrf_token() ?>">
+                        <button type="submit" style="height: 38px; padding: 0 12px; background: #e2eee8; color: #1F5C4A; border: 1px solid #1F5C4A; border-radius: var(--r-md); font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+                            <span>Give Retake Chance</span>
+                        </button>
+                    </form>
+
+                    <button type="button" onclick="openEditScoreModal()" style="height: 38px; padding: 0 12px; background: var(--surface-2); color: var(--text); border: 1px solid var(--line); border-radius: var(--r-md); font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                        <span>Change Score</span>
                     </button>
-                <?php endif; ?>
+                </div>
 
             <?php else: ?>
                 <div style="margin-bottom: 16px;">
                     <div style="font-size: 16px; font-weight: 600; color: var(--muted); margin-bottom: 4px;">Test not taken</div>
-                    <p style="font-size: 13px; color: var(--muted); margin: 0 0 16px 0;">Generate a direct test link to allow candidate evaluation without login.</p>
-                    <button type="button" class="btn-create-test-link" onclick="openCreateTestLinkModal()" aria-label="Create guest test link for candidate">
-                        <svg width="16" height="16" aria-hidden="true"><use href="#icon-link"></use></svg>
-                        <span>Create test link</span>
-                    </button>
+                    <p style="font-size: 13px; color: var(--muted); margin: 0 0 16px 0;">Generate a direct test link to allow candidate evaluation without login, or record a score directly.</p>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button type="button" class="btn-create-test-link" onclick="openCreateTestLinkModal()" style="width: auto; padding: 0 16px;" aria-label="Create guest test link for candidate">
+                            <svg width="16" height="16" aria-hidden="true"><use href="#icon-link"></use></svg>
+                            <span>Create test link</span>
+                        </button>
+                        <button type="button" onclick="openEditScoreModal()" style="height: 40px; padding: 0 14px; background: var(--surface-2); color: var(--text); border: 1px solid var(--line); border-radius: var(--r-md); font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                            <span>Assign / Change Score</span>
+                        </button>
+                    </div>
                 </div>
             <?php endif; ?>
 
@@ -2170,6 +2191,51 @@ function handleSaveProfileDetails(e) {
     </div>
 </div>
 
+
+<!-- Edit Candidate Test Score Modal -->
+<div class="modal-overlay" id="editTestScoreModal" role="dialog" aria-modal="true" style="display:none; align-items:center; justify-content:center;">
+    <div class="modal-dialog" style="max-width: 440px; background: #fff; border-radius: var(--r-lg); box-shadow: 0 16px 40px rgba(0,0,0,0.15);">
+        <div class="modal-header">
+            <h2 class="modal-title">Change Aptitude Test Score</h2>
+            <button type="button" class="modal-close-btn" onclick="closeEditScoreModal()" aria-label="Close dialog">
+                <svg width="20" height="20" aria-hidden="true"><use href="#icon-x"></use></svg>
+            </button>
+        </div>
+        <form action="<?= url('/admin/candidates/' . $candidate['id'] . '/update-test-score') ?>" method="POST">
+            <?= csrf_field() ?>
+            <input type="hidden" name="attempt_id" value="<?= (int)($test['id'] ?? 0) ?>">
+            <div class="modal-body" style="padding: 24px;">
+                <div class="form-group" style="margin-bottom: 18px;">
+                    <label class="form-label" for="inputTestScore" style="display:block; margin-bottom:6px; font-weight:600;">Marks Scored (out of 15) *</label>
+                    <input type="number" step="0.5" min="0" max="15" name="score" id="inputTestScore" class="form-input" value="<?= (float)($test['score'] ?? 0) ?>" required style="width:100%; height:40px; padding:0 12px; border:1px solid var(--line); border-radius:var(--r-md);">
+                    <small style="color: var(--muted); font-size: 12px; margin-top: 4px; display: block;">Passing cutoff is 7.5 / 15 (50%).</small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="selectTestPassed" style="display:block; margin-bottom:6px; font-weight:600;">Assessment Status *</label>
+                    <select name="passed" id="selectTestPassed" class="form-input" style="width:100%; height:40px; padding:0 12px; border:1px solid var(--line); border-radius:var(--r-md);">
+                        <option value="1" <?= !empty($test['passed']) ? 'selected' : '' ?>>Passed &bull; Recommended</option>
+                        <option value="0" <?= empty($test['passed']) ? 'selected' : '' ?>>Failed &bull; Below Benchmark</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid var(--line); display:flex; justify-content:flex-end; gap:10px;">
+                <button type="button" class="btn-modal-cancel" onclick="closeEditScoreModal()">Cancel</button>
+                <button type="submit" class="btn-modal-save" style="background:var(--brand); color:#fff; border:none; padding:8px 18px; border-radius:var(--r-md); font-weight:600; cursor:pointer;">Save Score</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openEditScoreModal() {
+    var m = document.getElementById('editTestScoreModal');
+    if (m) m.style.display = 'flex';
+}
+function closeEditScoreModal() {
+    var m = document.getElementById('editTestScoreModal');
+    if (m) m.style.display = 'none';
+}
+</script>
 
 <?php
 $content = ob_get_clean();

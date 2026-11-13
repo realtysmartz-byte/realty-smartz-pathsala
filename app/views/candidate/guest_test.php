@@ -623,12 +623,35 @@
                 document.getElementById('navBtn_' + currentQIndex).classList.remove('active');
 
                 currentQIndex = idx;
+                try {
+                    localStorage.setItem('rs_guest_q_' + token, currentQIndex);
+                } catch (e) {}
+
                 document.getElementById('qCard_' + currentQIndex).style.display = 'block';
                 document.getElementById('navBtn_' + currentQIndex).classList.add('active');
 
                 document.getElementById('btnPrev').disabled = (currentQIndex === 0);
                 document.getElementById('btnNext').disabled = (currentQIndex === totalQuestions - 1);
             }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                try {
+                    var saved = localStorage.getItem('rs_guest_q_' + token);
+                    if (saved !== null) {
+                        var parsed = parseInt(saved, 10);
+                        if (!isNaN(parsed) && parsed >= 0 && parsed < totalQuestions) {
+                            jumpToQuestion(parsed);
+                        }
+                    }
+                } catch (e) {}
+
+                var sForm = document.getElementById('submitTestForm');
+                if (sForm) {
+                    sForm.addEventListener('submit', function() {
+                        try { localStorage.removeItem('rs_guest_q_' + token); } catch (e) {}
+                    });
+                }
+            });
 
             function navigateQuestion(delta) {
                 var newIdx = currentQIndex + delta;
@@ -675,28 +698,46 @@
         <!-- 4. SUBMITTED STATE (Score Display) -->
         <?php elseif ($viewState === 'submitted'): ?>
             <div class="guest-card status-center">
-                <div class="status-badge-big" style="background: var(--brand-soft); color: var(--brand); margin: 0 auto 16px auto;">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <?php $isPassed = !empty($attempt['passed']); ?>
+                <div class="status-badge-big" style="background: <?= $isPassed ? 'var(--brand-soft)' : '#FEF2F2' ?>; color: <?= $isPassed ? 'var(--brand)' : '#DC2626' ?>; margin: 0 auto 16px auto;">
+                    <?php if ($isPassed): ?>
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <?php else: ?>
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    <?php endif; ?>
                 </div>
-                <h1 class="guest-title">This test has already been submitted</h1>
-                <p class="guest-desc">Your assessment has been recorded successfully.</p>
+                <h1 class="guest-title"><?= $isPassed ? 'Assessment Submitted Successfully!' : 'Assessment Submitted' ?></h1>
+                <p class="guest-desc">
+                    <?= $isPassed ? 'Congratulations! Your assessment has been evaluated and recorded.' : 'Your assessment has been recorded. Your score is below the qualifying benchmark.' ?>
+                </p>
 
                 <?php if ($attempt): ?>
-                    <div class="score-box">
+                    <div class="score-box" style="<?= !$isPassed ? 'background: #FFFBEB; border-color: #FDE68A;' : '' ?>">
                         <div style="font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; margin-bottom: 6px;">Your Final Score</div>
-                        <div class="score-number"><?= (int)$attempt['score'] ?> / <?= (int)$attempt['total_questions'] ?></div>
+                        <div class="score-number" style="<?= !$isPassed ? 'color: #B45309;' : '' ?>"><?= (int)$attempt['score'] ?> / <?= (int)$attempt['total_questions'] ?></div>
                         <div style="font-size: 15px; font-weight: 600; color: var(--text); margin-top: 4px;">
                             <?= round($attempt['percentage']) ?>% &bull; 
-                            <?php if (!empty($attempt['passed'])): ?>
-                                <span style="color: var(--brand);">Passed</span>
+                            <?php if ($isPassed): ?>
+                                <span style="color: var(--brand);">Passed &bull; Recommended</span>
                             <?php else: ?>
-                                <span style="color: var(--danger);">Not passed</span>
+                                <span style="color: #DC2626;">Benchmark Not Met (Below 50%)</span>
                             <?php endif; ?>
                         </div>
                     </div>
                 <?php endif; ?>
 
-                <div style="color: var(--muted); font-size: 13.5px; margin-top: 16px;">
+                <div style="margin-top: 24px; display: flex; flex-direction: column; gap: 10px;">
+                    <a href="<?= url('/') ?>" style="height: 46px; background: var(--brand); color: #fff; text-decoration: none; border-radius: var(--r-md); font-weight: 600; font-size: 14.5px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+                        <span>Return to Homepage</span>
+                    </a>
+                    <?php if (!empty($attempt['id'])): ?>
+                        <a href="<?= url('/dashboard/test/scorecard/' . $attempt['id']) ?>" target="_blank" style="height: 44px; background: #fff; color: var(--text); border: 1px solid var(--line); text-decoration: none; border-radius: var(--r-md); font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+                            <span>Download Scorecard PDF</span>
+                        </a>
+                    <?php endif; ?>
+                </div>
+
+                <div style="color: var(--muted); font-size: 12.5px; margin-top: 16px;">
                     Thank you for taking the Realty Smartz Pathshala assessment.
                 </div>
             </div>
@@ -709,9 +750,12 @@
                 </div>
                 <h1 class="guest-title">This link has expired</h1>
                 <p class="guest-desc">The validity window for this assessment test link has ended.</p>
-                <div style="color: var(--muted); font-size: 14px;">
+                <div style="color: var(--muted); font-size: 14px; margin-bottom: 20px;">
                     Please contact HR or your coordinator to request a new link.
                 </div>
+                <a href="<?= url('/') ?>" style="height: 46px; background: var(--brand); color: #fff; text-decoration: none; border-radius: var(--r-md); font-weight: 600; font-size: 14.5px; display: inline-flex; align-items: center; justify-content: center; padding: 0 24px;">
+                    Return to Homepage
+                </a>
             </div>
 
         <!-- 6. REVOKED STATE -->
@@ -722,9 +766,12 @@
                 </div>
                 <h1 class="guest-title">This link is no longer active</h1>
                 <p class="guest-desc">This guest test link has been revoked by an administrator.</p>
-                <div style="color: var(--muted); font-size: 14px;">
+                <div style="color: var(--muted); font-size: 14px; margin-bottom: 20px;">
                     Please contact HR or the administrator if you believe this is in error.
                 </div>
+                <a href="<?= url('/') ?>" style="height: 46px; background: var(--brand); color: #fff; text-decoration: none; border-radius: var(--r-md); font-weight: 600; font-size: 14.5px; display: inline-flex; align-items: center; justify-content: center; padding: 0 24px;">
+                    Return to Homepage
+                </a>
             </div>
         <?php endif; ?>
 

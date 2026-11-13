@@ -1759,19 +1759,83 @@ class AdminController {
         $db = Database::getConnection();
         $adminId = (int) (auth()['id'] ?? 1);
 
-        // Mark existing completed attempts with allow_reattempt = 1
-        $upd = $db->prepare("UPDATE `test_attempts` SET `allow_reattempt` = 1 WHERE `user_id` = :uid");
-        $upd->execute([':uid' => $id]);
+        // Mark existing completed attempts with allow_reattempt = 1 and set reattempt_allowed_by
+        $upd = $db->prepare("UPDATE `test_attempts` SET `allow_reattempt` = 1, `reattempt_allowed_by` = :aid WHERE `user_id` = :uid");
+        $upd->execute([':aid' => $adminId, ':uid' => $id]);
+
+        // If candidate status is test_completed or rejected, update to test_pending
+        $user = User::findById($id);
+        if ($user && in_array($user['status'], ['test_completed', 'rejected'], true)) {
+            User::updateStatus($id, 'test_pending', 'Administrator granted permission to retake aptitude assessment.', $adminId);
+        }
+
+        // If user has any guest test links, reset them to active
+        try {
+            $db->prepare("UPDATE `guest_test_links` SET `status` = 'active', `attempts_used` = 0 WHERE `user_id` = :uid")
+               ->execute([':uid' => $id]);
+        } catch (\Throwable $e) {}
 
         AuditLog::log('test_reattempt_allowed', 'test_attempts', $id, null, ['user_id' => $id], $adminId);
 
-        $msg = 'Candidate can now take the aptitude test again.';
+        $msg = 'Candidate can now take the aptitude test again (fresh chance granted).';
         if ($this->isAjax()) {
             response_json(['success' => true, 'message' => $msg]);
             return;
         }
 
         flash('success', $msg);
+        redirect($_SERVER['HTTP_REFERER'] ?? '/admin/candidates/' . $id);
+    }
+
+    /**
+     * Change / Update Test Score directly (POST /admin/candidates/{id}/update-test-score)
+     */
+    public function updateTestScore(int $id): void {
+        $db = Database::getConnection();
+        $adminId = (int) (auth()['id'] ?? 1);
+
+        $attemptId = (int) ($_POST['attempt_id'] ?? 0);
+        $score = isset($_POST['score']) ? max(0, min(15, (float)$_POST['score'])) : 0.0;
+        $passed = isset($_POST['passed']) ? (int)$_POST['passed'] : 0;
+        $totalQ = 15;
+        $pct = round(($score / $totalQ) * 100, 2);
+
+        if ($attemptId > 0) {
+            $stmt = $db->prepare("UPDATE `test_attempts` SET 
+                `score` = :score,
+                `percentage` = :pct,
+                `passed` = :passed,
+                `updated_at` = NOW()
+                WHERE `id` = :aid AND `user_id` = :uid");
+            $stmt->execute([
+                ':score' => $score,
+                ':pct' => $pct,
+                ':passed' => $passed,
+                ':aid' => $attemptId,
+                ':uid' => $id
+            ]);
+        } else {
+            // Create a completed attempt record if none exists
+            $stmt = $db->prepare("INSERT INTO `test_attempts`
+                (`test_id`, `set_id`, `user_id`, `started_at`, `completed_at`, `total_questions`, `score`, `percentage`, `passed`, `status`, `created_at`)
+                VALUES (1, 1, :uid, NOW(), NOW(), :total, :score, :pct, :passed, 'completed', NOW())");
+            $stmt->execute([
+                ':uid' => $id,
+                ':total' => $totalQ,
+                ':score' => $score,
+                ':pct' => $pct,
+                ':passed' => $passed
+            ]);
+        }
+
+        AuditLog::log('test_score_updated', 'test_attempts', $attemptId, null, [
+            'candidate_id' => $id,
+            'new_score' => $score,
+            'percentage' => $pct,
+            'passed' => $passed
+        ], $adminId);
+
+        flash('success', "Aptitude test score updated to {$score}/{$totalQ} ({$pct}% - " . ($passed ? 'Passed' : 'Failed') . ").");
         redirect($_SERVER['HTTP_REFERER'] ?? '/admin/candidates/' . $id);
     }
 

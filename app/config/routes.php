@@ -160,9 +160,17 @@ Router::post('/dashboard/profile/submit', [CandidateController::class, 'submitOn
 Router::get('/aptitude/register', [AptitudeController::class, 'showAptitudeRegister']);
 Router::post('/aptitude/register', [AptitudeController::class, 'registerAptitudeCandidate'], ['csrf']);
 
-// Aptitude Assessment
+// Aptitude Assessment & Aliases (Prevents 404s)
+Router::get('/aptitude', [AptitudeController::class, 'showTest']);
+Router::get('/test', [AptitudeController::class, 'showTest']);
 Router::get('/dashboard/aptitude', [AptitudeController::class, 'showTest'], ['auth']);
 Router::get('/dashboard/test', [AptitudeController::class, 'showTest'], ['auth']);
+Router::get('/dashboard/test/result', [AptitudeController::class, 'showResult'], ['auth']);
+Router::get('/dashboard/test/success', [AptitudeController::class, 'showSuccess'], ['auth']);
+Router::get('/dashboard/test/failed', [AptitudeController::class, 'showFailed'], ['auth']);
+Router::get('/test/result', [AptitudeController::class, 'showResult']);
+Router::get('/test/success', [AptitudeController::class, 'showSuccess']);
+Router::get('/test/failed', [AptitudeController::class, 'showFailed']);
 Router::post('/dashboard/test/start', [AptitudeController::class, 'startTest'], ['auth', 'csrf']);
 Router::post('/dashboard/test/answer', [AptitudeController::class, 'saveAnswer'], ['auth', 'csrf']);
 Router::post('/dashboard/test/warning', [AptitudeController::class, 'logWarning'], ['auth', 'csrf']);
@@ -183,6 +191,7 @@ Router::get('/admin/candidates/{id}', [AdminController::class, 'candidateDetail'
 Router::post('/admin/candidates/{id}/status', [AdminController::class, 'updateCandidateStatus'], ['admin', 'csrf']);
 Router::post('/admin/candidates/{id}/reveal-identity', [AdminController::class, 'revealIdentity'], ['admin', 'csrf']);
 Router::post('/admin/candidates/{id}/allow-reattempt', [AdminController::class, 'allowReattempt'], ['admin', 'csrf']);
+Router::post('/admin/candidates/{id}/update-test-score', [AdminController::class, 'updateTestScore'], ['admin', 'csrf']);
 Router::post('/admin/candidates/{id}/update', [AdminController::class, 'updateCandidate'], ['admin', 'csrf']);
 Router::post('/admin/candidates/{id}/archive', [AdminController::class, 'archiveCandidate'], ['admin', 'csrf']);
 Router::post('/admin/candidates/{id}/delete', [AdminController::class, 'archiveCandidate'], ['admin', 'csrf']);

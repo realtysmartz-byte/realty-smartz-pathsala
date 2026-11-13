@@ -25,9 +25,13 @@ class AptitudeController {
 
         $testConfig = $db->query("SELECT * FROM `tests` WHERE `id` = 1 LIMIT 1")->fetch();
 
-        // If completed and no re-attempt allowed, show result view
+        // If completed and no re-attempt allowed, show result view (success or failed)
         if ($attempt && in_array($attempt['status'], ['completed', 'timed_out'], true) && empty($attempt['allow_reattempt'])) {
-            require APP_PATH . '/views/candidate/test_result.php';
+            if (!empty($attempt['passed'])) {
+                require APP_PATH . '/views/candidate/test_success.php';
+            } else {
+                require APP_PATH . '/views/candidate/test_failed.php';
+            }
             return;
         }
 
@@ -107,8 +111,95 @@ class AptitudeController {
             \App\Helpers\TelegramService::log("Telegram alert failed on test submit ({$userId}): " . $e->getMessage());
         }
 
-        flash('success', 'Your Aptitude Assessment has been submitted successfully! Review your result below.');
-        redirect('/dashboard/test');
+        if (!empty($res['passed'])) {
+            flash('success', 'Your Aptitude Assessment has been submitted successfully! Congratulations on passing.');
+            redirect('/dashboard/test/success');
+        } else {
+            flash('info', 'Your Aptitude Assessment has been submitted.');
+            redirect('/dashboard/test/failed');
+        }
+    }
+
+    /**
+     * Show Test Success View (/dashboard/test/success)
+     */
+    public function showSuccess(): void {
+        $userId = (int) (auth()['id'] ?? 0);
+        if ($userId <= 0) {
+            redirect('/');
+            return;
+        }
+        $db = Database::getConnection();
+        $stmtAttempt = $db->prepare("SELECT a.*, s.set_code, s.name as set_name 
+            FROM `test_attempts` a 
+            LEFT JOIN `aptitude_sets` s ON a.set_id = s.id 
+            WHERE a.user_id = :uid 
+            ORDER BY a.id DESC LIMIT 1");
+        $stmtAttempt->execute([':uid' => $userId]);
+        $attempt = $stmtAttempt->fetch();
+
+        if (!$attempt) {
+            redirect('/dashboard/test');
+            return;
+        }
+
+        require APP_PATH . '/views/candidate/test_success.php';
+    }
+
+    /**
+     * Show Test Failed View (/dashboard/test/failed)
+     */
+    public function showFailed(): void {
+        $userId = (int) (auth()['id'] ?? 0);
+        if ($userId <= 0) {
+            redirect('/');
+            return;
+        }
+        $db = Database::getConnection();
+        $stmtAttempt = $db->prepare("SELECT a.*, s.set_code, s.name as set_name 
+            FROM `test_attempts` a 
+            LEFT JOIN `aptitude_sets` s ON a.set_id = s.id 
+            WHERE a.user_id = :uid 
+            ORDER BY a.id DESC LIMIT 1");
+        $stmtAttempt->execute([':uid' => $userId]);
+        $attempt = $stmtAttempt->fetch();
+
+        if (!$attempt) {
+            redirect('/dashboard/test');
+            return;
+        }
+
+        require APP_PATH . '/views/candidate/test_failed.php';
+    }
+
+    /**
+     * Show Result View (Auto routes to success or failed) (/dashboard/test/result)
+     */
+    public function showResult(): void {
+        $userId = (int) (auth()['id'] ?? 0);
+        if ($userId <= 0) {
+            redirect('/');
+            return;
+        }
+        $db = Database::getConnection();
+        $stmtAttempt = $db->prepare("SELECT a.*, s.set_code, s.name as set_name 
+            FROM `test_attempts` a 
+            LEFT JOIN `aptitude_sets` s ON a.set_id = s.id 
+            WHERE a.user_id = :uid 
+            ORDER BY a.id DESC LIMIT 1");
+        $stmtAttempt->execute([':uid' => $userId]);
+        $attempt = $stmtAttempt->fetch();
+
+        if (!$attempt) {
+            redirect('/dashboard/test');
+            return;
+        }
+
+        if (!empty($attempt['passed'])) {
+            require APP_PATH . '/views/candidate/test_success.php';
+        } else {
+            require APP_PATH . '/views/candidate/test_failed.php';
+        }
     }
 
     /**
