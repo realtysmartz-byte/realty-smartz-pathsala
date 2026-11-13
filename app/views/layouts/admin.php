@@ -86,22 +86,22 @@ $viewTitle = $viewTitle ?? 'Dashboard';
         }
 
         /* -------------------------------------------------------------
-           2. ADMIN SHELL: STRICT SPEC GRID
+           2. ADMIN SHELL: FIXED STICKY SIDEBAR + MAIN CONTENT
            ------------------------------------------------------------- */
         .app-shell {
-            display: grid;
-            grid-template-columns: 240px minmax(0, 1fr);
+            display: block;
             min-height: 100vh;
             max-width: 100vw;
-            overflow-x: hidden;
             background: var(--bg);
         }
 
-        /* Sticky Left Sidebar with Modern Sleek Scrollbar */
+        /* Fixed Left Sidebar with Modern Sleek Scrollbar */
         .sidebar {
-            position: sticky;
+            position: fixed;
             top: 0;
-            align-self: start;
+            left: 0;
+            bottom: 0;
+            width: 260px;
             height: 100vh;
             height: 100dvh;
             overflow-y: auto;
@@ -173,20 +173,43 @@ $viewTitle = $viewTitle ?? 'Dashboard';
         /* Sidebar Item: icon (20px) + label (15px), height 44px, radius --r-md; active = --brand-soft background + --brand text */
         .sidebar-item {
             height: 44px;
-            padding: 0 14px;
+            padding: 0 12px;
             border-radius: var(--r-md);
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             text-decoration: none;
             color: var(--muted);
-            font-size: 15px;
+            font-size: 14.5px;
             font-weight: 500;
             transition: background 0.15s ease, color 0.15s ease;
+            position: relative;
+        }
+
+        .sidebar-item > span:first-of-type {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            position: relative;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .sidebar-count-badge {
+            margin-left: auto;
+            flex-shrink: 0;
+            background: var(--brand);
+            color: #ffffff;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            min-width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
         }
 
         .sidebar-item svg {
@@ -251,13 +274,13 @@ $viewTitle = $viewTitle ?? 'Dashboard';
         }
 
         .user-name {
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 600;
             color: var(--text);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 110px;
+            max-width: 125px;
         }
 
         .logout-link {
@@ -279,6 +302,8 @@ $viewTitle = $viewTitle ?? 'Dashboard';
 
         /* Main Content Column */
         .main {
+            margin-left: 260px;
+            width: calc(100% - 260px);
             min-width: 0;
             display: flex;
             flex-direction: column;
@@ -402,8 +427,13 @@ $viewTitle = $viewTitle ?? 'Dashboard';
            TABLET BREAKPOINT: Under 1024px (72px sticky icon rail)
            ------------------------------------------------------------- */
         @media (max-width: 1023.98px) and (min-width: 768px) {
-            .app-shell {
-                grid-template-columns: 72px minmax(0, 1fr);
+            .sidebar {
+                width: 72px;
+            }
+
+            .main {
+                margin-left: 72px;
+                width: calc(100% - 72px);
             }
 
             .sidebar-header {
@@ -489,8 +519,9 @@ $viewTitle = $viewTitle ?? 'Dashboard';
            MOBILE BREAKPOINT: Under 768px (Bootstrap-style offcanvas)
            ------------------------------------------------------------- */
         @media (max-width: 767.98px) {
-            .app-shell {
-                grid-template-columns: 1fr;
+            .main {
+                margin-left: 0;
+                width: 100%;
             }
 
             .sidebar {
@@ -609,7 +640,7 @@ $viewTitle = $viewTitle ?? 'Dashboard';
                 <?php 
                 $unopenedCount = \App\Models\InterviewApplication::getUnopenedCount();
                 ?>
-                <span class="badge sidebar-count-badge" id="interviewSidebarBadge" style="margin-left:auto; background:var(--brand); color:#fff; border-radius:var(--r-full); font-size:11px; padding:2px 7px; font-weight:600; <?= ($unopenedCount > 0) ? '' : 'display:none;' ?>">
+                <span class="badge sidebar-count-badge" id="interviewSidebarBadge" style="<?= ($unopenedCount > 0) ? '' : 'display:none;' ?>">
                     <?= $unopenedCount ?>
                 </span>
             </a>
