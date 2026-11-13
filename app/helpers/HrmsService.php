@@ -182,7 +182,7 @@ class HrmsService {
             'address'               => $address,
             'emergencyContactName'  => $emergencyContactName,
             'emergencyContactPhone' => $emergencyContactPhone,
-            'password'              => null, // HRMS auto-generates secure initial password
+            'password'              => 'Realty@123', // Standard default HRMS employee login password
             'profilePhotoUrl'       => $profilePhotoUrl,
         ];
 
