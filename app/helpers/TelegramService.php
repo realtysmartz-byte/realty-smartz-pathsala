@@ -323,6 +323,69 @@ class TelegramService {
     }
 
     /**
+     * Send Real-Time Alert when Candidate is Successfully Synced to Realty Smartz HRMS
+     *
+     * @param int $userId Candidate User ID
+     * @param array $employee Employee response data from HRMS
+     * @param array $payload Payload sent to HRMS
+     * @return array
+     */
+    public static function sendHrmsSyncAlert(int $userId, array $employee = [], array $payload = []): array {
+        if (!self::isEnabled()) {
+            return [
+                'success' => false,
+                'message' => 'Telegram notifications disabled or credentials missing.'
+            ];
+        }
+
+        try {
+            $user = User::findById($userId);
+            if (!$user) {
+                return ['success' => false, 'error' => 'User not found'];
+            }
+
+            $profile = Profile::findByUserId($userId) ?? [];
+            $esc = function($val, $default = 'N/A') {
+                $s = trim((string)($val ?? ''));
+                return !empty($s) ? htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') : $default;
+            };
+
+            $name = $esc($payload['firstName'] ?? '') . ' ' . $esc($payload['lastName'] ?? '');
+            $name = trim($name) ?: $esc($user['full_name'] ?? '');
+            $empCode = $esc($employee['employeeCode'] ?? ($employee['code'] ?? ($profile['hrms_employee_code'] ?? 'RS-Auto')));
+            $designation = $esc($payload['designation'] ?? ($employee['designation'] ?? 'Sales Executive'));
+            $department = $esc($payload['department'] ?? ($employee['department'] ?? 'Sales'));
+            $mobile = $esc($payload['phone'] ?? ($user['mobile'] ?? ''));
+            $email = $esc($payload['email'] ?? ($user['email'] ?? ''));
+            $joiningDate = !empty($payload['dateOfJoining']) ? date('d M Y', strtotime($payload['dateOfJoining'])) : date('d M Y');
+
+            $baseUrl = function_exists('config') ? rtrim((string)config('APP_URL', 'https://realtysmartzpathshala.in'), '/') : 'https://realtysmartzpathshala.in';
+            $adminLink = "{$baseUrl}/admin/candidates/{$userId}";
+
+            $html  = "🏢 <b>REALTY SMARTZ — CANDIDATE SYNCED TO HRMS</b>\n";
+            $html .= "━━━━━━━━━━━━━━━━━━━━━━━━\n";
+            $html .= "✅ <b>HRMS Sync:</b> <b>SUCCESSFUL</b>\n";
+            $html .= "🆔 <b>Employee Code:</b> <code>{$empCode}</code>\n";
+            $html .= "👤 <b>Candidate Name:</b> <b>{$name}</b>\n";
+            $html .= "💼 <b>Designation:</b> {$designation}\n";
+            $html .= "🏬 <b>Department:</b> {$department}\n";
+            $html .= "📅 <b>Joining Date:</b> {$joiningDate}\n";
+            $html .= "📞 <b>Mobile:</b> <code>{$mobile}</code>\n";
+            $html .= "✉️ <b>Email:</b> {$email}\n";
+            $html .= "🔑 <b>Login Password:</b> <code>Realty@123</code>\n";
+            $html .= "🌐 <b>Portal Link:</b> <a href=\"https://rshrms.in\">rshrms.in</a>\n";
+            $html .= "━━━━━━━━━━━━━━━━━━━━━━━━\n";
+            $html .= "🔗 <a href=\"{$adminLink}\">👉 View in Pathshala Admin</a>\n";
+            $html .= "🕒 <i>Synced on: " . date('d M Y, h:i A') . "</i>";
+
+            return self::sendMessage($html);
+        } catch (\Throwable $e) {
+            self::log("Failed HRMS sync telegram alert ({$userId}): " . $e->getMessage());
+            return ['success' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    /**
      * Test Connection to Telegram Bot & Target Group Chat
      *
      * @param string|null $token

@@ -618,7 +618,8 @@ $viewTitle = "Interview Candidates";
                     $isUnopened = empty($item['first_viewed_at']);
                     $hasFeedback = (!empty(trim((string)$item['feedback_hr'])) || !empty(trim((string)$item['feedback_final'])));
                     $exactTime = date('d M Y, h:i A', strtotime($item['submitted_at']));
-                    $timeAgo = time_ago($item['submitted_at']);
+                    $formattedDate = date('d M Y', strtotime($item['submitted_at']));
+                    $formattedTime = date('h:i A', strtotime($item['submitted_at']));
                 ?>
                 <tr class="<?= $isUnopened ? 'unopened-row' : '' ?>" data-id="<?= $item['id'] ?>" onclick="window.location.href='<?= url('/admin/interview-candidates/' . $item['id']) ?>'">
                     <td data-label="Name" class="mobile-main-header candidate-name-cell">
@@ -638,7 +639,10 @@ $viewTitle = "Interview Candidates";
                     <td data-label="Mobile"><?= e($item['mobile']) ?></td>
                     <td data-label="HR name"><?= e($item['hr_name']) ?></td>
                     <td data-label="Experience / Fresher"><?= ucfirst(e($item['experience_type'])) ?></td>
-                    <td data-label="Submitted" title="<?= e($exactTime) ?>"><?= e($timeAgo) ?></td>
+                    <td data-label="Submitted" title="<?= e($exactTime) ?>">
+                        <div style="font-weight: 500;"><?= e($formattedDate) ?></div>
+                        <div style="font-size: 11.5px; color: var(--muted);"><?= e($formattedTime) ?></div>
+                    </td>
                     <td data-label="Decision">
                         <?php if ($item['decision'] === 'selected'): ?>
                             <span class="pill-decision pill-selected">Selected</span>
@@ -941,6 +945,10 @@ function renderNewRows(rows) {
         const fbFilled = Boolean(item.feedback_hr || item.feedback_final);
         const fbPill = fbFilled ? '<span class="pill-feedback feedback-filled">Filled</span>' : '<span class="pill-feedback feedback-pending">Pending</span>';
 
+        const subDate = item.submitted_at ? new Date(item.submitted_at.replace(' ', 'T')) : new Date();
+        const dateStr = !isNaN(subDate.getTime()) ? subDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : (item.submitted_at || '');
+        const timeStr = !isNaN(subDate.getTime()) ? subDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) : '';
+
         tr.innerHTML = `
             <td data-label="Name" class="mobile-main-header candidate-name-cell">
                 <span class="new-dot" title="New application"></span>
@@ -950,7 +958,10 @@ function renderNewRows(rows) {
             <td data-label="Mobile">${escapeHtml(item.mobile)}</td>
             <td data-label="HR name">${escapeHtml(item.hr_name)}</td>
             <td data-label="Experience / Fresher">${capitalize(item.experience_type)}</td>
-            <td data-label="Submitted" title="${item.submitted_at}">Just now</td>
+            <td data-label="Submitted" title="${item.submitted_at || ''}">
+                <div style="font-weight: 500;">${dateStr}</div>
+                <div style="font-size: 11.5px; color: var(--muted);">${timeStr}</div>
+            </td>
             <td data-label="Decision">${decPill}</td>
             <td data-label="Offered salary">${item.offered_salary ? '₹' + Number(item.offered_salary).toLocaleString('en-IN') : '-'}</td>
             <td data-label="Joining date">${item.joining_date ? item.joining_date : '-'}</td>

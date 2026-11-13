@@ -239,6 +239,13 @@ class HrmsService {
 
             self::logSync($userId, $endpoint, $payload, $httpCode, $responseBody, 'success', $employeeCode);
 
+            // Dispatch Telegram Group Alert
+            try {
+                \App\Helpers\TelegramService::sendHrmsSyncAlert($userId, $employee, $payload);
+            } catch (Throwable $e) {
+                error_log("Failed sending HRMS sync Telegram alert: " . $e->getMessage());
+            }
+
             return [
                 'success'       => true,
                 'employee'      => $employee,
