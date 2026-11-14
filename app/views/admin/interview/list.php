@@ -618,6 +618,7 @@ $viewTitle = "Interview Candidates";
                     $isUnopened = empty($item['first_viewed_at']);
                     $hasFeedback = (!empty(trim((string)$item['feedback_hr'])) || !empty(trim((string)$item['feedback_final'])));
                     $exactTime = date('d M Y, h:i A', strtotime($item['submitted_at']));
+                    $timeAgo = time_ago($item['submitted_at']);
                     $formattedDate = date('d M Y', strtotime($item['submitted_at']));
                     $formattedTime = date('h:i A', strtotime($item['submitted_at']));
                 ?>
@@ -639,6 +640,7 @@ $viewTitle = "Interview Candidates";
                     <td data-label="Mobile"><?= e($item['mobile']) ?></td>
                     <td data-label="HR name"><?= e($item['hr_name']) ?></td>
                     <td data-label="Experience / Fresher"><?= ucfirst(e($item['experience_type'])) ?></td>
+                    <td data-label="Submitted" title="<?= e($exactTime) ?>"><?= e($timeAgo) ?></td>
                     <td data-label="Submitted" title="<?= e($exactTime) ?>">
                         <div style="font-weight: 500;"><?= e($formattedDate) ?></div>
                         <div style="font-size: 11.5px; color: var(--muted);"><?= e($formattedTime) ?></div>
@@ -958,6 +960,7 @@ function renderNewRows(rows) {
             <td data-label="Mobile">${escapeHtml(item.mobile)}</td>
             <td data-label="HR name">${escapeHtml(item.hr_name)}</td>
             <td data-label="Experience / Fresher">${capitalize(item.experience_type)}</td>
+            <td data-label="Submitted" title="${item.submitted_at}">Just now</td>
             <td data-label="Submitted" title="${item.submitted_at || ''}">
                 <div style="font-weight: 500;">${dateStr}</div>
                 <div style="font-size: 11.5px; color: var(--muted);">${timeStr}</div>

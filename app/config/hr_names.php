@@ -9,7 +9,6 @@ return [
     'Unanti Bhatia',
     'Ankita Mittal',
     'Priyanka Yadav',
-    'Ishika Sharma',
     'Sushant Sharma',
     
 ];
