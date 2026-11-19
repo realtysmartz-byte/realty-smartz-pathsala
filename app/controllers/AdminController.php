@@ -1409,7 +1409,7 @@ class AdminController {
     public function sendTestEmail(): void {
         $toEmail = trim($_POST['test_email'] ?? '');
         if (empty($toEmail) || !filter_var($toEmail, FILTER_VALIDATE_EMAIL)) {
-            $toEmail = auth()['email'] ?? 'admin@realtysmartzpathshala.in';
+            $toEmail = auth()['email'] ?? 'admin.realty@realtysmartzpathshala.in';
         }
 
         $res = Mailer::sendTestEmail($toEmail, auth()['full_name'] ?? 'Administrator');

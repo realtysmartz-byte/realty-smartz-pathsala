@@ -165,10 +165,11 @@ set_exception_handler(function (Throwable $e) use ($isDebug) {
 });
 
 // ----------------------------------------------------------------
-// Session Security Settings
+// Session Security Settings (1-Year Persistent Sessions)
 // ----------------------------------------------------------------
 if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
-    $lifetime = (int) config('SESSION_LIFETIME', 120) * 60;
+    // 365 Days / 1-Year Persistent Session by default so user is never abruptly logged out
+    $lifetime = (int) config('SESSION_LIFETIME', 525600) * 60; // 525,600 mins = 365 days = 31,536,000s
     $isHttps = (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off') || 
                (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https') ||
                (!empty($_SERVER['SERVER_PORT']) && (int)$_SERVER['SERVER_PORT'] === 443) ||
@@ -178,6 +179,7 @@ if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
     ini_set('session.use_strict_mode', '1');
     ini_set('session.cookie_httponly', '1');
     ini_set('session.cookie_samesite', 'Lax');
+    ini_set('session.cookie_lifetime', (string)$lifetime);
     ini_set('session.gc_maxlifetime', (string)$lifetime);
 
     // Host-only cookie without explicit domain attribute prevents cross-subdomain/HTTPS redirect session breakage
@@ -311,17 +313,48 @@ function csrf_field(): string {
 }
 
 /**
+ * Attempt to restore user from persistent 1-year remember token cookie
+ */
+function attempt_remember_token_login(): ?array {
+    $token = $_COOKIE['admin_remember_token'] ?? ($_COOKIE['remember_token'] ?? null);
+    if (empty($token) || !is_string($token) || strlen($token) < 32) {
+        return null;
+    }
+
+    try {
+        $db = \App\Config\Database::getConnection();
+        $stmt = $db->prepare("SELECT * FROM `users` WHERE `remember_token` = :tok AND `is_archived` = 0 AND `is_locked` = 0 LIMIT 1");
+        $stmt->execute([':tok' => $token]);
+        $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($user) {
+            $_SESSION['user'] = $user;
+            return $user;
+        }
+    } catch (\Throwable $e) {
+        // Silently fallback if DB is temporarily unreachable
+    }
+
+    return null;
+}
+
+/**
  * Authenticated user helper
  */
 function auth(): ?array {
-    return $_SESSION['user'] ?? null;
+    if (!empty($_SESSION['user']['id'])) {
+        return $_SESSION['user'];
+    }
+    return attempt_remember_token_login();
 }
 
 /**
  * Check if current user is logged in
  */
 function auth_check(): bool {
-    return !empty($_SESSION['user']['id']);
+    if (!empty($_SESSION['user']['id'])) {
+        return true;
+    }
+    return attempt_remember_token_login() !== null;
 }
 
 /**

@@ -7,7 +7,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- 1. Default Administrator & HR Accounts
 INSERT INTO `users` (`id`, `full_name`, `email`, `mobile`, `password_hash`, `role`, `status`, `email_verified_at`, `is_locked`, `failed_login_attempts`, `is_archived`, `created_at`)
 VALUES
-(1, 'Super Admin', 'admin@realtysmartzpathshala.in', '+919876543210', '$2y$10$7in11AzJaJ35YMziftsFZugUW8ELNs5ev1Zr7dHEfAHSoKlPJex8u', 'super_admin', 'approved', NOW(), 0, 0, 0, NOW()),
+(1, 'Super Admin', 'admin.realty@realtysmartzpathshala.in', '+919876543210', '$2y$10$GS6OjxaNkHuJkA3ZgDBCYOxV6Ip.c/4M05GvSDTSsEycm5Wof6pQ.', 'super_admin', 'approved', NOW(), 0, 0, 0, NOW()),
 (2, 'HR Manager', 'hr@realtysmartzpathshala.in', '+919876543211', '$2y$10$7in11AzJaJ35YMziftsFZugUW8ELNs5ev1Zr7dHEfAHSoKlPJex8u', 'hr_manager', 'approved', NOW(), 0, 0, 0, NOW()),
 (3, 'Reviewer Officer', 'reviewer@realtysmartzpathshala.in', '+919876543212', '$2y$10$7in11AzJaJ35YMziftsFZugUW8ELNs5ev1Zr7dHEfAHSoKlPJex8u', 'reviewer', 'approved', NOW(), 0, 0, 0, NOW())
 ON DUPLICATE KEY UPDATE `email`=`email`;

@@ -521,7 +521,7 @@ $pageTitle = "Site Content & CMS Manager | Admin Portal";
                     <label style="display:block; color:var(--text); font-size:12.5px; font-weight:600; margin-bottom:6px;">
                         Recipient Email Address
                     </label>
-                    <input type="email" name="test_email" required value="<?= e(auth()['email'] ?? 'admin@realtysmartzpathshala.in') ?>" placeholder="Enter recipient email" style="width:100%; padding:10px 14px; background:var(--surface); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13.5px;">
+                    <input type="email" name="test_email" required value="<?= e(auth()['email'] ?? 'admin.realty@realtysmartzpathshala.in') ?>" placeholder="Enter recipient email" style="width:100%; padding:10px 14px; background:var(--surface); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13.5px;">
                 </div>
 
                 <button type="submit" style="background:var(--primary); color:#ffffff; padding:11px 26px; border-radius:9999px; font-size:13.5px; font-weight:700; border:none; cursor:pointer; box-shadow:0 4px 12px rgba(52,71,230,0.25); display:inline-flex; align-items:center; gap:8px;">

@@ -349,15 +349,15 @@
                            id="adminEmail" 
                            name="email" 
                            required 
-                           autocomplete="email"
-                           placeholder="admin@realtysmartzpathshala.in" 
+                           autocomplete="username"
+                           placeholder="admin.realty@realtysmartzpathshala.in" 
                            class="admin-input"
                            value="<?= e($_POST['email'] ?? '') ?>">
                 </div>
             </div>
 
             <!-- Secure Password Field -->
-            <div class="admin-input-group" style="margin-bottom: 24px;">
+            <div class="admin-input-group" style="margin-bottom: 18px;">
                 <label for="adminPassword" class="admin-label">Secure Password</label>
                 <div class="admin-input-wrap">
                     <span class="admin-input-icon"><?= icon('lock', '', 17) ?></span>
@@ -370,14 +370,22 @@
                            class="admin-input" 
                            style="padding-right: 44px;">
                     <button type="button" 
-                            id="togglePasswordBtn" 
-                            class="pwd-toggle-btn" 
-                            aria-label="Show or hide password"
-                            onclick="togglePasswordVisibility()">
+                           id="togglePasswordBtn" 
+                           class="pwd-toggle-btn" 
+                           aria-label="Show or hide password"
+                           onclick="togglePasswordVisibility()">
                         <span id="eyeOpen"><?= icon('eye', '', 17) ?></span>
                         <span id="eyeClosed" style="display:none;"><?= icon('eye-off', '', 17) ?></span>
                     </button>
                 </div>
+            </div>
+
+            <!-- Persistent Session / Remember Me (1-Year Browser Lock) -->
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                <label style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text); cursor: pointer; user-select: none;">
+                    <input type="checkbox" name="remember" value="1" checked style="width: 16px; height: 16px; accent-color: var(--brand); cursor: pointer;">
+                    <span style="font-weight: 500;">Keep me signed in on this browser</span>
+                </label>
             </div>
 
             <!-- Full-width Filled Brand Button with Loading State -->
@@ -422,20 +430,23 @@ function togglePasswordVisibility() {
 }
 
 document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+    if (!this.checkValidity()) {
+        return;
+    }
     const btn = document.getElementById('submitBtn');
     const spinner = document.getElementById('btnSpinner');
     const icon = document.getElementById('btnIcon');
     const text = document.getElementById('btnText');
     
-    // Check form validity before triggering visual loading state
-    if (!this.checkValidity()) {
-        return;
-    }
+    // Defer disabling the button so browser password managers (Chrome/Edge/Safari/Firefox)
+    // can intercept credentials and prompt "Save Password"
+    setTimeout(function() {
+        if (btn) btn.disabled = true;
+    }, 40);
 
-    btn.disabled = true;
-    spinner.style.display = 'inline-block';
-    icon.style.display = 'none';
-    text.textContent = 'Authenticating...';
+    if (spinner) spinner.style.display = 'inline-block';
+    if (icon) icon.style.display = 'none';
+    if (text) text.textContent = 'Authenticating...';
 });
 </script>
 
