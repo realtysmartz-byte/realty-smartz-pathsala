@@ -95,38 +95,22 @@ $viewTitle = $viewTitle ?? 'Dashboard';
             background: var(--bg);
         }
 
-        /* Fixed Left Sidebar with Modern Sleek Scrollbar */
+        /* Fixed Left Sidebar with Modern Sleek Sticky Header & Footer */
         .sidebar {
             position: fixed;
             top: 0;
             left: 0;
             bottom: 0;
-            width: 260px;
+            width: 270px;
             height: 100vh;
             height: 100dvh;
-            overflow-y: auto;
-            overflow-x: hidden;
+            overflow: hidden; /* Sticky header & footer never scroll off */
             background: var(--surface);
             border-right: 1px solid var(--line);
             display: flex;
             flex-direction: column;
             z-index: 40;
-            scrollbar-width: thin;
-            scrollbar-color: rgba(38, 51, 45, 0.2) transparent;
-        }
-
-        .sidebar::-webkit-scrollbar {
-            width: 5px;
-        }
-        .sidebar::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .sidebar::-webkit-scrollbar-thumb {
-            background: rgba(38, 51, 45, 0.2);
-            border-radius: 999px;
-        }
-        .sidebar::-webkit-scrollbar-thumb:hover {
-            background: rgba(38, 51, 45, 0.4);
+            box-sizing: border-box;
         }
 
         .sidebar-header {
@@ -137,6 +121,7 @@ $viewTitle = $viewTitle ?? 'Dashboard';
             padding: 0 20px;
             border-bottom: 1px solid var(--line);
             flex-shrink: 0;
+            background: var(--surface);
         }
 
         .sidebar-logo {
@@ -160,30 +145,51 @@ $viewTitle = $viewTitle ?? 'Dashboard';
             background: var(--surface-2);
         }
 
-        /* Navigation List */
+        /* Navigation List - Only This Section Scrolls */
         .sidebar-nav {
             flex: 1;
-            padding: 16px 12px;
+            min-height: 0; /* Essential for flex child overflow scrolling */
+            padding: 12px 10px;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 3px;
+            overflow-y: auto;
             overflow-x: hidden;
+            overscroll-behavior: contain;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(38, 51, 45, 0.25) transparent;
         }
 
-        /* Sidebar Item: icon (20px) + label (15px), height 44px, radius --r-md; active = --brand-soft background + --brand text */
+        .sidebar-nav::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar-nav::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .sidebar-nav::-webkit-scrollbar-thumb {
+            background: rgba(38, 51, 45, 0.25);
+            border-radius: 999px;
+        }
+        .sidebar-nav::-webkit-scrollbar-thumb:hover {
+            background: rgba(38, 51, 45, 0.45);
+        }
+
+        /* Sidebar Item */
         .sidebar-item {
-            height: 44px;
-            padding: 0 12px;
+            height: 42px;
+            padding: 0 10px 0 12px;
             border-radius: var(--r-md);
             display: flex;
             align-items: center;
             gap: 10px;
             text-decoration: none;
             color: var(--muted);
-            font-size: 14.5px;
+            font-size: 14px;
             font-weight: 500;
             transition: background 0.15s ease, color 0.15s ease;
             position: relative;
+            box-sizing: border-box;
+            width: 100%;
         }
 
         .sidebar-item > span:first-of-type {
@@ -196,20 +202,22 @@ $viewTitle = $viewTitle ?? 'Dashboard';
 
         .sidebar-count-badge {
             margin-left: auto;
+            margin-right: 2px;
             flex-shrink: 0;
-            background: var(--brand);
+            background: #10634B;
             color: #ffffff;
             border-radius: 999px;
             font-size: 11px;
             font-weight: 700;
-            padding: 2px 8px;
-            min-width: 20px;
+            padding: 2px 7px;
+            min-width: 22px;
             height: 20px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             line-height: 1;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+            box-sizing: border-box;
         }
 
         .sidebar-item svg {
@@ -239,24 +247,26 @@ $viewTitle = $viewTitle ?? 'Dashboard';
             color: var(--brand);
         }
 
-        /* Footer pinned to the bottom */
+        /* Footer pinned strictly to the bottom */
         .sidebar .sidebar-footer {
             margin-top: auto;
-            padding: 14px 16px;
+            padding: 12px 16px;
             border-top: 1px solid var(--line);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
+            gap: 8px;
             background: var(--surface);
             flex-shrink: 0;
+            box-sizing: border-box;
         }
 
         .sidebar-user {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             min-width: 0;
+            flex: 1;
         }
 
         .user-avatar {
@@ -280,7 +290,7 @@ $viewTitle = $viewTitle ?? 'Dashboard';
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 125px;
+            max-width: 135px;
         }
 
         .logout-link {
@@ -302,8 +312,8 @@ $viewTitle = $viewTitle ?? 'Dashboard';
 
         /* Main Content Column */
         .main {
-            margin-left: 260px;
-            width: calc(100% - 260px);
+            margin-left: 270px;
+            width: calc(100% - 270px);
             min-width: 0;
             display: flex;
             flex-direction: column;

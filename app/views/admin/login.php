@@ -342,7 +342,7 @@
 
             <!-- Staff Email Field -->
             <div class="admin-input-group">
-                <label for="adminEmail" class="admin-label">Staff Email Address</label>
+                <label for="adminEmail" class="admin-label">Email Address</label>
                 <div class="admin-input-wrap">
                     <span class="admin-input-icon"><?= icon('mail', '', 17) ?></span>
                     <input type="email" 
@@ -350,7 +350,6 @@
                            name="email" 
                            required 
                            autocomplete="username"
-                           placeholder="admin.realty@realtysmartzpathshala.in" 
                            class="admin-input"
                            value="<?= e($_POST['email'] ?? '') ?>">
                 </div>
@@ -358,7 +357,7 @@
 
             <!-- Secure Password Field -->
             <div class="admin-input-group" style="margin-bottom: 18px;">
-                <label for="adminPassword" class="admin-label">Secure Password</label>
+                <label for="adminPassword" class="admin-label">Password</label>
                 <div class="admin-input-wrap">
                     <span class="admin-input-icon"><?= icon('lock', '', 17) ?></span>
                     <input type="password" 
@@ -366,7 +365,6 @@
                            name="password" 
                            required 
                            autocomplete="current-password"
-                           placeholder="••••••••" 
                            class="admin-input" 
                            style="padding-right: 44px;">
                     <button type="button" 
