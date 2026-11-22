@@ -163,8 +163,20 @@ class GuestTestController {
 
         if ($existing) {
             $userId = (int)$existing['id'];
-            // Bump created_at to NOW() so the candidate is immediately visible at the top of recent candidates
-            $db->prepare("UPDATE `users` SET `created_at` = NOW() WHERE `id` = :id")->execute([':id' => $userId]);
+            // Bump created_at and unarchive/unlock candidate so test is never blocked
+            $db->prepare("UPDATE `users` SET 
+                `full_name` = COALESCE(:name, `full_name`),
+                `is_archived` = 0,
+                `archived_at` = NULL,
+                `archived_by` = NULL,
+                `is_locked` = 0,
+                `locked_until` = NULL,
+                `failed_login_attempts` = 0,
+                `created_at` = NOW() 
+                WHERE `id` = :id")->execute([
+                ':name' => $name,
+                ':id'   => $userId
+            ]);
         } else {
             // Create a new candidate record of type "Guest"
             $tempPassword = bin2hex(random_bytes(8));

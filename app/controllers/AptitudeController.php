@@ -344,7 +344,21 @@ class AptitudeController {
 
         if ($existing) {
             $userId = (int) $existing['id'];
-            $db->prepare("UPDATE `users` SET `created_at` = NOW() WHERE `id` = :id")->execute([':id' => $userId]);
+            // Unarchive and unlock candidate if previously archived so they are never blocked from aptitude test
+            $db->prepare("UPDATE `users` SET 
+                `full_name` = COALESCE(:name, `full_name`),
+                `is_archived` = 0,
+                `archived_at` = NULL,
+                `archived_by` = NULL,
+                `is_locked` = 0,
+                `locked_until` = NULL,
+                `failed_login_attempts` = 0,
+                `created_at` = NOW() 
+                WHERE `id` = :id")->execute([
+                ':name' => $fullName,
+                ':id'   => $userId
+            ]);
+            $db->prepare("DELETE FROM `login_attempts` WHERE `email` = :em")->execute([':em' => $email]);
             $user = User::findById($userId);
         } else {
             $tempPass = bin2hex(random_bytes(8));

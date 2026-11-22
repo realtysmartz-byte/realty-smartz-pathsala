@@ -59,21 +59,6 @@ class AuthController {
             return;
         }
 
-        // Duplicate checks
-        $existingEmail = User::findByEmail($email);
-        if ($existingEmail) {
-            flash('error', 'Email already registered - please login.');
-            redirect('/register');
-            return;
-        }
-
-        $existingMobile = User::findByMobile($cleanMobile);
-        if ($existingMobile) {
-            flash('error', 'Mobile number already registered.');
-            redirect('/register');
-            return;
-        }
-
         // 5-Point Password Rules: 8+ chars, 1 uppercase, 1 lowercase, 1 number, 1 special character
         $hasLen = strlen($pwd) >= 8;
         $hasUpper = (bool)preg_match('/[A-Z]/', $pwd);
@@ -93,8 +78,93 @@ class AuthController {
             return;
         }
 
-        // Create candidate with father_name in users and profiles
         $source = trim($_POST['source'] ?? $_GET['source'] ?? 'direct');
+
+        // Check if user already exists with this email (including archived, aptitude_only, or re-registering)
+        $existingEmail = User::findByEmail($email);
+        if ($existingEmail) {
+            $userId = (int)$existingEmail['id'];
+            $hash = password_hash($pwd, PASSWORD_BCRYPT, ['cost' => 11]);
+            $db = Database::getConnection();
+
+            // Seamlessly unarchive, update password to the newly provided one, and activate
+            $db->prepare("UPDATE `users` SET 
+                `full_name` = :name,
+                `father_name` = COALESCE(:father, `father_name`),
+                `mobile` = :mobile,
+                `password_hash` = :hash,
+                `candidate_type` = 'onboarding',
+                `source` = COALESCE(`source`, :source),
+                `is_archived` = 0,
+                `archived_at` = NULL,
+                `archived_by` = NULL,
+                `is_locked` = 0,
+                `locked_until` = NULL,
+                `failed_login_attempts` = 0,
+                `updated_at` = NOW()
+                WHERE `id` = :uid")->execute([
+                ':name'   => $fullName,
+                ':father' => $fatherName ?: null,
+                ':mobile' => $cleanMobile,
+                ':hash'   => $hash,
+                ':source' => $source ?: 'direct',
+                ':uid'    => $userId
+            ]);
+
+            // Ensure profile exists and has father_name
+            $stmtProf = $db->prepare("SELECT id FROM `profiles` WHERE `user_id` = :uid LIMIT 1");
+            $stmtProf->execute([':uid' => $userId]);
+            if ($stmtProf->fetch()) {
+                $db->prepare("UPDATE `profiles` SET `father_name` = COALESCE(:father, `father_name`), `is_locked` = 0 WHERE `user_id` = :uid")
+                   ->execute([':father' => $fatherName ?: null, ':uid' => $userId]);
+            } else {
+                $db->prepare("INSERT INTO `profiles` (`user_id`, `father_name`, `created_at`) VALUES (:uid, :father, NOW())")
+                   ->execute([':uid' => $userId, ':father' => $fatherName ?: null]);
+            }
+
+            // Restore any archived documents
+            $db->prepare("UPDATE `documents` SET `is_archived` = 0 WHERE `user_id` = :uid")->execute([':uid' => $userId]);
+
+            // Clear login throttles
+            $ip = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+            RateLimitMiddleware::clearLoginThrottle($email, $ip);
+            $db->prepare("DELETE FROM `login_attempts` WHERE `email` = :em OR `ip_address` = :ip")->execute([':em' => $email, ':ip' => $ip]);
+
+            // Sync to sheets & telegram
+            try { \App\Helpers\GoogleSheetsService::syncCandidate($userId); } catch (\Throwable $e) {}
+            try { \App\Helpers\TelegramService::sendStudentCandidateAlert($userId, 'registered'); } catch (\Throwable $e) {}
+
+            $user = User::findById($userId);
+            session_regenerate_id(true);
+            $_SESSION['user'] = $user;
+            unset($_SESSION['_old_input']);
+
+            // If already verified or was active, proceed straight to onboarding
+            if (!empty($user['email_verified']) || !empty($user['email_verified_at'])) {
+                flash('success', "Welcome back, {$fullName}! Your account is active and details updated.");
+                redirect('/candidate/onboarding');
+                return;
+            }
+
+            // Otherwise send OTP verification
+            $ver = User::createVerification($userId);
+            Mailer::sendVerificationOtp($email, $fullName, $ver['otp'], $ver['token']);
+            \App\Helpers\SmsHelper::sendOtp($cleanMobile, $ver['otp'], 'verification');
+            $_SESSION['verify_cooldown_until'] = time() + 60;
+            flash('success', 'Registration details updated! We have sent a 6-digit OTP code to your email.');
+            redirect('/verify-email');
+            return;
+        }
+
+        // Check for mobile conflict with another active account
+        $existingMobile = User::findByMobile($cleanMobile);
+        if ($existingMobile && empty($existingMobile['is_archived'])) {
+            flash('error', 'This mobile number is already registered with another account. Please use your registered email or a different mobile number.');
+            redirect('/register');
+            return;
+        }
+
+        // Create candidate with father_name in users and profiles
         $userId = User::createCandidate([
             'full_name'      => $fullName,
             'father_name'    => $fatherName,
