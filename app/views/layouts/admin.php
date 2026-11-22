@@ -145,33 +145,26 @@ $viewTitle = $viewTitle ?? 'Dashboard';
             background: var(--surface-2);
         }
 
-        /* Navigation List - Only This Section Scrolls */
+        /* Navigation List - Clean Sleek Scrolling without native scrollbar clutter */
         .sidebar-nav {
-            flex: 1;
+            flex: 1 1 auto;
             min-height: 0; /* Essential for flex child overflow scrolling */
-            padding: 12px 10px;
+            padding: 10px 10px 10px 12px;
             display: flex;
             flex-direction: column;
             gap: 3px;
             overflow-y: auto;
-            overflow-x: hidden;
+            overflow-x: hidden !important;
             overscroll-behavior: contain;
-            scrollbar-width: thin;
-            scrollbar-color: rgba(38, 51, 45, 0.25) transparent;
+            /* Hide scrollbar completely across Chrome, Safari, Edge, and Firefox */
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
         }
 
         .sidebar-nav::-webkit-scrollbar {
-            width: 4px;
-        }
-        .sidebar-nav::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .sidebar-nav::-webkit-scrollbar-thumb {
-            background: rgba(38, 51, 45, 0.25);
-            border-radius: 999px;
-        }
-        .sidebar-nav::-webkit-scrollbar-thumb:hover {
-            background: rgba(38, 51, 45, 0.45);
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
         }
 
         /* Sidebar Item */

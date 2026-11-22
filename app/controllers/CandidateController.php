@@ -234,14 +234,6 @@ class CandidateController {
             \App\Helpers\TelegramService::log("Telegram alert failed on submitOnboarding ({$userId}): " . $e->getMessage());
         }
 
-        // Realtime Sync Candidate to Realty Smartz HRMS Portal
-        $hrmsResult = null;
-        try {
-            $hrmsResult = \App\Helpers\HrmsService::syncCandidate($userId);
-        } catch (\Throwable $e) {
-            error_log("HRMS sync failed on submitOnboarding ({$userId}): " . $e->getMessage());
-        }
-
         // Check if candidate has already completed their aptitude assessment
         $db = Database::getConnection();
         $stmtTest = $db->prepare("SELECT id, status FROM `test_attempts` WHERE `user_id` = :uid AND `status` = 'completed' LIMIT 1");
@@ -253,18 +245,13 @@ class CandidateController {
             $successMsg = '🎉 Documents submitted successfully! Next Step: Please complete your Aptitude Assessment.';
         } else {
             $redirectUrl = url('/dashboard/onboarding');
-            $successMsg = '🎉 Onboarding documents submitted successfully!';
-        }
-
-        if (!empty($hrmsResult['employee_code'])) {
-            $successMsg .= " Your Employee ID is: {$hrmsResult['employee_code']}.";
+            $successMsg = '🎉 Onboarding documents submitted successfully! Your application is under review.';
         }
 
         if ($isAjax) {
             response_json([
                 'success'       => true,
                 'message'       => $successMsg,
-                'employee_code' => $hrmsResult['employee_code'] ?? null,
                 'redirect'      => $redirectUrl,
                 'next_step'     => $hasCompletedTest ? 'completed' : 'aptitude_test'
             ]);
