@@ -242,7 +242,20 @@ class CandidateController {
             error_log("HRMS sync failed on submitOnboarding ({$userId}): " . $e->getMessage());
         }
 
-        $successMsg = '🎉 Onboarding application submitted successfully!';
+        // Check if candidate has already completed their aptitude assessment
+        $db = Database::getConnection();
+        $stmtTest = $db->prepare("SELECT id, status FROM `test_attempts` WHERE `user_id` = :uid AND `status` = 'completed' LIMIT 1");
+        $stmtTest->execute([':uid' => $userId]);
+        $hasCompletedTest = (bool) $stmtTest->fetch();
+
+        if (!$hasCompletedTest) {
+            $redirectUrl = url('/dashboard/test');
+            $successMsg = '🎉 Documents submitted successfully! Next Step: Please complete your Aptitude Assessment.';
+        } else {
+            $redirectUrl = url('/dashboard/onboarding');
+            $successMsg = '🎉 Onboarding documents submitted successfully!';
+        }
+
         if (!empty($hrmsResult['employee_code'])) {
             $successMsg .= " Your Employee ID is: {$hrmsResult['employee_code']}.";
         }
@@ -252,12 +265,13 @@ class CandidateController {
                 'success'       => true,
                 'message'       => $successMsg,
                 'employee_code' => $hrmsResult['employee_code'] ?? null,
-                'redirect'      => 'https://rshrms.in'
+                'redirect'      => $redirectUrl,
+                'next_step'     => $hasCompletedTest ? 'completed' : 'aptitude_test'
             ]);
         }
 
         flash('success', $successMsg);
-        redirect('https://rshrms.in');
+        redirect($redirectUrl);
     }
 
     /**

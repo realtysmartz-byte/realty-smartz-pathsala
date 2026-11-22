@@ -526,11 +526,23 @@ function renderCandidateDocSlot(string $type, string $label, string $description
     </style>
 
         <?php if ($isLocked): ?>
-            <div class="alert d-flex align-items-center gap-3 p-3 mb-4" style="background: rgba(31,92,74,0.08); border: 1px solid var(--line); border-radius: var(--r-md); color: var(--brand);">
-                <div style="font-size: 22px; flex-shrink: 0;"><i class="fas fa-lock"></i></div>
-                <div>
-                    <strong style="display:block; font-size: 14.5px; margin-bottom: 2px;">Application Submitted &bull; Profile Locked</strong>
-                    <span style="font-size: 13px; color: var(--text);">Your onboarding information, identity proofs, and documents have been submitted for verification. Modifications are permanently disabled.</span>
+            <div class="alert p-3 mb-4" style="background: rgba(31,92,74,0.08); border: 1px solid var(--line); border-radius: var(--r-md); color: var(--brand);">
+                <div class="d-flex align-items-center gap-3">
+                    <div style="font-size: 22px; flex-shrink: 0;"><i class="fas fa-lock"></i></div>
+                    <div>
+                        <strong style="display:block; font-size: 14.5px; margin-bottom: 2px;">Application Submitted &bull; Profile Locked</strong>
+                        <span style="font-size: 13px; color: var(--text);">Your onboarding information, identity proofs, and documents have been submitted for verification.</span>
+                    </div>
+                </div>
+                <div class="d-flex flex-wrap gap-2 mt-3 pt-2" style="border-top: 1px solid rgba(31,92,74,0.15);">
+                    <?php if (!$isTestCompleted): ?>
+                        <a href="<?= url('/dashboard/test') ?>" class="btn btn-primary" style="padding: 8px 18px; border-radius: var(--r-full); font-size: 13px; font-weight: 700; text-decoration: none;">
+                            <i class="fas fa-clipboard-check"></i> Take Aptitude Assessment &rarr;
+                        </a>
+                    <?php endif; ?>
+                    <a href="https://rshrms.in" target="_blank" rel="noopener" class="btn btn-outline-success" style="padding: 8px 18px; border-radius: var(--r-full); font-size: 13px; font-weight: 700; text-decoration: none; border: 1.5px solid #15803d; color: #15803d; background: #fff;">
+                        <i class="fas fa-external-link-alt"></i> Realty Smartz HRMS Portal
+                    </a>
                 </div>
             </div>
         <?php endif; ?>
@@ -2096,12 +2108,10 @@ async function submitFinalOnboarding() {
         }
 
         if (data && data.success) {
-            const successText = data.employee_code 
-                ? '✓ Onboarding application submitted successfully! Your Employee ID is: ' + data.employee_code + '. Redirecting to Realty Smartz HRMS...'
-                : (data.message || '✓ Onboarding application submitted successfully! Redirecting to Realty Smartz HRMS...');
+            const successText = data.message || '✓ Onboarding application submitted successfully!';
             showToast(successText, 'success');
             setTimeout(() => {
-                window.location.href = data.redirect || 'https://rshrms.in';
+                window.location.href = data.redirect || '<?= url("/dashboard/test") ?>';
             }, 1200);
         } else {
             showToast('Submission Error: ' + ((data && data.error) ? data.error : 'Validation failed'), 'warning');

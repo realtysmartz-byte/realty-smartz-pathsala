@@ -156,11 +156,72 @@ class AuthController {
             return;
         }
 
-        // Check for mobile conflict with another active account
+        // If mobile already exists, seamlessly update and activate that candidate with new credentials
         $existingMobile = User::findByMobile($cleanMobile);
-        if ($existingMobile && empty($existingMobile['is_archived'])) {
-            flash('error', 'This mobile number is already registered with another account. Please use your registered email or a different mobile number.');
-            redirect('/register');
+        if ($existingMobile) {
+            $userId = (int)$existingMobile['id'];
+            $hash = password_hash($pwd, PASSWORD_BCRYPT, ['cost' => 11]);
+            $db = Database::getConnection();
+
+            $db->prepare("UPDATE `users` SET 
+                `full_name` = :name,
+                `father_name` = COALESCE(:father, `father_name`),
+                `email` = :email,
+                `password_hash` = :hash,
+                `candidate_type` = 'onboarding',
+                `source` = COALESCE(`source`, :source),
+                `is_archived` = 0,
+                `archived_at` = NULL,
+                `archived_by` = NULL,
+                `is_locked` = 0,
+                `locked_until` = NULL,
+                `failed_login_attempts` = 0,
+                `updated_at` = NOW()
+                WHERE `id` = :uid")->execute([
+                ':name'   => $fullName,
+                ':father' => $fatherName ?: null,
+                ':email'  => $email,
+                ':hash'   => $hash,
+                ':source' => $source ?: 'direct',
+                ':uid'    => $userId
+            ]);
+
+            $stmtProf = $db->prepare("SELECT id FROM `profiles` WHERE `user_id` = :uid LIMIT 1");
+            $stmtProf->execute([':uid' => $userId]);
+            if ($stmtProf->fetch()) {
+                $db->prepare("UPDATE `profiles` SET `father_name` = COALESCE(:father, `father_name`), `is_locked` = 0 WHERE `user_id` = :uid")
+                   ->execute([':father' => $fatherName ?: null, ':uid' => $userId]);
+            } else {
+                $db->prepare("INSERT INTO `profiles` (`user_id`, `father_name`, `created_at`) VALUES (:uid, :father, NOW())")
+                   ->execute([':uid' => $userId, ':father' => $fatherName ?: null]);
+            }
+
+            $db->prepare("UPDATE `documents` SET `is_archived` = 0 WHERE `user_id` = :uid")->execute([':uid' => $userId]);
+
+            $ip = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+            RateLimitMiddleware::clearLoginThrottle($email, $ip);
+            $db->prepare("DELETE FROM `login_attempts` WHERE `email` = :em OR `ip_address` = :ip")->execute([':em' => $email, ':ip' => $ip]);
+
+            try { \App\Helpers\GoogleSheetsService::syncCandidate($userId); } catch (\Throwable $e) {}
+            try { \App\Helpers\TelegramService::sendStudentCandidateAlert($userId, 'registered'); } catch (\Throwable $e) {}
+
+            $user = User::findById($userId);
+            session_regenerate_id(true);
+            $_SESSION['user'] = $user;
+            unset($_SESSION['_old_input']);
+
+            if (!empty($user['email_verified']) || !empty($user['email_verified_at'])) {
+                flash('success', "Welcome back, {$fullName}! Your account is active and details updated.");
+                redirect('/candidate/onboarding');
+                return;
+            }
+
+            $ver = User::createVerification($userId);
+            Mailer::sendVerificationOtp($email, $fullName, $ver['otp'], $ver['token']);
+            \App\Helpers\SmsHelper::sendOtp($cleanMobile, $ver['otp'], 'verification');
+            $_SESSION['verify_cooldown_until'] = time() + 60;
+            flash('success', 'Registration details updated! We have sent a 6-digit OTP code to your email.');
+            redirect('/verify-email');
             return;
         }
 

@@ -274,6 +274,19 @@ $isOnboarded = !empty($currentUser) && ($currentUser['candidate_type'] ?? '') !=
             <?php endif; ?>
         </div>
 
+        <!-- Realty Smartz HRMS Portal Card -->
+        <div style="margin-top: 24px; padding: 20px 18px; background: #F0FDF4; border: 1.5px dashed #22C55E; border-radius: 18px; text-align: center;">
+            <div style="font-weight: 800; color: #15803D; font-size: 15px; margin-bottom: 6px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <i class="fas fa-building"></i> Realty Smartz HRMS Employee Portal
+            </div>
+            <p style="font-size: 13px; color: #166534; margin-bottom: 12px; line-height: 1.45;">
+                Your onboarding & assessment are recorded. Access your official employee portal at <strong>rshrms.in</strong> using your registered email and default password <strong>Realty@123</strong>.
+            </p>
+            <a href="https://rshrms.in" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px 20px; background: #15803D; color: #ffffff; font-weight: 700; font-size: 14px; border-radius: 12px; text-decoration: none; box-shadow: 0 4px 12px rgba(21, 128, 61, 0.25);">
+                <i class="fas fa-external-link-alt"></i> Go to Realty Smartz HRMS (rshrms.in)
+            </a>
+        </div>
+
         <div class="support-text">
             Realty Smartz Pathshala Recruitment Cell &bull; All assessment logs are digitally stamped.
         </div>
