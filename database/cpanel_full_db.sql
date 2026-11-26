@@ -1109,7 +1109,7 @@ INSERT INTO `settings` (`id`, `setting_key`, `setting_value`, `setting_group`, `
   ('2', 'site_tagline', 'Master the Art of Real Estate | India\'s #1 Real Estate Training', 'general', '2026-10-18 18:18:52'),
   ('3', 'contact_email', 'info@realtysmartzpathshala.in', 'contact', '2026-10-18 18:18:52'),
   ('4', 'hr_email', 'hr@realtysmartzpathshala.in', 'contact', '2026-10-17 12:24:19'),
-  ('5', 'contact_phone', '+91 8010841841', 'contact', '2026-10-18 18:18:52'),
+  ('5', 'contact_phone', '+91 9999 888 777', 'contact', '2026-10-18 18:18:52'),
   ('6', 'contact_address', 'Golf Course Road, Sector 69, Gurgaon, Haryana 122011, India', 'contact', '2026-10-18 18:18:52'),
   ('7', 'working_hours', 'Mon - Sat: 9:30 AM - 6:30 PM (Sunday Closed)', 'contact', '2026-10-17 12:24:19'),
   ('8', 'instagram_url', 'https://www.instagram.com/realtysmartz/', 'social', '2026-10-17 12:24:19'),
@@ -1302,7 +1302,7 @@ CREATE TABLE `users` (
 
 -- Dumping data for table `users`
 INSERT INTO `users` (`id`, `full_name`, `father_name`, `email`, `mobile`, `whatsapp`, `joining_date`, `password_hash`, `role`, `candidate_type`, `source`, `is_guest`, `status`, `email_verified`, `email_verified_at`, `remember_token`, `is_locked`, `locked_until`, `failed_login_attempts`, `is_archived`, `archived_at`, `archived_by`, `created_at`, `updated_at`) VALUES
-  ('1', 'Super Admin', NULL, 'admin@realtysmartzpathshala.in', '+918010841841', NULL, NULL, '$2y$10$r8j0nFMN8FTQVLUN2AKbg.giMKuQ1tYMo09bjRhHeFj3wNqynkhoa', 'super_admin', 'onboarding', 'direct', '0', 'active', '1', '2026-10-17 12:24:19', NULL, '0', NULL, '0', '0', NULL, NULL, '2026-10-17 12:24:19', '2026-10-22 18:34:50'),
+  ('1', 'Super Admin', NULL, 'admin@realtysmartzpathshala.in', '+919876543210', NULL, NULL, '$2y$10$r8j0nFMN8FTQVLUN2AKbg.giMKuQ1tYMo09bjRhHeFj3wNqynkhoa', 'super_admin', 'onboarding', 'direct', '0', 'active', '1', '2026-10-17 12:24:19', NULL, '0', NULL, '0', '0', NULL, NULL, '2026-10-17 12:24:19', '2026-10-22 18:34:50'),
   ('2', 'HR Manager', NULL, 'hr@realtysmartzpathshala.in', '+919876543211', NULL, NULL, '$2y$10$7in11AzJaJ35YMziftsFZugUW8ELNs5ev1Zr7dHEfAHSoKlPJex8u', 'hr_manager', 'onboarding', 'direct', '0', 'approved', '1', '2026-10-17 12:24:19', NULL, '0', NULL, '0', '0', NULL, NULL, '2026-10-17 12:24:19', '2026-10-17 12:24:19'),
   ('3', 'Reviewer Officer', NULL, 'reviewer@realtysmartzpathshala.in', '+919876543212', NULL, NULL, '$2y$10$7in11AzJaJ35YMziftsFZugUW8ELNs5ev1Zr7dHEfAHSoKlPJex8u', 'reviewer', 'onboarding', 'direct', '0', 'approved', '1', '2026-10-17 12:24:19', NULL, '0', NULL, '0', '0', NULL, NULL, '2026-10-17 12:24:19', '2026-10-17 12:24:19');
 

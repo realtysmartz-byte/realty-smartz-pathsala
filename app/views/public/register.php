@@ -35,7 +35,7 @@ ob_start();
                                     <label class="form-label" for="reg_mobile">Mobile Number (10-digit) *</label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-light text-muted fw-bold">+91</span>
-                                        <input type="tel" id="reg_mobile" name="mobile" class="form-control" value="<?= e(old('mobile')) ?>" placeholder="8010841841" maxlength="10" pattern="[6-9][0-9]{9}" required autocomplete="tel">
+                                        <input type="tel" id="reg_mobile" name="mobile" class="form-control" value="<?= e(old('mobile')) ?>" placeholder="9876543210" maxlength="10" pattern="[6-9][0-9]{9}" required autocomplete="tel">
                                     </div>
                                 </div>
                             </div>

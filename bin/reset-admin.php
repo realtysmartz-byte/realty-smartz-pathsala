@@ -80,17 +80,17 @@ try {
     // 2. Check if user already exists
     $existing = User::findByEmail($email);
     $fullName = "Super Admin";
-    $mobile = "+918010841841";
+    $mobile = "+919876543210";
 
     if ($existing) {
         echo "[INFO] Found existing account for '{$email}' (ID: #{$existing['id']}, Current Name: {$existing['full_name']}).\n";
         $fullName = $existing['full_name'] ?: "Super Admin";
-        $mobile = $existing['mobile'] ?: "+918010841841";
+        $mobile = $existing['mobile'] ?: "+919876543210";
     } else {
         echo "[INFO] No account found for '{$email}'. A new Super Admin account will be created.\n";
         if (empty($argv[1])) {
             $fullName = prompt("Enter Super Admin Full Name", "Super Admin");
-            $mobile = prompt("Enter Mobile Number", "+918010841841");
+            $mobile = prompt("Enter Mobile Number", "+919876543210");
         }
     }
 

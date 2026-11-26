@@ -64,7 +64,7 @@ class Setting {
                 'stat_placement_rate' => '98%',
                 'stat_years_active' => '10+ Years',
                 'stat_avg_deal' => '2.4 Cr',
-                'contact_phone' => '+91 8010841841',
+                'contact_phone' => '+91 99999 99999',
                 'contact_email' => 'info@realtysmartzpathshala.in',
                 'preloader_text' => 'Preparing Your Success Path...',
                 'social_instagram' => 'https://instagram.com/realtysmartz',
@@ -76,7 +76,7 @@ class Setting {
                 'social_facebook' => 'https://facebook.com/realtysmartz',
                 'social_facebook_handle' => '(Realty Smartz)',
                 'social_twitter' => 'https://x.com/realtysmartz',
-                'social_whatsapp' => '+91 8010841841'
+                'social_whatsapp' => '+91 9999 888 777'
             ];
         }
     }
