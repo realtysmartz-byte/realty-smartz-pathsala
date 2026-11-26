@@ -651,7 +651,7 @@ $viewTitle = "Assessments";
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="guestMobileInput">Mobile number</label>
-                    <input type="tel" name="guest_mobile" id="guestMobileInput" class="form-input" placeholder="e.g. 9876543210">
+                    <input type="tel" name="guest_mobile" id="guestMobileInput" class="form-input" placeholder="e.g. 8010841841">
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="guestEmailInput">Email address</label>

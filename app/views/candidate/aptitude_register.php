@@ -199,7 +199,7 @@ $flashSuccess = flash('success');
 
             <div class="form-group">
                 <label for="mobile" class="form-label">Mobile Number <span style="color: #B91C1C;">*</span></label>
-                <input type="tel" id="mobile" name="mobile" class="form-input" placeholder="e.g. 9876543210" maxlength="10" value="<?= e($_POST['mobile'] ?? '') ?>" required>
+                <input type="tel" id="mobile" name="mobile" class="form-input" placeholder="e.g. 8010841841" maxlength="10" value="<?= e($_POST['mobile'] ?? '') ?>" required>
                 <div class="form-hint">10-digit Indian mobile number for communication</div>
             </div>
 

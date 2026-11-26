@@ -67,7 +67,7 @@ $pageTitle = "Site Content & CMS Manager | Admin Portal";
                     </div>
                     <div>
                         <label style="display:block; color:var(--text); font-size:12.5px; font-weight:600; margin-bottom:4px;">Official Phone</label>
-                        <input type="text" name="settings[contact_phone]" value="<?= e($settings['contact_phone'] ?? '+91 99999 99999') ?>" style="width:100%; padding:9px 12px; background:var(--surface); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13.5px;">
+                        <input type="text" name="settings[contact_phone]" value="<?= e($settings['contact_phone'] ?? '+91 8010841841') ?>" style="width:100%; padding:9px 12px; background:var(--surface); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13.5px;">
                     </div>
                     <div>
                         <label style="display:block; color:var(--text); font-size:12.5px; font-weight:600; margin-bottom:4px;">Official Email</label>
@@ -249,7 +249,7 @@ $pageTitle = "Site Content & CMS Manager | Admin Portal";
                         </div>
                         <div>
                             <label style="display:block; color:var(--muted); font-size:12px; margin-bottom:4px;">Number (with Country Code)</label>
-                            <input type="text" name="settings[social_whatsapp]" value="<?= e($settings['social_whatsapp'] ?? '+91 9999 888 777') ?>" placeholder="+91 9999 888 777" style="width:100%; padding:8px 12px; background:var(--bg); border:1px solid var(--border); border-radius:6px; color:var(--text); font-size:13px;">
+                            <input type="text" name="settings[social_whatsapp]" value="<?= e($settings['social_whatsapp'] ?? '+91 8010841841') ?>" placeholder="+91 8010841841" style="width:100%; padding:8px 12px; background:var(--bg); border:1px solid var(--border); border-radius:6px; color:var(--text); font-size:13px;">
                         </div>
                     </div>
                 </div>
@@ -443,7 +443,7 @@ $pageTitle = "Site Content & CMS Manager | Admin Portal";
                     </div>
                     <div>
                         <label style="display:block; color:var(--text); font-size:12px; font-weight:600; margin-bottom:5px;">WhatsApp Number (with Country Code)</label>
-                        <input type="text" name="settings[social_whatsapp]" value="<?= e($settings['social_whatsapp'] ?? '+91 9999 888 777') ?>" placeholder="+91 9999 888 777" style="width:100%; padding:9px 12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13px;">
+                        <input type="text" name="settings[social_whatsapp]" value="<?= e($settings['social_whatsapp'] ?? '+91 8010841841') ?>" placeholder="+91 8010841841" style="width:100%; padding:9px 12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:13px;">
                     </div>
                 </div>
             </div>

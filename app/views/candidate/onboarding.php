@@ -609,7 +609,7 @@ function renderCandidateDocSlot(string $type, string $label, string $description
                         </div>
                         <div style="position:relative;">
                             <span style="position:absolute; left:12px; top:11px; font-size:13px; font-weight:700; color:var(--primary);">+91</span>
-                            <input type="tel" id="whatsapp" name="whatsapp" maxlength="10" pattern="[6-9][0-9]{9}" class="form-control" style="padding-left:46px;" value="<?= e($profile['whatsapp'] ?? ($candidate['whatsapp'] ?? $candidate['mobile'])) ?>" placeholder="9876543210" required <?= $isLocked ? 'readonly' : '' ?>>
+                            <input type="tel" id="whatsapp" name="whatsapp" maxlength="10" pattern="[6-9][0-9]{9}" class="form-control" style="padding-left:46px;" value="<?= e($profile['whatsapp'] ?? ($candidate['whatsapp'] ?? $candidate['mobile'])) ?>" placeholder="8010841841" required <?= $isLocked ? 'readonly' : '' ?>>
                         </div>
                     </div>
 
@@ -806,7 +806,7 @@ function renderCandidateDocSlot(string $type, string $label, string $description
                             </div>
                             <div>
                                 <label class="form-label" for="emergency_phone_1" style="font-size:12px;">Phone Number *</label>
-                                <input type="tel" id="emergency_phone_1" name="emergency_phone_1" maxlength="10" pattern="[6-9][0-9]{9}" class="form-control" value="<?= e($emergency['mobile'] ?? '') ?>" placeholder="9876543210" required <?= $isLocked ? 'readonly' : '' ?>>
+                                <input type="tel" id="emergency_phone_1" name="emergency_phone_1" maxlength="10" pattern="[6-9][0-9]{9}" class="form-control" value="<?= e($emergency['mobile'] ?? '') ?>" placeholder="8010841841" required <?= $isLocked ? 'readonly' : '' ?>>
                             </div>
                         </div>
 

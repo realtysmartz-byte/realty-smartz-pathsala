@@ -37,7 +37,7 @@ ob_start();
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="contact_phone">Mobile Number *</label>
-                                <input type="tel" id="contact_phone" name="phone" class="form-control" placeholder="9876543210" required>
+                                <input type="tel" id="contact_phone" name="phone" class="form-control" placeholder="8010841841" required>
                             </div>
                         </div>
 
@@ -79,7 +79,7 @@ ob_start();
                     <div class="mb-4 pb-3 border-bottom" style="border-color: var(--line) !important;">
                         <div class="small fw-bold text-dark mb-1">Phone Helpline</div>
                         <div class="small text-muted">
-                            +91 9999 888 777 / +91 124 456 7890
+                            <a href="tel:+918010841841" style="color: inherit; text-decoration: none;">+91 8010841841</a>
                         </div>
                     </div>
 

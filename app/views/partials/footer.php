@@ -117,7 +117,7 @@
                     info@realtysmartzpathshala.in
                 </p>
                 <p class="small text-muted mb-0">
-                    +91 9999 888 777
+                    <a href="tel:+918010841841" style="color:inherit; text-decoration:none;">+91 8010841841</a>
                 </p>
             </div>
         </div>

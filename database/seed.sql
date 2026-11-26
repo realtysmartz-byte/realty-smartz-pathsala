@@ -7,7 +7,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- 1. Default Administrator & HR Accounts
 INSERT INTO `users` (`id`, `full_name`, `email`, `mobile`, `password_hash`, `role`, `status`, `email_verified_at`, `is_locked`, `failed_login_attempts`, `is_archived`, `created_at`)
 VALUES
-(1, 'Super Admin', 'admin.realty@realtysmartzpathshala.in', '+919876543210', '$2y$10$GS6OjxaNkHuJkA3ZgDBCYOxV6Ip.c/4M05GvSDTSsEycm5Wof6pQ.', 'super_admin', 'approved', NOW(), 0, 0, 0, NOW()),
+(1, 'Super Admin', 'admin.realty@realtysmartzpathshala.in', '+918010841841', '$2y$10$GS6OjxaNkHuJkA3ZgDBCYOxV6Ip.c/4M05GvSDTSsEycm5Wof6pQ.', 'super_admin', 'approved', NOW(), 0, 0, 0, NOW()),
 (2, 'HR Manager', 'hr@realtysmartzpathshala.in', '+919876543211', '$2y$10$7in11AzJaJ35YMziftsFZugUW8ELNs5ev1Zr7dHEfAHSoKlPJex8u', 'hr_manager', 'approved', NOW(), 0, 0, 0, NOW()),
 (3, 'Reviewer Officer', 'reviewer@realtysmartzpathshala.in', '+919876543212', '$2y$10$7in11AzJaJ35YMziftsFZugUW8ELNs5ev1Zr7dHEfAHSoKlPJex8u', 'reviewer', 'approved', NOW(), 0, 0, 0, NOW())
 ON DUPLICATE KEY UPDATE `email`=`email`;
@@ -18,7 +18,7 @@ INSERT INTO `settings` (`setting_key`, `setting_value`, `setting_group`) VALUES
 ('site_tagline', 'Master the Art of Real Estate | India''s #1 Real Estate Training', 'general'),
 ('contact_email', 'info@realtysmartzpathshala.in', 'contact'),
 ('hr_email', 'hr@realtysmartzpathshala.in', 'contact'),
-('contact_phone', '+91 9999 888 777', 'contact'),
+('contact_phone', '+91 8010841841', 'contact'),
 ('contact_address', 'Spaze Plazo, Sector 69, Gurugram, Haryana 122018, India', 'contact'),
 ('working_hours', 'Mon - Sat: 9:30 AM - 6:30 PM (Sunday Closed)', 'contact'),
 ('instagram_url', 'https://www.instagram.com/realtysmartz/', 'social'),
